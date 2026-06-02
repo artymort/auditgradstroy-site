@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проверка земельных участков перед покупкой | ГрадАудит</title>
+  <meta name="description" content="Проверка земельных участков перед покупкой в Москве и Московской области: охранные зоны, градостроительные запреты, ВРИ, ПЗЗ, Генплан и юридические риски.">
+  <meta name="keywords" content="проверка земельного участка, аудит земли перед покупкой, градостроительная экспертиза, земельный участок Москва, ПЗЗ, Генплан, ВРИ, ЗОУИТ, охранные зоны">
+  <meta property="og:title" content="Проверка земельных участков перед покупкой">
+  <meta property="og:description" content="Находим скрытые охранные зоны, градостроительные запреты и юридические проблемы до покупки участка.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="ГрадАудит">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --white: #ffffff;
+      --navy: #0f2435;
+      --ink: #263847;
+      --muted: #627384;
+      --forest: #1a4a2e;
+      --bright-green: #A3D562;
+      --sage: #e8f2ec;
+      --sage-dark: #c8e0d0;
+      --line: #d8ded8;
+      --gold: #d9b45f;
+      --danger: #c95454;
+      --water: #6ba8d8;
+      --shadow-card: 0 18px 44px rgba(15, 36, 53, 0.1);
+      --shadow-hero: 0 24px 70px rgba(15, 36, 53, 0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--navy);
+      font-family: "Manrope", Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { color: var(--navy); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; }
+    ::selection { background: var(--forest); color: #fff; }
+    :focus-visible { outline: 2px solid var(--forest); outline-offset: 3px; border-radius: 4px; }
+
+    .container { width: min(100% - 40px, 1344px); margin: 0 auto; }
+    .section { padding: 88px 0; }
+    .bg-white { background: var(--white); }
+    .bg-cream { background: var(--cream); }
+    .bg-navy { background: var(--navy); color: #fff; }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      color: var(--forest);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .section-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--forest);
+      flex: 0 0 auto;
+    }
+    .bg-navy .section-label { color: var(--sage-dark); }
+    .bg-navy .section-label::before { background: var(--sage-dark); }
+    .section-title { font-size: clamp(30px, 3.5vw, 44px); }
+    .lead { color: var(--muted); font-size: 18px; line-height: 1.75; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      border-radius: 10px;
+      border: 0;
+      padding: 13px 22px;
+      background: var(--forest);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .button:hover { background: var(--navy); }
+    .button.navy { background: var(--navy); }
+    .button.navy:hover { background: var(--forest); }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid rgba(216, 222, 216, .75);
+      backdrop-filter: blur(12px);
+    }
+    .header__inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+    .logo__image {
+      display: block;
+      width: auto;
+      height: 28px;
+    }
+    .logo__mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      border: 1px solid var(--sage-dark);
+      background: var(--sage);
+      color: var(--forest);
+      flex: 0 0 auto;
+    }
+    .logo--inverted .logo__mark { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.1); color: var(--sage); }
+    .logo--inverted { color: #fff; }
+    .nav { display: flex; align-items: center; gap: 4px; }
+    .nav a {
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .nav a:hover { color: var(--bright-green); background: var(--cream); }
+    .header__actions { display: flex; align-items: center; gap: 12px; }
+    .phone { color: var(--navy); font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .header__actions .button,
+    .mobile-menu .button {
+      border-radius: 999px;
+      background-color: var(--bright-green);
+      color: var(--navy);
+    }
+    .header__actions .button:hover,
+    .mobile-menu .button:hover {
+      background: var(--navy);
+      color: #fff;
+    }
+    .burger {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cream);
+      cursor: pointer;
+    }
+    .burger span, .burger::before, .burger::after {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 2px;
+      margin: 5px auto;
+      border-radius: 999px;
+      background: var(--navy);
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .burger.is-open::before { transform: translateY(7px) rotate(45deg); }
+    .burger.is-open span { opacity: 0; }
+    .burger.is-open::after { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display: none; border-top: 1px solid var(--line); background: #fff; padding: 14px 20px 22px; }
+    .mobile-menu.is-open { display: block; }
+    .mobile-menu a { display: block; padding: 12px 14px; border-radius: 8px; font-weight: 700; color: var(--ink); }
+    .mobile-menu a:hover { background: var(--cream); }
+
+    .hero {
+      min-height: calc(100vh - 72px);
+      padding: 60px 0 72px;
+      display: flex;
+      align-items: center;
+      background-color: var(--cream);
+      background-image:
+        linear-gradient(90deg, rgba(15, 36, 53, .82) 0%, rgba(15, 36, 53, .64) 30%, rgba(15, 36, 53, .08) 46%, rgba(15, 36, 53, 0) 58%),
+        url("background2.png");
+      background-size: cover;
+      background-position: center;
+    }
+    .hero__layout {
+      display: grid;
+      grid-template-columns: minmax(0, 740px) 380px;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 48px;
+    }
+    .hero__content { max-width: 740px; }
+    .hero__promise {
+      margin-bottom: 14px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hero .section-label { color: var(--sage-dark); }
+    .hero .section-label::before { background: var(--sage-dark); }
+    .hero h1 { color: #fff; font-size: clamp(38px, 4.6vw, 64px); line-height: 1.06; }
+    .hero__text { max-width: 570px; margin-top: 24px; color: rgba(255, 255, 255, .78); font-size: 19px; line-height: 1.7; }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+    .hero-actions .button {
+      min-height: 54px;
+      border-radius: 999px;
+      padding: 15px 24px;
+      background-color: var(--bright-green);
+      color: var(--navy);
+    }
+    .hero-actions .button:hover { background: var(--navy); }
+    .hero-actions .button.secondary {
+      border: 1px solid rgba(255, 255, 255, .34);
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+      box-shadow: none;
+      backdrop-filter: blur(8px);
+    }
+    .hero-actions .button.secondary:hover {
+      border-color: rgba(255, 255, 255, .58);
+      background: rgba(255, 255, 255, .18);
+    }
+    .hero-note {
+      margin-top: 18px;
+      color: rgba(255, 255, 255, .58);
+      font-size: 13px;
+    }
+    .hero-form {
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 2px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .07));
+      padding: 26px;
+      box-shadow: var(--shadow-hero);
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
+      display: grid;
+      grid-template-rows: auto auto auto;
+      align-content: space-between;
+      gap: 28px;
+    }
+    .hero-form h2 {
+      color: rgba(255, 255, 255, .94);
+      font-size: 24px;
+      line-height: 1.15;
+    }
+    .hero-form p {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, .68);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .hero-form form {
+      display: grid;
+      gap: 12px;
+    }
+    .hero-form input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .16);
+      padding: 0 15px;
+      outline: 0;
+      color: rgba(255, 255, 255, .94);
+      font-size: 15px;
+    }
+    .hero-form input::placeholder { color: rgba(255, 255, 255, .56); }
+    .hero-form input:focus { border-color: rgba(255, 255, 255, .54); }
+    .hero-form .button { width: 100%; min-height: 54px; margin-top: 22px; border-radius: 999px; }
+    .hero-form__notes {
+      display: grid;
+      gap: 8px;
+      color: rgba(255, 255, 255, .62);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .icon-box {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--navy);
+      color: #fff;
+      flex: 0 0 auto;
+    }
+    .icon-box.sage { background: var(--sage); color: var(--forest); }
+
+    .two-col-head {
+      display: grid;
+      grid-template-columns: .72fr 1.28fr;
+      align-items: end;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .risk-layout {
+      display: grid;
+      grid-template-columns: repeat(24, minmax(0, 1fr));
+      grid-template-rows: 250px 250px auto;
+      gap: 14px;
+      row-gap: 14px;
+      align-items: stretch;
+      width: 100%;
+    }
+    .risk-intro {
+      grid-column: 1 / 8;
+      grid-row: 1 / 3;
+      padding-top: 0;
+    }
+    .risk-intro .section-title {
+      max-width: 430px;
+      font-size: clamp(40px, 3vw, 44px);
+    }
+    .risk-intro .lead {
+      max-width: 430px;
+      margin-top: 22px;
+    }
+    .risk-grid, .steps-grid, .trust-grid { display: grid; gap: 16px; }
+    .risk-grid { display: contents; }
+    .risk-card {
+      min-height: 250px;
+      height: 250px;
+      display: grid;
+      border: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--cream);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .risk-card:hover { box-shadow: var(--shadow-card); }
+    .risk-card--top { grid-template-columns: .48fr .52fr; }
+    .risk-card--wide { grid-template-columns: .36fr .64fr; }
+    .risk-card--one { grid-column: 8 / 16; grid-row: 1; }
+    .risk-card--two { grid-column: 16 / 25; grid-row: 1; grid-template-columns: 38.8% 61.2%; }
+    .risk-card--three { grid-column: 1 / 12; grid-row: 2; background: var(--navy); color: #fff; }
+    .risk-card--four { grid-column: 12 / 25; grid-row: 2; grid-template-columns: 58% 42%; background: #f1f6fb; }
+    .risk-card__media {
+      position: relative;
+      min-height: 100%;
+      background: rgba(15, 36, 53, .08);
+    }
+    .risk-card__media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .18);
+      pointer-events: none;
+    }
+    .risk-card--three .risk-card__media::after,
+    .risk-card--four .risk-card__media::after { background: rgba(0, 0, 0, .24); }
+    .risk-card__media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .risk-card__copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px 22px;
+    }
+    .risk-card--three .risk-card__copy {
+      background: var(--navy);
+      color: #fff;
+    }
+    .risk-card--one .risk-card__copy { background: #fbf3ea; }
+    .risk-card--two .risk-card__copy { background: #eef7ed; }
+    .risk-card--four .risk-card__copy { background: #edf4fb; }
+    .risk-card p {
+      max-width: 240px;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.28;
+    }
+    .risk-card--three p { color: #fff; }
+    .risk-card__num {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(238, 112, 55, .16);
+      color: #ee7037;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .risk-card--two .risk-card__num { background: rgba(122, 177, 104, .3); color: #6a9f59; }
+    .risk-card--three .risk-card__num { background: #4778d8; color: #fff; }
+    .risk-card--four .risk-card__num { background: #d8e6f8; color: #4778d8; }
+    .risk-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .risk-card__line {
+      width: 96px;
+      height: 3px;
+      background: linear-gradient(90deg, currentColor 46%, rgba(15, 36, 53, .12) 46%);
+      opacity: .7;
+    }
+    .risk-card--one .risk-card__line { color: #ee7037; }
+    .risk-card--two .risk-card__line { color: #6a9f59; }
+    .risk-card--three .risk-card__line { color: #63a5ff; background: linear-gradient(90deg, currentColor 46%, rgba(255, 255, 255, .18) 46%); }
+    .risk-card--four .risk-card__line { color: #4778d8; }
+    .risk-card__footer {
+      display: flex;
+      align-items: center;
+    }
+    .accent {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      border-radius: 0;
+      border-left: 4px solid #ee7037;
+      background: #fff8f2;
+      padding: 24px 30px;
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .accent .icon-box {
+      width: 58px;
+      height: 58px;
+      border: 3px solid #ee7037;
+      border-radius: 12px;
+      background: transparent;
+      color: #ee7037;
+      font-size: 28px;
+    }
+    .accent strong { color: #ee7037; }
+    .accent p { flex: 1; }
+
+    .expert-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 760px) minmax(420px, 480px);
+      grid-template-areas:
+        "copy photo"
+        "action .";
+      column-gap: 56px;
+      justify-content: space-between;
+      align-items: stretch;
+    }
+    .expert-section {
+      background: var(--cream);
+    }
+    .expert-copy { grid-area: copy; max-width: 760px; }
+    .expert-copy .section-title { max-width: 720px; }
+    .expert-text { margin-top: 30px; display: grid; gap: 16px; color: var(--navy); font-size: 16px; line-height: 1.75; }
+    .expert-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 36px;
+      background: rgba(15, 36, 53, .14);
+      border: 0;
+    }
+    .expert-fact {
+      background: #fff;
+      padding: 18px 20px;
+      color: var(--navy);
+    }
+    .expert-fact:nth-child(2) {
+      background: var(--bright-green);
+    }
+    .expert-fact:nth-child(3) {
+      background: var(--navy);
+    }
+    .expert-fact:nth-child(3) strong,
+    .expert-fact:nth-child(3) span {
+      color: #fff;
+    }
+    .expert-fact strong {
+      display: block;
+      color: var(--navy);
+      font-size: 20px;
+      line-height: 1;
+    }
+    .expert-fact span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .expert-photo {
+      position: relative;
+      grid-area: photo;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      margin: 0;
+      box-sizing: border-box;
+      background: transparent;
+      overflow: hidden;
+      justify-self: stretch;
+      align-self: stretch;
+      padding: 0;
+    }
+    .expert-photo img {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .expert-photo__caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 82px 22px 22px;
+      background: linear-gradient(180deg, rgba(15, 36, 53, 0), rgba(15, 36, 53, .88));
+      color: #fff;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, .35);
+    }
+    .expert-photo__caption strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    .expert-photo__caption span {
+      display: block;
+      margin-top: 6px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 14px;
+    }
+    .expert-cta {
+      border-radius: 999px;
+      background: var(--navy);
+      color: #fff;
+    }
+    .expert-cta:hover {
+      background: var(--bright-green);
+      color: var(--navy);
+    }
+    .expert-action {
+      grid-area: action;
+      margin: 32px 0 0;
+    }
+
+    .services-head { max-width: 700px; margin-bottom: 54px; }
+    .services-head .lead { margin-top: 20px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .service-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--cream);
+      box-shadow: var(--shadow-card);
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+    .service-card:hover { border-color: var(--bright-green); box-shadow: var(--shadow-hero); }
+    .service-card.featured { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: var(--shadow-hero); }
+    .service-card__body {
+      display: grid;
+      grid-template-rows: 58px 42px 112px 1fr auto;
+      flex: 1;
+      gap: 18px;
+      padding: 32px;
+    }
+    .service-card h3 {
+      align-self: start;
+      margin: 0;
+      font-size: clamp(19px, 2vw, 22px);
+      line-height: 1.12;
+    }
+    .service-card.featured h3 { color: #fff; }
+    .price {
+      align-self: start;
+      margin: 0;
+      color: var(--forest);
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .featured .price { color: #fff; }
+    .service-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    .featured p { color: rgba(255, 255, 255, .78); }
+    .service-card ul { margin: 0; padding: 0; list-style: none; display: grid; align-content: start; gap: 12px; }
+    .service-card li { display: flex; gap: 12px; color: var(--ink); font-size: 14px; line-height: 1.45; }
+    .featured li { color: rgba(255, 255, 255, .9); }
+    .service-card .button {
+      align-self: end;
+      width: 100%;
+      border-radius: 999px;
+      background: var(--navy);
+      color: #fff;
+    }
+    .service-card .button:hover {
+      background: var(--bright-green);
+      color: var(--navy);
+    }
+    .service-card.featured .button {
+      background: #fff;
+      color: var(--navy);
+    }
+    .service-card.featured .button:hover {
+      background: var(--bright-green);
+      color: var(--navy);
+    }
+    .check {
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--sage);
+      color: var(--forest);
+      flex: 0 0 auto;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .featured .check { background: rgba(255, 255, 255, .14); color: #fff; }
+    .ribbon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      border-radius: 999px;
+      background: var(--navy);
+      padding: 4px 12px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .steps-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .step-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+    .step-card:hover { border-color: var(--sage-dark); box-shadow: var(--shadow-hero); }
+    .step-card__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--sage);
+      color: var(--forest);
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .step-card h3 { margin-bottom: 12px; font-size: 20px; }
+    .step-card p { color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .step-label { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .process-strip {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border: 1px solid var(--sage-dark);
+      border-radius: 14px;
+      background: var(--sage);
+      padding: 24px 32px;
+    }
+    .process-strip p { color: var(--navy); font-weight: 800; line-height: 1.45; }
+
+    .trust-section { position: relative; overflow: hidden; }
+    .trust-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .trust-card {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+      padding: 28px;
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .trust-card:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.2); }
+    .trust-value { margin-top: 22px; color: var(--sage-dark); font-size: clamp(36px, 4vw, 52px); font-weight: 900; line-height: 1; }
+    .trust-card h3 { margin-top: 6px; color: #fff; font-size: 18px; }
+    .trust-card p { margin-top: 18px; color: rgba(255,255,255,.66); font-size: 15px; line-height: 1.7; }
+    .quote {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      padding: 28px 32px;
+    }
+    .quote p { color: rgba(255,255,255,.72); font-size: 18px; font-style: italic; line-height: 1.65; }
+    .quote cite { color: rgba(255,255,255,.5); font-size: 14px; font-style: normal; font-weight: 800; white-space: nowrap; }
+
+    .cta-box {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      background: var(--forest);
+      box-shadow: var(--shadow-hero);
+    }
+    .cta-box__inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: center; padding: 56px; }
+    .cta-eyebrow { margin-bottom: 16px; color: rgba(255,255,255,.62); font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .cta-box h2 { color: #fff; font-size: clamp(26px, 3vw, 40px); }
+    .cta-list { margin-top: 32px; display: grid; gap: 12px; color: rgba(255,255,255,.82); font-size: 14px; }
+    .cta-list div { display: flex; align-items: center; gap: 12px; }
+    .cta-form {
+      border-radius: 16px;
+      background: #fff;
+      padding: 32px;
+      box-shadow: var(--shadow-hero);
+    }
+    .cta-form h3 { margin-bottom: 24px; font-size: 20px; }
+    .cta-form form { display: grid; gap: 12px; }
+    .cta-form input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--cream);
+      padding: 0 16px;
+      outline: 0;
+      color: var(--ink);
+      font-size: 15px;
+    }
+    .cta-form input:focus { border-color: var(--forest); }
+    .consent { color: var(--muted); font-size: 12px; text-align: center; }
+
+    .footer { padding: 56px 0 28px; background: var(--navy); color: #fff; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr .8fr 1fr .9fr; gap: 40px; }
+    .footer p, .footer a { color: rgba(255,255,255,.65); font-size: 14px; }
+    .footer a:hover { color: #fff; }
+    .footer h2 { margin-bottom: 20px; color: rgba(255,255,255,.42); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+    .footer ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+    .footer address { display: grid; gap: 12px; font-style: normal; }
+    .socials { display: flex; gap: 12px; margin-top: 24px; }
+    .socials a {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+    }
+    .footer-bottom {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .footer-bottom p { color: rgba(255,255,255,.36); font-size: 12px; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1180px) {
+      .nav, .header__actions { display: none; }
+      .burger { display: block; }
+      .risk-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .risk-intro { grid-column: 1 / -1; }
+      .risk-card--one,
+      .risk-card--two,
+      .risk-card--three,
+      .risk-card--four,
+      .accent { grid-column: auto; }
+      .risk-card--top,
+      .risk-card--wide,
+      .risk-card--four { grid-template-columns: 1fr; }
+      .risk-card__media { min-height: 220px; }
+      .risk-grid, .steps-grid, .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .services-grid, .footer-grid { grid-template-columns: 1fr; }
+      .service-card__body { min-height: auto; }
+    }
+    @media (max-width: 900px) {
+      .section { padding: 68px 0; }
+      .two-col-head, .expert-grid, .cta-box__inner { grid-template-columns: 1fr; gap: 34px; }
+      .expert-grid { grid-template-areas: "copy" "photo" "action"; }
+      .expert-section { background: var(--cream); }
+      .hero { min-height: auto; padding: 56px 0 64px; background-position: center; }
+      .hero__layout { grid-template-columns: 1fr; gap: 30px; }
+      .hero__content { max-width: 100%; }
+      .hero-form { max-width: 460px; }
+      .process-strip, .quote, .footer-bottom { flex-direction: column; align-items: flex-start; }
+      .quote cite { white-space: normal; }
+    }
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px, 1344px); }
+      body { font-size: 16px; }
+      .hero h1 { font-size: 38px; }
+      .hero__text { font-size: 17px; }
+      .hero-actions { align-items: stretch; flex-direction: column; }
+      .hero-actions .button { width: 100%; }
+      .hero-form { padding: 22px; }
+      .risk-layout { grid-template-columns: 1fr; }
+      .risk-card { min-height: auto; height: auto; }
+      .risk-card__copy { min-height: 230px; }
+      .risk-intro .lead { max-width: none; }
+      .risk-grid, .steps-grid, .trust-grid, .expert-facts { grid-template-columns: 1fr; }
+      .accent { align-items: flex-start; flex-direction: column; padding: 24px; font-size: 18px; }
+      .expert-photo,
+      .expert-photo img { min-height: 0; }
+      .expert-photo { width: 100%; }
+      .cta-box__inner { padding: 28px; }
+      .cta-form { padding: 22px; }
+      .service-card__body { padding: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="#" aria-label="На главную">
+        <img class="logo__image" src="logo3.svg" alt="ГрадАудит">
+      </a>
+      <nav class="nav" aria-label="Главное меню">
+        <a href="#services">Услуги</a>
+        <a href="#cases">Кейсы</a>
+        <a href="#process">Как проходит проверка</a>
+        <a href="#expert">О эксперте</a>
+        <a href="#blog">Блог</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="header__actions">
+        <a class="phone" href="tel:+70000000000">+7 (000) 000-00-00</a>
+        <a class="button navy" href="#cta">Бесплатная экспресс-оценка</a>
+      </div>
+      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-button><span></span></button>
+    </div>
+    <div class="mobile-menu" data-mobile-menu>
+      <a href="#services">Услуги</a>
+      <a href="#cases">Кейсы</a>
+      <a href="#process">Как проходит проверка</a>
+      <a href="#expert">О эксперте</a>
+      <a href="#blog">Блог</a>
+      <a href="#contacts">Контакты</a>
+      <a class="button navy" href="#cta">Бесплатная экспресс-оценка</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero__layout">
+          <div class="hero__content">
+            <p class="hero__promise">Чтобы вы не купили землю, на которой нельзя построить.</p>
+            <span class="section-label">Москва и Московская область</span>
+            <h1>Проверка земельных участков перед покупкой</h1>
+            <p class="hero__text">Находим скрытые охранные зоны, градостроительные запреты и юридические проблемы. Защищаем ваш капитал, чтобы вы не купили землю, на которой невозможно строить.</p>
+            <div class="hero-actions">
+              <a class="button" href="#hero-form">Бесплатная экспресс-оценка</a>
+              <a class="button secondary" href="#contacts">Получить консультацию</a>
+            </div>
+            <p class="hero-note">Первичная оценка не обязывает к заказу полного аудита.</p>
+          </div>
+          <div class="hero-form" id="hero-form">
+            <h2>Экспресс-оценка участка</h2>
+            <p>Оставьте кадастровый номер или адрес, чтобы получить первичный комментарий по рискам.</p>
+            <form data-static-form>
+              <label class="sr-only" for="hero-cadastral">Кадастровый номер или адрес участка</label>
+              <input id="hero-cadastral" placeholder="Кадастровый номер или адрес">
+              <label class="sr-only" for="hero-phone">Телефон</label>
+              <input id="hero-phone" placeholder="Телефон">
+              <button class="button navy" type="submit">Проверить участок</button>
+            </form>
+            <div class="hero-form__notes">
+              <span>Ответим в течение рабочего дня</span>
+              <span>Без обязательств до договора</span>
+              <span>Конфиденциально</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-white" id="cases">
+      <div class="container">
+        <div class="risk-layout">
+          <div class="risk-intro">
+            <h2 class="section-title">Почему покупка участка - это риск?</h2>
+            <p class="lead">Вы можете купить земельный участок и только на этапе проектирования узнать, что:</p>
+          </div>
+
+          <article class="risk-card risk-card--top risk-card--one">
+            <div class="risk-card__media">
+              <img src="photo1.png" alt="Документы и экспертное заключение по земельному участку">
+            </div>
+            <div class="risk-card__copy">
+              <div class="risk-card__head">
+                <span class="risk-card__num">01</span>
+              </div>
+              <p>На участке законодательно запрещено капитальное строительство.</p>
+              <div class="risk-card__footer"><span class="risk-card__line"></span></div>
+            </div>
+          </article>
+
+          <article class="risk-card risk-card--top risk-card--two">
+            <div class="risk-card__media">
+              <img src="photo2.png" alt="Карта охранных и санитарных зон земельного участка">
+            </div>
+            <div class="risk-card__copy">
+              <div class="risk-card__head">
+                <span class="risk-card__num">02</span>
+              </div>
+              <p>Более 50% площади попадает в скрытые охранные зоны: газ, ЛЭП, вода.</p>
+              <div class="risk-card__footer"><span class="risk-card__line"></span></div>
+            </div>
+          </article>
+
+          <article class="risk-card risk-card--wide risk-card--three">
+            <div class="risk-card__copy">
+              <div class="risk-card__head">
+                <span class="risk-card__num">03</span>
+              </div>
+              <p>Текущий ВРИ не позволяет реализовать ваш проект.</p>
+              <div class="risk-card__footer"><span class="risk-card__line"></span></div>
+            </div>
+            <div class="risk-card__media">
+              <img src="photo3.png" alt="Генплан и правила землепользования территории">
+            </div>
+          </article>
+
+          <article class="risk-card risk-card--wide risk-card--four">
+            <div class="risk-card__media">
+              <img src="photo4.png" alt="Аэрофотосъемка территории и соседних участков">
+            </div>
+            <div class="risk-card__copy">
+              <div class="risk-card__head">
+                <span class="risk-card__num">04</span>
+              </div>
+              <p>Действуют жесткие ограничения памятников природы, археологии и приаэродромной территории.</p>
+              <div class="risk-card__footer"><span class="risk-card__line"></span></div>
+            </div>
+          </article>
+
+          <div class="accent"><span class="icon-box" aria-hidden="true">!</span><p>Исправление таких ошибок обходится в миллионы рублей, а часто - <strong>юридически невозможно.</strong></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-cream expert-section" id="expert">
+      <div class="container expert-grid">
+        <div class="expert-copy">
+          <h2 class="section-title">Ваш независимый эксперт в сфере градостроительства и землепользования.</h2>
+          <div class="expert-text">
+            <p>Меня зовут Александр Сысуев. Мой практический опыт в сфере девелопмента, земельного права и управления строительными проектами превышает 13 лет.</p>
+            <p>Я не просто "проверяю документы". За моими плечами - десятки сложных проектов, которые я сопровождал от этапа подбора актива до успешного получения разрешительной документации, ГПЗУ, РНС и реализации.</p>
+            <p>Я знаю всю кухню согласований ведомств Москвы и области изнутри, поэтому вижу критические риски там, где обычные юристы видят лишь чистую выписку из ЕГРН.</p>
+            <p>Моя главная задача - выступать на стороне инвестора. Я нахожу скрытые ограничения, о которых умалчивают продавцы, и помогаю вам принимать взвешенные, финансово безопасные решения.</p>
+          </div>
+          <div class="expert-facts">
+            <div class="expert-fact"><strong>13+</strong><span>лет практики</span></div>
+            <div class="expert-fact"><strong>ГПЗУ / РНС</strong><span>опыт разрешительной документации</span></div>
+            <div class="expert-fact"><strong>100%</strong><span>работа в интересах покупателя</span></div>
+          </div>
+        </div>
+        <p class="expert-action"><a class="button expert-cta" href="#cta">Получить консультацию</a></p>
+        <figure class="expert-photo">
+          <img src="alexandr.png" alt="Александр Сысуев, эксперт по градостроительству и землепользованию">
+          <figcaption class="expert-photo__caption">
+            <strong>Александр Сысуев</strong>
+            <span>Девелопмент · земельное право · строительные проекты</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section bg-white" id="services">
+      <div class="container">
+        <div class="services-head">
+          <h2 class="section-title">Форматы экспертной поддержки</h2>
+          <p class="lead">Выберите оптимальный уровень работы в зависимости от стадии вашей сделки и стоящих задач.</p>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-card__body">
+              <h3>Экспресс-аудит участка</h3>
+              <div class="price">от 35 000 ₽</div>
+              <p>Быстрая проверка по ключевым базам данных. Идеально для оперативного отсева заведомо проблемных участков на этапе первичного выбора.</p>
+              <ul><li><span class="check">✓</span>Проверка по ключевым базам</li><li><span class="check">✓</span>Оперативный отсев проблемных участков</li><li><span class="check">✓</span>Понятные выводы до сделки</li></ul>
+              <a class="button navy" href="#cta">Оставить заявку</a>
+            </div>
+          </article>
+          <article class="service-card featured">
+            <div class="service-card__body">
+              <h3>Полная градостроительная экспертиза</h3>
+              <div class="price">от 150 000 ₽</div>
+              <p>Глубокий анализ земли перед покупкой по 5 уровням. Выявляем скрытые ЗОУИТ, анализируем ПЗЗ и Генплан. Итог - официальное экспертное заключение на 10-15 страниц.</p>
+              <ul><li><span class="check">✓</span>Анализ скрытых ЗОУИТ</li><li><span class="check">✓</span>Проверка ПЗЗ и Генплана</li><li><span class="check">✓</span>Официальное экспертное заключение</li><li><span class="check">✓</span>10-15 страниц с выводами</li></ul>
+              <a class="button navy" href="#cta">Оставить заявку</a>
+            </div>
+          </article>
+          <article class="service-card">
+            <div class="service-card__body">
+              <h3>Стратегическое сопровождение проектов</h3>
+              <div class="price">Индивидуально</div>
+              <p>Комплексное управление рисками для девелоперов и инвесторов: от глубокого аудита актива до успешного получения ГПЗУ и разрешения на строительство.</p>
+              <ul><li><span class="check">✓</span>Глубокий аудит актива</li><li><span class="check">✓</span>Управление градостроительными рисками</li><li><span class="check">✓</span>Сопровождение до ГПЗУ и РНС</li></ul>
+              <a class="button navy" href="#cta">Оставить заявку</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-cream" id="process">
+      <div class="container">
+        <div class="two-col-head">
+          <div>
+            <span class="section-label">Как проходит проверка участка</span>
+            <h2 class="section-title">Прозрачный алгоритм работы</h2>
+          </div>
+          <p class="lead">Процесс аудита не требует вашего личного участия в бюрократических процедурах. Всю аналитическую работу я беру на себя.</p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card"><div class="step-card__head"><span class="step-num">1</span><span class="step-label">Шаг 1</span></div><h3>Заявка</h3><p>Вы отправляете кадастровый номер рассматриваемого участка.</p></article>
+          <article class="step-card"><div class="step-card__head"><span class="step-num">2</span><span class="step-label">Шаг 2</span></div><h3>Первичный анализ</h3><p>Я провожу базовую проверку, после чего мы обсуждаем параметры вашего будущего объекта.</p></article>
+          <article class="step-card"><div class="step-card__head"><span class="step-num">3</span><span class="step-label">Шаг 3</span></div><h3>Глубокий аудит</h3><p>Я проверяю правоустанавливающие документы, градостроительные регламенты и инфраструктуру.</p></article>
+          <article class="step-card"><div class="step-card__head"><span class="step-num">4</span><span class="step-label">Шаг 4</span></div><h3>Заключение</h3><p>Вы получаете развернутый официальный отчет со схемами и принимаете безопасное решение о покупке.</p></article>
+        </div>
+        <div class="process-strip">
+          <p>Весь процесс аудита займет от 2 до 5 рабочих дней. Ваше участие - минимально.</p>
+          <a class="button" href="#cta">Начать проверку</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-navy trust-section">
+      <div class="container">
+        <div class="services-head">
+          <span class="section-label">Факты, гарантирующие вашу безопасность</span>
+          <h2 class="section-title" style="color:#fff">Факты, гарантирующие вашу безопасность</h2>
+        </div>
+        <div class="trust-grid">
+          <article class="trust-card"><span class="icon-box">✓</span><div class="trust-value">100%</div><h3>независимость.</h3><p>Я работаю исключительно в интересах покупателя, не аффилирован с продавцами и агентствами недвижимости.</p></article>
+          <article class="trust-card"><span class="icon-box">13</span><div class="trust-value">13</div><h3>лет практики.</h3><p>Опыт реального девелопмента и сопровождения проектов позволяет мне видеть риски на несколько шагов вперед.</p></article>
+          <article class="trust-card"><span class="icon-box">₽</span><div class="trust-value">&gt; 1 МЛРД</div><h3>рублей.</h3><p>Общая сумма средств, сохраненных моим клиентам за счет своевременного отказа от покупки проблемных активов.</p></article>
+          <article class="trust-card"><span class="icon-box">10</span><div class="trust-value">10-20</div><h3>страниц.</h3><p>Вы получаете не устный совет, а документ с картами, схемами и обоснованными выводами.</p></article>
+        </div>
+        <div class="quote">
+          <p>«Мои клиенты платят за аудит, чтобы сэкономить в десятки раз больше. Каждый выявленный риск - это сохраненные миллионы рублей.»</p>
+          <cite>- Александр Сысуев</cite>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-cream" id="cta">
+      <div class="container">
+        <div class="cta-box">
+          <div class="cta-box__inner">
+            <div>
+              <p class="cta-eyebrow">Первичная оценка - бесплатно</p>
+              <h2>Отправьте кадастровый номер участка и получите первичную оценку.</h2>
+              <div class="cta-list">
+                <div><span class="check">✓</span>Результат - в течение рабочего дня</div>
+                <div><span class="check">✓</span>Никаких обязательств до подписания договора</div>
+                <div><span class="check">✓</span>Конфиденциальность гарантирована</div>
+              </div>
+            </div>
+            <div class="cta-form">
+              <h3>Отправить запрос</h3>
+              <form data-static-form>
+                <label class="sr-only" for="cta-cadastral">Кадастровый номер или адрес</label>
+                <input id="cta-cadastral" placeholder="Кадастровый номер или адрес">
+                <label class="sr-only" for="cta-phone">Телефон</label>
+                <input id="cta-phone" placeholder="Телефон">
+                <button class="button navy" type="submit">Получить первичную оценку</button>
+                <p class="consent">Нажимая на кнопку, вы соглашаетесь на обработку персональных данных.</p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="logo logo--inverted" href="#" aria-label="На главную">
+            <span class="logo__mark" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 2L4 5.5V12c0 5.25 3.75 10.2 9 11.5C18.25 22.2 22 17.25 22 12V5.5L13 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 14.5c1.2-1.5 3-2 5-2s3.8.5 5 2M10 17h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+            <span>ГрадАудит</span>
+          </a>
+          <p style="margin-top:20px;max-width:330px">Независимая проверка земельных участков перед покупкой в Москве и Московской области.</p>
+          <div class="socials"><a href="#" aria-label="telegram">TG</a><a href="#" aria-label="whatsapp">WA</a><a href="#" aria-label="vk">VK</a></div>
+        </div>
+        <nav aria-label="Навигация в футере">
+          <h2>Навигация</h2>
+          <ul><li><a href="#services">Услуги</a></li><li><a href="#cases">Кейсы</a></li><li><a href="#process">Как проходит проверка</a></li><li><a href="#expert">О эксперте</a></li><li><a href="#blog">Блог</a></li><li><a href="#contacts">Контакты</a></li></ul>
+        </nav>
+        <div>
+          <h2>Услуги</h2>
+          <ul><li><a href="#services">Экспресс-аудит участка</a></li><li><a href="#services">Полная градостроительная экспертиза</a></li><li><a href="#services">Стратегическое сопровождение проектов</a></li></ul>
+        </div>
+        <div>
+          <h2>Контакты</h2>
+          <address><a href="tel:+70000000000">+7 (000) 000-00-00</a><a href="mailto:info@example.ru">info@example.ru</a><p>Москва и Московская область</p></address>
+          <p style="margin-top:22px"><a href="#">Политика конфиденциальности</a></p>
+          <p><a href="#">Пользовательское соглашение</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 ГрадАудит. Все права защищены.</p>
+        <p>ИНН 770000000000 · ОГРН 100000000000000</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.querySelector("[data-menu-button]");
+    const mobileMenu = document.querySelector("[data-mobile-menu]");
+
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.classList.toggle("is-open");
+      mobileMenu.classList.toggle("is-open", isOpen);
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        menuButton.classList.remove("is-open");
+        mobileMenu.classList.remove("is-open");
+        menuButton.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.querySelectorAll("[data-static-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>
