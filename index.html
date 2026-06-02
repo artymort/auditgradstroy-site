@@ -835,22 +835,146 @@
       .quote cite { white-space: normal; }
     }
     @media (max-width: 640px) {
-      .container { width: min(100% - 28px, 1344px); }
+      .container { width: min(100% - 40px, 1344px); }
       body { font-size: 16px; }
-      .hero h1 { font-size: 38px; }
-      .hero__text { font-size: 17px; }
+      .section { padding: 56px 0; }
+      .section-title { font-size: 34px; }
+      .header__inner { height: 66px; }
+      .logo__image { height: 25px; }
+      .burger { width: 40px; height: 40px; }
+      .mobile-menu { padding: 10px 20px 20px; }
+      .hero {
+        padding: 48px 0 54px;
+        background-image:
+          linear-gradient(180deg, rgba(15, 36, 53, .58) 0%, rgba(15, 36, 53, .78) 34%, rgba(15, 36, 53, .86) 100%),
+          url("background2.png");
+        background-position: center top;
+      }
+      .hero__layout { gap: 24px; }
+      .hero__promise {
+        max-width: 340px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .hero h1 {
+        max-width: 360px;
+        font-size: 34px;
+        line-height: 1.12;
+      }
+      .hero__text {
+        max-width: 350px;
+        margin-top: 20px;
+        font-size: 16px;
+        line-height: 1.65;
+      }
       .hero-actions { align-items: stretch; flex-direction: column; }
-      .hero-actions .button { width: 100%; }
-      .hero-form { padding: 22px; }
-      .risk-layout { grid-template-columns: 1fr; }
-      .risk-card { min-height: auto; height: auto; }
-      .risk-card__copy { min-height: 230px; }
+      .hero-actions .button { width: 100%; min-height: 50px; padding-inline: 18px; }
+      .hero-note { line-height: 1.45; }
+      .hero-form {
+        width: 100%;
+        max-width: none;
+        padding: 24px 20px;
+        gap: 22px;
+      }
+      .hero-form h2 { font-size: 24px; }
+      .hero-form input { height: 50px; padding-inline: 14px; font-size: 14px; }
+      .hero-form .button { min-height: 52px; margin-top: 12px; }
+      .risk-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        gap: 14px;
+      }
+      .risk-intro,
+      .risk-card--one,
+      .risk-card--two,
+      .risk-card--three,
+      .risk-card--four,
+      .accent {
+        grid-column: auto;
+        grid-row: auto;
+      }
+      .risk-intro { margin-bottom: 8px; }
+      .risk-intro .section-title {
+        max-width: 340px;
+        font-size: 34px;
+        line-height: 1.12;
+      }
+      .risk-intro .lead {
+        margin-top: 18px;
+        font-size: 17px;
+        line-height: 1.7;
+      }
       .risk-intro .lead { max-width: none; }
+      .risk-card {
+        min-height: 0;
+        height: auto;
+        grid-template-columns: 1fr;
+        border-radius: 8px;
+      }
+      .risk-card__media {
+        min-height: 0;
+        height: 210px;
+      }
+      .risk-card__copy {
+        min-height: 0;
+        padding: 22px 20px;
+        gap: 20px;
+      }
+      .risk-card p {
+        max-width: none;
+        font-size: 18px;
+        line-height: 1.32;
+      }
+      .risk-card--three .risk-card__media { order: -1; }
+      .risk-card__num {
+        width: 46px;
+        height: 46px;
+      }
+      .risk-card__line { width: 86px; }
       .risk-grid, .steps-grid, .trust-grid, .expert-facts { grid-template-columns: 1fr; }
-      .accent { align-items: flex-start; flex-direction: column; padding: 24px; font-size: 18px; }
-      .expert-photo,
-      .expert-photo img { min-height: 0; }
-      .expert-photo { width: 100%; }
+      .accent {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+        margin-top: 12px;
+        padding: 24px 20px;
+        font-size: 18px;
+      }
+      .expert-grid {
+        grid-template-areas:
+          "copy"
+          "photo"
+          "action";
+        gap: 28px;
+      }
+      .expert-copy .section-title {
+        max-width: 360px;
+        font-size: 31px;
+        line-height: 1.14;
+      }
+      .expert-text {
+        margin-top: 24px;
+        gap: 14px;
+        font-size: 15px;
+        line-height: 1.75;
+      }
+      .expert-facts { margin-top: 28px; }
+      .expert-fact { padding: 18px 20px; }
+      .expert-photo {
+        width: 100%;
+        min-height: 430px;
+        aspect-ratio: 4 / 5;
+        align-self: auto;
+      }
+      .expert-photo img {
+        min-height: 100%;
+        object-position: center top;
+      }
+      .expert-photo__caption { padding: 82px 20px 20px; }
+      .expert-action { margin: 0; }
+      .expert-action .button { width: 100%; }
       .cta-box__inner { padding: 28px; }
       .cta-form { padding: 22px; }
       .service-card__body { padding: 26px; }
