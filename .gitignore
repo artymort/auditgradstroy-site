@@ -1,1 +1,4 @@
 *.pdf
+*.log
+node_modules/
+playwright-screenshots/
