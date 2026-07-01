@@ -723,3 +723,16 @@ Responsive full-bleed and overflow correction:
 - removed fixed heights and minimum heights from text-driven service, process, information, proof, expert, and CTA cards at tablet/mobile widths;
 - removed residual fixed heights from homepage proof, expert, and CTA content on mobile;
 - reset mobile card grid rows to content-driven sizing and retained fixed image heights only where media cropping is intentional.
+
+Homepage mobile hero full-width surfaces:
+- kept the hero background image configured but fully covered it on mobile;
+- expanded the white copy card, lime form, and white proof card to the full viewport width;
+- removed all mobile gaps, outer margins, borders, blur, and shadows between the three hero surfaces;
+- retained internal 32px content padding for readable text and controls.
+
+Homepage mobile service-card structure correction:
+- removed the desktop fixed 98px/36px title-and-price rows from mobile service cards;
+- changed all three cards to one consistent natural flow: number/action, title, price, description, image;
+- applied fixed 18px content gaps and a shared 32px offset below each card header;
+- reserved 220px at the bottom of every card for the shared 190px image treatment;
+- reduced only the mobile expert H2 to 32px and enabled safe wrapping to prevent horizontal overflow.

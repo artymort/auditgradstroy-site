@@ -7938,3 +7938,86 @@ body { overflow-x: hidden; }
     min-height: 0;
   }
 }
+
+/* Homepage mobile hero: full-width stacked color surfaces */
+@media (max-width: 600px) {
+  .hp-home .hp-hero {
+    padding: 0;
+  }
+  .hp-home .hp-hero__stage {
+    width: 100%;
+    max-width: none;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .hp-home .hp-hero__copy,
+  .hp-home .hp-quick-form,
+  .hp-home .hp-hero__proof {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .hp-home .hp-hero__copy {
+    padding: 42px 32px 38px;
+    background: #fff;
+  }
+  .hp-home .hp-quick-form {
+    padding: 38px 32px 42px;
+    background: var(--hp-lime);
+  }
+  .hp-home .hp-hero__proof {
+    padding: 30px 32px 34px;
+    background: #fff;
+  }
+}
+
+/* Homepage mobile service-card flow and expert heading correction */
+@media (max-width: 600px) {
+  .hp-home .hp-service,
+  .hp-home .hp-service--support {
+    min-height: 0;
+    display: block;
+    padding: 28px 24px 220px;
+  }
+  .hp-home .hp-service__top {
+    min-height: 34px;
+  }
+  .hp-home .hp-service > div:last-of-type {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    margin-top: 32px;
+    padding: 0;
+  }
+  .hp-home .hp-service h3,
+  .hp-home .hp-service strong,
+  .hp-home .hp-service .hp-service__description {
+    min-height: 0;
+    margin: 0;
+  }
+  .hp-home .hp-service--express img,
+  .hp-home .hp-service--full > img,
+  .hp-home .hp-service--support > img {
+    height: 190px;
+  }
+
+  .hp-home .hp-expert__copy h2 {
+    max-width: 100%;
+    font-size: 32px;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+  .hp-home .hp-expert__copy,
+  .hp-home .hp-expert__text,
+  .hp-home .hp-expert__text p {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
