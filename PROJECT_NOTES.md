@@ -1,6 +1,6 @@
 # Project Notes
 
-Last updated: 2026-06-23
+Last updated: 2026-07-14
 
 ## Project
 
@@ -736,3 +736,55 @@ Homepage mobile service-card structure correction:
 - applied fixed 18px content gaps and a shared 32px offset below each card header;
 - reserved 220px at the bottom of every card for the shared 190px image treatment;
 - reduced only the mobile expert H2 to 32px and enabled safe wrapping to prevent horizontal overflow.
+
+## 2026-07-14 Production Typography and Responsive Pass
+
+Completed a site-wide delivery pass for `index.html` and `services.html` without changing content, palette, or the approved composition:
+- added a final shared typography layer based on Manrope;
+- disabled synthetic font weights and normalized Safari text scaling;
+- standardized live text roles to the current design system: display headings, section headings, card titles, body copy, labels, and buttons;
+- standardized mobile H1/H2/card-title scales to `40px`, up to `36px`, and `23px` respectively;
+- standardized body copy to `15px / 1.6` and action text to `14px / 600`;
+- normalized arrow glyph rendering and kept all circular action icons at `34px`;
+- changed mobile form inputs to `16px` to prevent automatic iOS input zoom;
+- rebuilt the mobile hero proof metrics into stable number/label rows;
+- aligned homepage expert metrics on a shared mobile grid and protected numeric values from wrapping;
+- normalized services expert proof cards so metric, title, and description hierarchy is consistent;
+- replaced unsafe mid-word heading wrapping with normal word wrapping;
+- preserved deliberate CTA benefit line breaks and removed only the full-scope breaks that harmed adaptation;
+- added anchor scroll offsets for the sticky header.
+
+Verification:
+- Playwright viewport checks completed for both pages at `320`, `360`, `390`, `430`, `600`, `820`, `1024`, and `1440` px;
+- horizontal overflow count: `0` at every tested width;
+- visible clipped-text count: `0` at every tested width;
+- Manrope loaded successfully;
+- mobile menu opens correctly on both pages and remains inside the viewport;
+- all mobile form inputs compute to `16px`;
+- all tested action controls are at least `52px` high and circular arrows compute to `34x34px`;
+- both pages retain exactly one `<h1>`;
+- CSS brace balance is valid.
+
+## 2026-07-14 Mobile Section-by-Section Visual QA
+
+Completed a second visual pass after comparing the published GitHub Pages build with local mobile renders:
+- reviewed every top-level section of `index.html` and `services.html` at 390px and the critical sections again at 320px;
+- rebuilt the homepage expert metrics on a fixed two-column mobile grid so all three labels share the same left edge;
+- kept `> 1 МЛРД` on one line at every tested mobile width and removed contact between the value and its label;
+- added a measured 28px gap between the proof subtitle and the following image;
+- removed mid-word breaks from large mobile headings and added a fluid 28–36px scale for narrow layouts;
+- reduced only the homepage expert heading where needed so `градостроительства` remains intact;
+- restored the intended CTA benefit line break, eliminating the merged `течениерабочего` text;
+- reduced the empty height in the mobile services hero intro;
+- corrected the full-expertise secondary button so its label remains visible on the white surface;
+- replaced the fixed mobile rows in the express-audit information cards with content-driven rows;
+- adjusted 320px service-card titles so long words no longer split inside the word;
+- reduced narrow-screen input placeholder size without lowering the 16px input size required to avoid iOS zoom.
+
+Final verification:
+- both pages pass at `320`, `360`, `390`, `430`, and `600` px;
+- horizontal overflow elements: `0` at every tested width;
+- clipped visible text elements: `0` at every tested width;
+- homepage expert label left coordinates are identical at 390px;
+- proof subtitle-to-image gap computes to `28px`;
+- the public GitHub Pages URL still shows the previous deployed version until these local changes are published.

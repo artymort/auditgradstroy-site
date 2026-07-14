@@ -8021,3 +8021,464 @@ body { overflow-x: hidden; }
     max-width: 100%;
   }
 }
+
+/* Production typography and responsive consistency pass */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: "Manrope", Arial, sans-serif;
+  font-synthesis: none;
+}
+
+body {
+  font-weight: 400;
+}
+
+.hp-home,
+.dom-services,
+.hp-header,
+.hp-footer {
+  font-family: "Manrope", Arial, sans-serif;
+}
+
+.hp-header .nav a,
+.hp-header .phone,
+.hp-header .mobile-menu a {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.hp-header .button,
+.hp-home .hp-button,
+.hp-home .hp-text-link,
+.dom-services .button {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.hp-home .hp-button,
+.dom-services .button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+}
+
+.hp-header .button i,
+.hp-home .hp-button i,
+.hp-home .hp-quick-form button i,
+.hp-home .hp-service__top a,
+.hp-home .hp-risk--blue a,
+.dom-services .button::after {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.hp-home .hp-hero h1,
+.hp-home .hp-manifesto h2,
+.hp-home .hp-method__intro h2,
+.hp-home .hp-section-head h2,
+.hp-home .hp-expert__copy h2,
+.hp-home .hp-proof__headline h2,
+.hp-home .hp-cta__copy h2,
+.dom-services .dom-hero h1,
+.dom-services .dom-hero__panel--image h2,
+.dom-services .dom-section__head h2,
+.dom-services .dom-feature__intro h2,
+.dom-services .dom-full-hero__summary h2,
+.dom-services .dom-urban-hero__content h2,
+.dom-services .dom-expert__text h2,
+.dom-services .dom-cta__text h2 {
+  font-family: "Manrope", Arial, sans-serif;
+  font-synthesis: none;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.hp-home .hp-risk h3,
+.hp-home .hp-risk-note p,
+.hp-home .hp-method__steps h3,
+.hp-home .hp-service h3,
+.hp-home .hp-service strong,
+.hp-home .hp-proof__cards h3,
+.hp-home .hp-cta__form h3,
+.dom-services .dom-service-card__top span,
+.dom-services .dom-service-card strong,
+.dom-services .dom-process__grid span,
+.dom-services .dom-process__grid h3,
+.dom-services .dom-feature__text h2,
+.dom-services .dom-feature__text h3,
+.dom-services .dom-info-card h3,
+.dom-services .dom-mini-tile h3,
+.dom-services .dom-audit-form__text h3,
+.dom-services .dom-full-hero__analysis h2,
+.dom-services .dom-full-scope .dom-info-card h3,
+.dom-services .dom-full-result .dom-info-card--wide h3,
+.dom-services .dom-urban-intro h2,
+.dom-services .dom-urban-help h3,
+.dom-services .dom-urban-format h3,
+.dom-services .dom-proof__grid h3,
+.dom-services .dom-cta__form h3 {
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -.035em;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.hp-home .hp-manifesto__aside p,
+.hp-home .hp-method__intro > p:not(.hp-section-index),
+.hp-home .hp-method__steps p,
+.hp-home .hp-section-head > p,
+.hp-home .hp-service .hp-service__description,
+.hp-home .hp-expert__text p,
+.hp-home .hp-proof__cards p,
+.hp-home .hp-cta__copy > p:not(.hp-section-index),
+.dom-services .dom-service-card p,
+.dom-services .dom-process__grid p,
+.dom-services .dom-feature__text p,
+.dom-services .dom-info-card p,
+.dom-services .dom-info-card li,
+.dom-services .dom-mini-tile p,
+.dom-services .dom-audit-form__text p,
+.dom-services .dom-full-hero__summary p,
+.dom-services .dom-full-hero__analysis p,
+.dom-services .dom-urban-intro p,
+.dom-services .dom-urban-help li,
+.dom-services .dom-urban-format li,
+.dom-services .dom-expert__text p,
+.dom-services .dom-proof__grid p {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.hp-home .hp-hero__proof strong,
+.hp-home .hp-expert__facts strong,
+.dom-services .dom-proof__grid > article > span {
+  font-variant-numeric: tabular-nums;
+}
+
+.hp-home .hp-hero__proof strong,
+.hp-home .hp-expert__facts strong {
+  white-space: nowrap;
+}
+
+.dom-services .dom-full-hero__summary h2,
+.dom-services .dom-urban-hero__content h2,
+.dom-services .dom-urban-hero__content p {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.dom-services .dom-proof__grid article {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+}
+
+.dom-services .dom-proof__grid > article > span {
+  min-height: 0;
+  font-size: clamp(30px, 2.35vw, 36px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -.045em;
+}
+
+.dom-services .dom-proof__grid > article > h3 {
+  min-height: 0;
+  margin-top: 20px;
+}
+
+.dom-services .dom-proof__grid > article > p {
+  margin-top: 18px;
+}
+
+.hp-home section[id],
+.dom-services section[id],
+.hp-footer[id] {
+  scroll-margin-top: 84px;
+}
+
+@media (max-width: 600px) {
+  .hp-header .burger {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .hp-home .hp-hero h1,
+  .dom-services .dom-hero h1 {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -.045em;
+  }
+
+  .hp-home .hp-manifesto h2,
+  .hp-home .hp-method__intro h2,
+  .hp-home .hp-section-head h2,
+  .hp-home .hp-expert__copy h2,
+  .hp-home .hp-proof__headline h2,
+  .hp-home .hp-cta__copy h2,
+  .dom-services .dom-hero__panel--image h2,
+  .dom-services .dom-section__head h2,
+  .dom-services .dom-feature__intro h2,
+  .dom-services .dom-full-hero__summary h2,
+  .dom-services .dom-urban-hero__content h2,
+  .dom-services .dom-expert__text h2,
+  .dom-services .dom-cta__text h2 {
+    font-size: clamp(32px, 9.2vw, 36px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -.04em;
+  }
+
+  .hp-home .hp-risk h3,
+  .hp-home .hp-risk-note p,
+  .hp-home .hp-method__steps h3,
+  .hp-home .hp-service h3,
+  .hp-home .hp-service strong,
+  .hp-home .hp-proof__cards h3,
+  .hp-home .hp-cta__form h3,
+  .dom-services .dom-service-card__top span,
+  .dom-services .dom-service-card strong,
+  .dom-services .dom-process__grid span,
+  .dom-services .dom-process__grid h3,
+  .dom-services .dom-feature__text h2,
+  .dom-services .dom-feature__text h3,
+  .dom-services .dom-info-card h3,
+  .dom-services .dom-mini-tile h3,
+  .dom-services .dom-audit-form__text h3,
+  .dom-services .dom-full-hero__analysis h2,
+  .dom-services .dom-full-scope .dom-info-card h3,
+  .dom-services .dom-full-result .dom-info-card--wide h3,
+  .dom-services .dom-urban-intro h2,
+  .dom-services .dom-urban-help h3,
+  .dom-services .dom-urban-format h3,
+  .dom-services .dom-proof__grid h3,
+  .dom-services .dom-cta__form h3 {
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.16;
+    letter-spacing: -.03em;
+  }
+
+  .hp-home .hp-button,
+  .dom-services .button {
+    width: 100%;
+    min-height: 52px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .hp-home .hp-button i,
+  .hp-home .hp-quick-form button i,
+  .dom-services .button::after {
+    flex: 0 0 34px;
+  }
+
+  .hp-home .hp-quick-form input,
+  .hp-home .hp-cta__form input,
+  .dom-services .dom-audit-form__fields input,
+  .dom-services .dom-cta__form input {
+    font-size: 16px;
+  }
+
+  .hp-home .hp-hero__proof {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 20px 32px 24px;
+  }
+
+  .hp-home .hp-hero__proof div {
+    min-width: 0;
+    min-height: 48px;
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 16px;
+    padding: 8px 0;
+  }
+
+  .hp-home .hp-hero__proof strong {
+    width: auto;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .hp-home .hp-hero__proof span {
+    max-width: none;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .hp-home .hp-expert__facts div {
+    min-height: 112px;
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    align-items: center;
+    justify-content: initial;
+    column-gap: 15px;
+    padding: 24px;
+  }
+
+  .hp-home .hp-expert__facts strong {
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -.05em;
+  }
+
+  .hp-home .hp-expert__facts span {
+    justify-self: start;
+    max-width: 160px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .hp-home .hp-proof__cards article {
+    min-height: 250px;
+    grid-template-rows: auto 36px auto 1fr;
+  }
+
+  .dom-services .dom-proof__grid article {
+    grid-template-rows: auto auto auto;
+  }
+
+  .dom-services .dom-proof__grid > article > span {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.06;
+  }
+
+  .dom-services .dom-proof__grid > article > h3 {
+    margin-top: 16px;
+  }
+
+  .dom-services .dom-proof__grid > article > p {
+    margin-top: 18px;
+  }
+
+  .hp-home .hp-cta__benefits br,
+  .hp-home .hp-cta__form small br,
+  .dom-services .dom-full-scope h3 br {
+    display: none;
+  }
+}
+
+/* Mobile visual QA corrections: alignment, readable wrapping and vertical rhythm */
+@media (max-width: 600px) {
+  .hp-home .hp-manifesto h2,
+  .hp-home .hp-method__intro h2,
+  .hp-home .hp-section-head h2,
+  .hp-home .hp-expert__copy h2,
+  .hp-home .hp-proof__headline h2,
+  .hp-home .hp-cta__copy h2,
+  .dom-services .dom-hero__panel--image h2,
+  .dom-services .dom-section__head h2,
+  .dom-services .dom-feature__intro h2,
+  .dom-services .dom-full-hero__summary h2,
+  .dom-services .dom-urban-hero__content h2,
+  .dom-services .dom-expert__text h2,
+  .dom-services .dom-cta__text h2 {
+    font-size: clamp(28px, calc(11.43vw - 8.57px), 36px);
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+
+  .hp-home .hp-expert__copy h2 {
+    font-size: clamp(26px, 8vw, 31px);
+    line-height: 1.1;
+  }
+
+  .hp-home .hp-proof__headline img {
+    align-self: flex-start;
+    width: calc(100% + 48px);
+    margin: 28px 0 0;
+    transform: translateX(-24px);
+  }
+
+  .hp-home .hp-cta__benefits br,
+  .hp-home .hp-cta__form small br {
+    display: block;
+  }
+
+  .dom-services .dom-hero__panel--dark {
+    min-height: 270px;
+  }
+
+  .dom-services .dom-hero__panel--dark .dom-arrow {
+    margin-top: 32px;
+  }
+
+  .dom-services .dom-full-hero__summary .dom-full-hero__button-secondary,
+  .dom-services .dom-full-hero__summary .button.navy.dom-full-hero__button-secondary {
+    color: #050706;
+  }
+
+  #express-audit .dom-audit-form + .dom-info-grid .dom-info-card {
+    grid-template-rows: auto auto auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .hp-home .hp-quick-form input,
+  .hp-home .hp-cta__form input,
+  .dom-services .dom-audit-form__fields input,
+  .dom-services .dom-cta__form input {
+    padding-inline: 14px;
+  }
+
+  .hp-home .hp-quick-form input::placeholder,
+  .hp-home .hp-cta__form input::placeholder,
+  .dom-services .dom-audit-form__fields input::placeholder,
+  .dom-services .dom-cta__form input::placeholder {
+    font-size: 14px;
+  }
+
+  .hp-home .hp-expert__copy {
+    padding-inline: 20px;
+  }
+
+  .hp-home .hp-expert__facts div {
+    grid-template-columns: 122px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 22px 20px;
+  }
+
+  .hp-home .hp-expert__facts strong {
+    font-size: 30px;
+  }
+
+  .dom-services .dom-service-card__top span {
+    font-size: 20px;
+    line-height: 1.16;
+    letter-spacing: -.025em;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+}
