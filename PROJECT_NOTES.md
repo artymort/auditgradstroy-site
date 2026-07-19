@@ -1,15 +1,21 @@
 # Project Notes
 
-Last updated: 2026-07-14
+Last updated: 2026-07-19
 
 ## Project
 
 Static website for GradAudit, a Russian-language landing/site about checking land plots before purchase and urban-planning due diligence.
 
 Main files:
-- `index.html` - home page.
-- `services.html` - separate services page.
+- `index.html` - Liquid/Jekyll template for the home page.
+- `services.html` - Liquid/Jekyll template for the services page.
 - `style.css` - shared styles for the site.
+- `_data/site.json` - shared brand, navigation, contacts, forms, and footer content.
+- `_data/home.json` - editable homepage content.
+- `_data/services.json` - editable services-page content.
+- `_includes/` - shared header, footer, and browser behavior.
+- `.pages.yml` - Pages CMS admin-panel configuration.
+- `_config.yml` - GitHub Pages/Jekyll build exclusions.
 - `content-home.pdf` - source/content reference for the home page.
 - `content-services-blog.pdf` - source/content reference for services/blog content.
 - `new_services.pdf` - updated SEO brief/content source for `services.html`.
@@ -17,7 +23,11 @@ Main files:
 
 ## Current State
 
-Git working tree has local changes:
+The public GitHub Pages site is deployed from `main`. The working tree now contains a verified but not-yet-published Pages CMS integration. Visitor-facing content is stored in `_data/*.json`, both pages render it through Liquid/Jekyll, shared markup lives in `_includes/`, and `.pages.yml` defines the admin interface. The visible local content exactly matches the current public site. These CMS changes still need an intentional commit and push before the admin panel can use them.
+
+Historical snapshot from the first services-page iteration:
+
+Git working tree had local changes:
 - `index.html` modified.
 - `services.html` added, currently untracked.
 - `style.css` added, currently untracked.
@@ -45,7 +55,15 @@ Recent work:
 
 ## Next Useful Checks
 
-Before considering this part finished:
+For CMS delivery:
+- commit and push the verified integration when the user says to publish;
+- wait for the GitHub Pages deployment to complete;
+- sign in at `https://app.pagescms.org`, select the repository, and make one harmless test edit;
+- confirm that the CMS commit triggers a successful GitHub Pages rebuild;
+- restore the test text if it was only used for verification;
+- connect the presentation-only forms to a real lead-delivery endpoint as a separate task.
+
+Older content checks retained for reference:
 - Open `index.html` and `services.html` in a browser.
 - Check desktop and mobile layout.
 - Verify header, footer, CTA, and all anchors.
@@ -810,3 +828,61 @@ Verification:
 - all visible content text uses only the `400`, `500`, and `600` role weights;
 - reviewed every top-level section at `390px` and `1074px`, plus the service-card grid at `320px`;
 - confirmed the homepage expert facts and proof headline/subtitle keep the corrected alignment and spacing.
+
+## 2026-07-19 Pages CMS Integration
+
+Implemented a free Git-backed admin panel with Pages CMS while preserving the current static-site design and visible content.
+
+Architecture:
+- GitHub Pages remains the public hosting and Jekyll build environment.
+- `index.html` and `services.html` are now Liquid/Jekyll templates with front matter.
+- shared header, footer, and browser behavior live in `_includes/`;
+- shared site settings live in `_data/site.json`;
+- homepage content lives in `_data/home.json`;
+- services-page content lives in `_data/services.json`;
+- `.pages.yml` defines the Russian-language editing interface, media picker, fixed collection lengths, and protected layout/link fields;
+- `_config.yml` excludes development files from the public GitHub Pages build.
+
+Client editing workflow:
+1. Open `https://app.pagescms.org` and sign in with the GitHub account that has access to the repository.
+2. Select the `auditgradstroy-site` repository and the `main` branch.
+3. Open one of the three clear sections: `Общие настройки`, `Главная страница`, or `Страница услуг`.
+4. Edit text, prices, labels, SEO fields, contact details, or choose/upload an image.
+5. Save. Pages CMS commits the data change to GitHub; GitHub Pages then rebuilds the public site automatically.
+
+CMS safeguards:
+- layout-related anchors, link targets, card styles, and structural keys are readonly;
+- repeated grids have fixed minimum/maximum item counts where changing the count would break the approved composition;
+- field length hints reduce the chance of oversized client text damaging the layout;
+- media uses the existing repository-root image library so no current asset paths had to be changed;
+- the site still renders as normal static HTML for visitors and search engines.
+
+Local development and validation:
+- `npm run check` validates `.pages.yml` against all three JSON content files and builds `_site`;
+- `npm run build` builds only the local static preview;
+- `npm run preview` builds and serves `_site` at `http://127.0.0.1:4173`;
+- `_site/` and `tmp/` are ignored by Git.
+
+Verification completed after CMS conversion:
+- CMS configuration and all content data pass the local validator;
+- both templates build without unresolved Liquid tags;
+- local visible text is exactly equal to the currently published visible text on both pages;
+- section, article, and image counts exactly match the published pages;
+- both pages retain exactly one `<h1>` and all images load;
+- responsive checks completed at `320`, `390`, `600`, `768`, `1074`, and `1440` px;
+- homepage expert labels share one left coordinate on mobile;
+- the proof subtitle-to-image gap remains `28px`;
+- a services-page intrinsic-width overflow was removed by normalizing `box-sizing` and giving the long urban-support heading its own fluid narrow-screen scale;
+- mobile menu opens and exposes all expected links.
+
+Important limitation retained from the original site:
+- forms are still presentation-only (`data-static-form` prevents submission). A mail service, CRM, Telegram bot, or backend endpoint must be connected separately before leads can be delivered.
+
+Future VPS/custom-domain migration:
+- no CMS subdomain is required if continuing to use the hosted Pages CMS at `app.pagescms.org`; it will keep editing the GitHub repository while the VPS deploys from the same repository;
+- a `cms.example.ru` subdomain is only optional if Pages CMS is later self-hosted;
+- self-hosting Pages CMS adds PostgreSQL, a GitHub App, authentication, backups, and maintenance, so it should not be introduced until there is a concrete need.
+
+Deployment status:
+- the Pages CMS integration is currently implemented and verified locally;
+- it has not yet been committed or pushed in this pass.

@@ -2,3 +2,5 @@
 *.log
 node_modules/
 playwright-screenshots/
+_site/
+tmp/

@@ -1,107 +1,84 @@
+---
+layout: null
+---
+{% assign page_type = "home" %}
+{% assign home = site.data.home %}
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Проверка земельных участков перед покупкой | ГрадАудит</title>
-  <meta name="description" content="Проверка земельных участков перед покупкой в Москве и Московской области: охранные зоны, градостроительные запреты, ВРИ, ПЗЗ, Генплан и юридические риски.">
-  <meta name="keywords" content="проверка земельного участка, аудит земли перед покупкой, градостроительная экспертиза, земельный участок Москва, ПЗЗ, Генплан, ВРИ, ЗОУИТ">
-  <meta property="og:title" content="Проверка земельных участков перед покупкой">
-  <meta property="og:description" content="Находим скрытые ограничения до сделки и защищаем капитал инвестора.">
+  <title>{{ home.seo.title | escape }}</title>
+  <meta name="description" content="{{ home.seo.description | escape }}">
+  <meta name="keywords" content="{{ home.seo.keywords | escape }}">
+  <meta property="og:title" content="{{ home.seo.og_title | escape }}">
+  <meta property="og:description" content="{{ home.seo.og_description | escape }}">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
-  <meta property="og:site_name" content="ГрадАудит">
+  <meta property="og:site_name" content="{{ site.data.site.brand.name | escape }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
 </head>
 <body>
-  <header class="header hp-header">
-    <div class="container header__inner">
-      <a class="logo" href="#top" aria-label="На главную">
-        <img class="logo__image" src="logo3.svg" alt="ГрадАудит">
-      </a>
-      <nav class="nav" aria-label="Главное меню">
-        <a href="services.html">Услуги</a>
-        <a href="#cases">Кейсы</a>
-        <a href="#process">Как проходит проверка</a>
-        <a href="#expert">О эксперте</a>
-        <a href="#blog">Блог</a>
-        <a href="#contacts">Контакты</a>
-      </nav>
-      <div class="header__actions">
-        <a class="phone" href="tel:+70000000000">+7 (000) 000-00-00</a>
-        <a class="button navy" href="#cta">Бесплатная экспресс-оценка <i aria-hidden="true">→</i></a>
-      </div>
-      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-button><span></span></button>
-    </div>
-    <div class="mobile-menu" data-mobile-menu>
-      <a href="services.html">Услуги</a>
-      <a href="#cases">Кейсы</a>
-      <a href="#process">Как проходит проверка</a>
-      <a href="#expert">О эксперте</a>
-      <a href="#blog">Блог</a>
-      <a href="#contacts">Контакты</a>
-      <a class="button navy" href="#cta">Бесплатная экспресс-оценка <i aria-hidden="true">→</i></a>
-    </div>
-  </header>
+{% include header.html %}
 
   <main class="hp-home" id="top">
-    <section class="hp-hero">
+    <section class="hp-hero" style="--hp-hero-image: url('{{ home.hero.image | relative_url }}')">
       <div class="container hp-hero__stage">
         <div class="hp-hero__copy">
-          <p class="hp-kicker"><span></span> Москва и Московская область</p>
-          <p class="hp-hero__promise">Чтобы вы не купили землю, на которой нельзя построить.</p>
-          <h1>Проверка земельных участков перед покупкой.</h1>
-          <p class="hp-hero__lead">Находим скрытые охранные зоны, градостроительные запреты и юридические проблемы. Защищаем ваш капитал, чтобы вы не купили землю, на которой невозможно строить.</p>
+          <p class="hp-kicker"><span></span> {{ home.hero.location | escape }}</p>
+          <p class="hp-hero__promise">{{ home.hero.promise | escape }}</p>
+          <h1>{{ home.hero.title | escape }}</h1>
+          <p class="hp-hero__lead">{{ home.hero.lead | escape }}</p>
           <div class="hp-hero__actions">
-            <a class="hp-button hp-button--lime" href="#cta">Бесплатная экспресс-оценка <i aria-hidden="true">→</i></a>
-            <a class="hp-text-link" href="#cta">Получить консультацию <span aria-hidden="true">→</span></a>
+            <a class="hp-button hp-button--lime" href="#cta">{{ home.hero.primary_action | escape }} <i aria-hidden="true">→</i></a>
+            <a class="hp-text-link" href="#cta">{{ home.hero.secondary_action | escape }} <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
         <figure class="hp-hero__visual">
-          <img src="background2.png" alt="Аэрофотосъёмка земельного участка">
+          <img src="{{ home.hero.image | relative_url }}" alt="{{ home.hero.image_alt | escape }}">
           <div class="hp-map-line hp-map-line--one"></div>
           <div class="hp-map-line hp-map-line--two"></div>
           <figcaption>
-            <span>Объект анализа</span>
-            <strong>55°42′23″ N<br>37°37′04″ E</strong>
+            <span>{{ home.hero.object_label | escape }}</span>
+            {% assign coordinate_lines = home.hero.coordinates | split: "|" %}
+            <strong>{% for line in coordinate_lines %}{{ line | escape }}{% unless forloop.last %}<br>{% endunless %}{% endfor %}</strong>
           </figcaption>
           <div class="hp-scan-card">
-            <span class="hp-scan-card__status">Анализ участка</span>
-            <strong>4 слоя риска</strong>
-            <div><span>ПЗЗ</span><span>ЗОУИТ</span><span>ВРИ</span><span>ГПЗУ</span></div>
+            <span class="hp-scan-card__status">{{ home.hero.scan_status | escape }}</span>
+            <strong>{{ home.hero.scan_title | escape }}</strong>
+            <div>{% for tag in home.hero.scan_tags %}<span>{{ tag | escape }}</span>{% endfor %}</div>
           </div>
         </figure>
 
         <div class="hp-hero__proof">
-          <div><strong>13+</strong><span>лет практики в девелопменте</span></div>
-          <div><strong>10–20</strong><span>страниц с картами, схемами и выводами</span></div>
-          <div><strong>100%</strong><span>независимость в интересах покупателя</span></div>
+          {% for metric in home.hero.metrics %}<div><strong>{{ metric.value | escape }}</strong><span>{{ metric.label | escape }}</span></div>{% endfor %}
         </div>
 
         <form class="hp-quick-form" id="hero-form" data-static-form>
           <div>
-            <span>Бесплатная экспресс-оценка</span>
-            <strong>Отправьте кадастровый номер участка и получите первичную оценку.</strong>
+            <span>{{ home.hero.form_label | escape }}</span>
+            <strong>{{ home.hero.form_title | escape }}</strong>
           </div>
-          <label class="hp-quick-form__label" for="hero-cadastral">Кадастровый номер или адрес</label>
-          <input id="hero-cadastral" placeholder="Кадастровый номер или адрес">
-          <label class="hp-quick-form__label" for="hero-phone">Телефон</label>
-          <input id="hero-phone" placeholder="Телефон">
-          <button type="submit"><span>Получить первичную оценку</span><i aria-hidden="true">→</i></button>
+          <label class="hp-quick-form__label" for="hero-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+          <input id="hero-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          <label class="hp-quick-form__label" for="hero-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+          <input id="hero-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <button type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
         </form>
       </div>
     </section>
 
     <section class="hp-manifesto">
       <div class="container hp-manifesto__grid">
-        <h2>Почему покупка участка<br>— это риск?</h2>
+        {% assign manifesto_parts = home.manifesto.title | split: " — " %}
+        <h2>{{ manifesto_parts[0] | escape }}{% if manifesto_parts.size > 1 %}<br>— {{ manifesto_parts[1] | escape }}{% endif %}</h2>
         <div class="hp-manifesto__aside">
-          <p>Вы можете купить земельный участок и только на этапе проектирования узнать, что:</p>
-          <a href="#cases">Посмотреть риски ↓</a>
+          <p>{{ home.manifesto.text | escape }}</p>
+          <a href="#cases">{{ home.manifesto.link | escape }}</a>
         </div>
       </div>
     </section>
@@ -109,70 +86,52 @@
     <section class="hp-risks" id="cases">
       <div class="container hp-risk-grid">
         <article class="hp-risk hp-risk--lead">
-          <img src="photo1.png" alt="Строительство на земельном участке">
-          <div class="hp-risk__overlay">
-            <span>01 / Строительство</span>
-            <h3>На участке законодательно запрещено капитальное строительство.</h3>
-          </div>
+          <img src="{{ home.risks.first.image | relative_url }}" alt="{{ home.risks.first.image_alt | escape }}">
+          <div class="hp-risk__overlay"><span>{{ home.risks.first.label | escape }}</span><h3>{{ home.risks.first.title | escape }}</h3></div>
         </article>
         <article class="hp-risk hp-risk--lime">
-          <span>02 / Ограничения</span>
-          <strong>&gt; 50%</strong>
-          <h3>площади попадает в скрытые охранные зоны (газ, ЛЭП, вода).</h3>
+          <span>{{ home.risks.second.label | escape }}</span>
+          <strong>{{ home.risks.second.value | escape }}</strong>
+          <h3>{{ home.risks.second.title | escape }}</h3>
         </article>
         <article class="hp-risk hp-risk--image">
-          <img src="photo2.png" alt="Карта охранных зон">
-          <div><span>04 / ВРИ</span><h3>Текущий ВРИ (Вид разрешенного использования) не позволяет реализовать ваш проект.</h3></div>
+          <img src="{{ home.risks.third.image | relative_url }}" alt="{{ home.risks.third.image_alt | escape }}">
+          <div><span>{{ home.risks.third.label | escape }}</span><h3>{{ home.risks.third.title | escape }}</h3></div>
         </article>
         <article class="hp-risk hp-risk--blue">
-          <span>03 / Территория</span>
-          <h3>Действуют жесткие ограничения памятников природы, археологии и приаэродромной территории.</h3>
+          <span>{{ home.risks.fourth.label | escape }}</span>
+          <h3>{{ home.risks.fourth.title | escape }}</h3>
           <a href="services.html#express-audit" aria-label="Подробнее об экспресс-аудите">→</a>
         </article>
-        <aside class="hp-risk-note">
-          <p>Исправление таких ошибок обходится в миллионы рублей, а часто — юридически невозможно.</p>
-        </aside>
+        <aside class="hp-risk-note"><p>{{ home.risks.note | escape }}</p></aside>
       </div>
     </section>
 
     <section class="hp-method" id="process">
       <div class="container hp-method__layout">
         <div class="hp-method__intro">
-          <h2>Прозрачный алгоритм работы</h2>
-          <p>Процесс аудита не требует вашего личного участия в бюрократических процедурах. Всю аналитическую работу я беру на себя.</p>
-          <a class="hp-button hp-button--dark" href="#cta">Бесплатная экспресс-оценка <i>→</i></a>
+          <h2>{{ home.method.title | escape }}</h2>
+          <p>{{ home.method.text | escape }}</p>
+          <a class="hp-button hp-button--dark" href="#cta">{{ home.method.action | escape }} <i>→</i></a>
         </div>
         <ol class="hp-method__steps">
-          <li><span>01</span><div><h3>Заявка</h3><p>Вы отправляете кадастровый номер рассматриваемого участка.</p></div><i>Шаг 1</i></li>
-          <li><span>02</span><div><h3>Первичный анализ</h3><p>Я провожу базовую проверку, после чего мы обсуждаем параметры вашего будущего объекта.</p></div><i>Шаг 2</i></li>
-          <li><span>03</span><div><h3>Глубокий аудит</h3><p>Я провожу проверку правоустанавливающих документов, градостроительных регламентов и инфраструктуры.</p></div><i>Шаг 3</i></li>
-          <li><span>04</span><div><h3>Заключение</h3><p>Вы получаете развернутый официальный отчет со схемами и принимаете безопасное решение о покупке.</p></div><i>Шаг 4</i></li>
+          {% for step in home.method.steps %}<li><span>{{ step.number | escape }}</span><div><h3>{{ step.title | escape }}</h3><p>{{ step.text | escape }}</p></div><i>{{ step.label | escape }}</i></li>{% endfor %}
         </ol>
       </div>
     </section>
 
     <section class="hp-services" id="services">
       <div class="container">
-        <header class="hp-section-head">
-          <div><h2>Форматы экспертной поддержки</h2></div>
-          <p>Выберите оптимальный уровень работы в зависимости от стадии вашей сделки и стоящих задач.</p>
-        </header>
+        <header class="hp-section-head"><div><h2>{{ home.services.title | escape }}</h2></div><p>{{ home.services.text | escape }}</p></header>
         <div class="hp-service-grid">
-          <article class="hp-service hp-service--express">
-            <div class="hp-service__top"><span>01</span><a href="services.html#express-audit">→</a></div>
-            <div><h3>Экспресс-аудит участка</h3><strong>от 35 000 ₽</strong><p class="hp-service__description">Быстрая проверка по ключевым базам данных. Идеально для оперативного отсева заведомо проблемных участков на этапе первичного выбора.</p></div>
-            <img src="photo4.png" alt="Участок для экспресс-аудита">
+          {% for card in home.services.cards %}
+          <article class="hp-service hp-service--{{ card.style }}">
+            {% if card.style == 'support' %}<img src="{{ card.image | relative_url }}" alt="{{ card.image_alt | escape }}">{% endif %}
+            <div class="hp-service__top"><span>{{ card.number | escape }}</span><a href="{{ card.url }}">→</a></div>
+            <div><h3>{{ card.title | escape }}</h3><strong>{{ card.price | escape }}</strong><p class="hp-service__description">{{ card.text | escape }}</p></div>
+            {% unless card.style == 'support' %}<img src="{{ card.image | relative_url }}" alt="{{ card.image_alt | escape }}">{% endunless %}
           </article>
-          <article class="hp-service hp-service--full">
-            <div class="hp-service__top"><span>02</span><a href="services.html#full-expertise">→</a></div>
-            <div><h3>Полная градостроительная экспертиза (Due Diligence)</h3><strong>от 150 000 ₽</strong><p class="hp-service__description">Глубокий анализ земли перед покупкой по 5 уровням. Выявляем все скрытые ЗОУИТ, анализируем ПЗЗ и Генплан. Итог: официальное экспертное заключение на 10-15 страниц.</p></div>
-            <img src="photo2.png" alt="Градостроительный анализ земельного участка">
-          </article>
-          <article class="hp-service hp-service--support">
-            <img src="photo3.png" alt="Сопровождение земельного проекта">
-            <div class="hp-service__top"><span>03</span><a href="services.html#urban-support">→</a></div>
-            <div><h3>Стратегическое сопровождение проектов</h3><strong>Индивидуально</strong><p class="hp-service__description">Комплексное управление рисками для девелоперов и инвесторов: от глубокого аудита актива до успешного получения ГПЗУ и Разрешения на строительство.</p></div>
-          </article>
+          {% endfor %}
         </div>
       </div>
     </section>
@@ -180,37 +139,26 @@
     <section class="hp-expert" id="expert">
       <div class="container hp-expert__stage">
         <figure class="hp-expert__photo">
-          <img src="alexandr.png" alt="Александр Сысуев, эксперт по градостроительству">
-          <figcaption><strong>Александр Сысуев</strong><span>Основатель ГрадАудит</span></figcaption>
+          <img src="{{ home.expert.image | relative_url }}" alt="{{ home.expert.image_alt | escape }}">
+          <figcaption><strong>{{ home.expert.name | escape }}</strong><span>{{ home.expert.role | escape }}</span></figcaption>
         </figure>
         <div class="hp-expert__copy">
-          <h2>Ваш независимый эксперт в сфере градостроительства и землепользования.</h2>
-          <div class="hp-expert__text">
-            <p>Меня зовут Александр Сысуев. Мой практический опыт в сфере девелопмента, земельного права и управления строительными проектами превышает 13 лет.</p>
-            <p>Я не просто "проверяю документы". За моими плечами — десятки сложных проектов, которые я сопровождал от этапа подбора актива до успешного получения разрешительной документации (ГПЗУ, РНС) и реализации. Я знаю всю «кухню» согласований ведомств Москвы и области изнутри, поэтому вижу критические риски там, где обычные юристы видят лишь чистую выписку из ЕГРН.</p>
-            <p>Моя главная задача — выступать на стороне инвестора. Я нахожу скрытые ограничения, о которых умалчивают продавцы, и помогаю вам принимать взвешенные, финансово безопасные решения. Моя экспертиза — это самая надежная страховка ваших многомиллионных вложений.</p>
-          </div>
+          <h2>{{ home.expert.title | escape }}</h2>
+          <div class="hp-expert__text">{% for paragraph in home.expert.paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</div>
         </div>
-        <div class="hp-expert__facts">
-          <div><strong>13</strong><span>лет практики</span></div>
-          <div><strong>&gt; 1 МЛРД</strong><span>рублей сохранено клиентам</span></div>
-          <div><strong>100%</strong><span>независимость</span></div>
-        </div>
+        <div class="hp-expert__facts">{% for fact in home.expert.facts %}<div><strong>{{ fact.value | escape }}</strong><span>{{ fact.label | escape }}</span></div>{% endfor %}</div>
       </div>
     </section>
 
     <section class="hp-proof">
       <div class="container hp-proof__grid">
         <div class="hp-proof__headline">
-          <h2>Факты, гарантирующие вашу безопасность</h2>
-          <p class="hp-proof__subtitle">Почему мне доверяют подбор территории в Москве?</p>
-          <img src="photo4.png" alt="Земельный участок в Москве">
+          <h2>{{ home.proof.title | escape }}</h2>
+          <p class="hp-proof__subtitle">{{ home.proof.subtitle | escape }}</p>
+          <img src="{{ home.proof.image | relative_url }}" alt="{{ home.proof.image_alt | escape }}">
         </div>
         <div class="hp-proof__cards">
-          <article><span>01</span><h3>100% независимость.</h3><p>Я работаю исключительно в интересах покупателя, не аффилирован с продавцами и агентствами недвижимости.</p></article>
-          <article><span>02</span><h3>13 лет практики.</h3><p>Опыт реального девелопмента и сопровождения проектов позволяет мне видеть риски на несколько шагов вперед.</p></article>
-          <article><span>03</span><h3>&gt; 1 МЛРД рублей.</h3><p>Общая сумма средств, сохраненных моим клиентам за счет своевременного отказа от покупки проблемных активов.</p></article>
-          <article><span>04</span><h3>Официальные отчеты.</h3><p>Вы получаете не устный "совет", а документ (от 10 до 20 страниц) с картами, схемами и обоснованными выводами.</p></article>
+          {% for card in home.proof.cards %}<article><span>{{ card.number | escape }}</span><h3>{{ card.title | escape }}</h3><p>{{ card.text | escape }}</p></article>{% endfor %}
         </div>
       </div>
     </section>
@@ -218,55 +166,26 @@
     <section class="hp-cta" id="cta">
       <div class="container hp-cta__box">
         <div class="hp-cta__copy">
-          <h2>Отправьте кадастровый номер участка и получите первичную оценку бесплатно.</h2>
+          <h2>{{ home.cta.title | escape }}</h2>
           <div class="hp-cta__benefits">
-            <span>Результат - в течение<br>рабочего дня</span>
-            <span>Никаких обязательств до подписания договора</span>
-            <span>Конфиденциальность гарантирована</span>
+            {% for benefit in home.cta.benefits %}<span>{% if forloop.first %}{% assign benefit_parts = benefit | split: ' рабочего' %}{{ benefit_parts[0] | escape }}{% if benefit_parts.size > 1 %}<br>рабочего{{ benefit_parts[1] | escape }}{% endif %}{% else %}{{ benefit | escape }}{% endif %}</span>{% endfor %}
           </div>
         </div>
         <form class="hp-cta__form" data-static-form>
-          <h3>Отправить запрос</h3>
-          <label class="sr-only" for="cta-cadastral">Кадастровый номер или адрес</label>
-          <input id="cta-cadastral" placeholder="Кадастровый номер или адрес">
-          <label class="sr-only" for="cta-phone">Телефон</label>
-          <input id="cta-phone" placeholder="Телефон">
-          <button class="hp-button hp-button--dark" type="submit">Получить первичную оценку <i>→</i></button>
-          <small>Нажимая на кнопку, вы соглашаетесь на обработку<br>персональных данных.</small>
+          <h3>{{ home.cta.form_title | escape }}</h3>
+          <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+          <input id="cta-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+          <input id="cta-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <button class="hp-button hp-button--dark" type="submit">{{ site.data.site.forms.submit | escape }} <i>→</i></button>
+          {% assign consent_parts = site.data.site.forms.consent | split: " на обработку " %}
+          <small>{{ consent_parts[0] | escape }} на обработку{% if consent_parts.size > 1 %}<br>{{ consent_parts[1] | escape }}{% endif %}</small>
         </form>
       </div>
     </section>
   </main>
 
-  <footer class="footer hp-footer" id="contacts">
-    <div class="container footer-grid">
-      <div>
-        <a class="logo logo--inverted" href="#top"><img class="logo__image" src="logo3.svg" alt="ГрадАудит"></a>
-        <p>Независимая проверка земельных участков перед покупкой в Москве и Московской области.</p>
-      </div>
-      <nav aria-label="Навигация в футере"><h2>Навигация</h2><ul><li><a href="services.html">Услуги</a></li><li><a href="#cases">Кейсы</a></li><li><a href="#process">Как проходит проверка</a></li><li><a href="#expert">О эксперте</a></li><li><a href="#blog">Блог</a></li><li><a href="#contacts">Контакты</a></li></ul></nav>
-      <div><h2>Услуги</h2><ul><li><a href="services.html#express-audit">Экспресс-аудит участка</a></li><li><a href="services.html#full-expertise">Полная градостроительная экспертиза</a></li><li><a href="services.html#urban-support">Стратегическое сопровождение проектов</a></li></ul></div>
-      <div><h2>Контакты</h2><address><a href="tel:+70000000000">+7 (000) 000-00-00</a><a href="mailto:info@example.ru">info@example.ru</a><p>Москва и Московская область</p></address><p style="margin-top:22px"><a href="#">Политика конфиденциальности</a></p><p><a href="#">Пользовательское соглашение</a></p></div>
-    </div>
-    <div class="container footer-bottom"><p>© 2026 ГрадАудит. Все права защищены.</p><p>ИНН 770000000000 · ОГРН 100000000000000</p></div>
-  </footer>
-
-  <script>
-    const menuButton = document.querySelector('[data-menu-button]');
-    const mobileMenu = document.querySelector('[data-mobile-menu]');
-    if (menuButton && mobileMenu) {
-      menuButton.addEventListener('click', () => {
-        const open = menuButton.classList.toggle('is-open');
-        mobileMenu.classList.toggle('is-open', open);
-        menuButton.setAttribute('aria-expanded', String(open));
-      });
-      mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-        menuButton.classList.remove('is-open');
-        mobileMenu.classList.remove('is-open');
-        menuButton.setAttribute('aria-expanded', 'false');
-      }));
-    }
-    document.querySelectorAll('[data-static-form]').forEach(form => form.addEventListener('submit', event => event.preventDefault()));
-  </script>
+{% include footer.html %}
+{% include site-scripts.html %}
 </body>
 </html>

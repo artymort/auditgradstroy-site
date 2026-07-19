@@ -6882,7 +6882,7 @@
   padding: 0;
   overflow: hidden;
   background-color: #eef1eb;
-  background-image: url("background2.png");
+  background-image: var(--hp-hero-image, url("background2.png"));
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -7234,6 +7234,12 @@
   --dom-beige: #ddd3c8;
   --dom-black: #050706;
   color: #050706;
+}
+
+.dom-services *,
+.dom-services *::before,
+.dom-services *::after {
+  box-sizing: border-box;
 }
 
 .dom-services h1,
@@ -8433,6 +8439,15 @@ body {
 
   .dom-services .dom-hero__panel--dark .dom-arrow {
     margin-top: 32px;
+  }
+
+  .dom-services .dom-urban-hero__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dom-services .dom-urban-hero__content h2 {
+    min-width: 0;
+    font-size: clamp(24px, calc(10.3px + 4.29vw), 36px);
   }
 
   .dom-services .dom-full-hero__summary .dom-full-hero__button-secondary,

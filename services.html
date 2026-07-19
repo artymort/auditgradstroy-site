@@ -1,346 +1,179 @@
+---
+layout: null
+---
+{% assign page_type = "services" %}
+{% assign services = site.data.services %}
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Услуги | ГрадАудит</title>
-  <meta name="description" content="Экспресс-аудит земельного участка, полная градостроительная экспертиза Due Diligence и сопровождение проектов в Москве и Московской области.">
+  <title>{{ services.seo.title | escape }}</title>
+  <meta name="description" content="{{ services.seo.description | escape }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
 </head>
 <body>
-  <header class="header hp-header">
-    <div class="container header__inner">
-      <a class="logo" href="index.html" aria-label="На главную">
-        <img class="logo__image" src="logo3.svg" alt="ГрадАудит">
-      </a>
-      <nav class="nav" aria-label="Главное меню">
-        <a href="services.html">Услуги</a>
-        <a href="index.html#cases">Кейсы</a>
-        <a href="index.html#process">Как проходит проверка</a>
-        <a href="#expert">О эксперте</a>
-        <a href="index.html#blog">Блог</a>
-        <a href="#contacts">Контакты</a>
-      </nav>
-      <div class="header__actions">
-        <a class="phone" href="tel:+70000000000">+7 (000) 000-00-00</a>
-        <a class="button navy" href="#cta">Бесплатная экспресс-оценка <i aria-hidden="true">→</i></a>
-      </div>
-      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-button><span></span></button>
-    </div>
-    <div class="mobile-menu" data-mobile-menu>
-      <a href="services.html">Услуги</a>
-      <a href="index.html#cases">Кейсы</a>
-      <a href="index.html#process">Как проходит проверка</a>
-      <a href="#expert">О эксперте</a>
-      <a href="index.html#blog">Блог</a>
-      <a href="#contacts">Контакты</a>
-      <a class="button navy" href="#cta">Бесплатная экспресс-оценка <i aria-hidden="true">→</i></a>
-    </div>
-  </header>
+{% include header.html %}
 
   <main class="dom-services">
     <section class="dom-hero">
       <div class="container dom-hero__grid">
         <article class="dom-hero__panel dom-hero__panel--dark">
-          <h1>Услуги</h1>
-          <p>Выберите оптимальный уровень работы в зависимости от стадии вашей сделки и стоящих задач.</p>
+          <h1>{{ services.hero.title | escape }}</h1>
+          <p>{{ services.hero.text | escape }}</p>
           <a class="dom-arrow" href="#services-cards" aria-label="Перейти к услугам"></a>
         </article>
         <article class="dom-hero__panel dom-hero__panel--image">
-          <img src="background2.png" alt="Аэрофотосъемка земельного участка">
-          <div>
-            <span>Москва и Московская область</span>
-            <h2>Экспресс-аудит, экспертиза и сопровождение земельных проектов</h2>
-          </div>
+          <img src="{{ services.hero.image | relative_url }}" alt="{{ services.hero.image_alt | escape }}">
+          <div><span>{{ services.hero.location | escape }}</span><h2>{{ services.hero.image_title | escape }}</h2></div>
         </article>
       </div>
     </section>
 
     <section class="dom-section" id="services-cards">
       <div class="container">
-        <div class="dom-section__head">
-          <h2>Форматы экспертной поддержки</h2>
-        </div>
+        <div class="dom-section__head"><h2>{{ services.cards_section.title | escape }}</h2></div>
         <div class="dom-service-grid">
-          <article class="dom-service-card dom-service-card--light">
-            <div class="dom-service-card__top">
-              <span>Экспресс-аудит участка</span>
-              <a class="dom-arrow" href="#express-audit" aria-label="Экспресс-аудит участка"></a>
-            </div>
-            <p>Быстрая проверка по ключевым базам данных. Идеально для оперативного отсева заведомо проблемных участков на этапе первичного выбора.</p>
-            <strong>от 35 000 ₽</strong>
-            <figure class="dom-service-card__media">
-              <img src="photo2.png" alt="Инженерные коммуникации на земельном участке">
-            </figure>
+          {% for card in services.cards_section.cards %}
+          <article class="dom-service-card dom-service-card--{{ card.style }}">
+            <div class="dom-service-card__top"><span>{{ card.title | escape }}</span><a class="dom-arrow" href="#{{ card.anchor }}" aria-label="{{ card.title | escape }}"></a></div>
+            <p>{{ card.text | escape }}</p>
+            <strong>{{ card.price | escape }}</strong>
+            <figure class="dom-service-card__media"><img src="{{ card.image | relative_url }}" alt="{{ card.image_alt | escape }}"></figure>
           </article>
-          <article class="dom-service-card dom-service-card--green">
-            <div class="dom-service-card__top">
-              <span>Полная градостроительная экспертиза (Due Diligence)</span>
-              <a class="dom-arrow" href="#full-expertise" aria-label="Полная градостроительная экспертиза"></a>
-            </div>
-            <p>Глубокий анализ земли перед покупкой по 5 уровням. Выявляем все скрытые ЗОУИТ, анализируем ПЗЗ и Генплан. Итог: официальное экспертное заключение на 10-15 страниц.</p>
-            <strong>от 150 000 ₽</strong>
-            <figure class="dom-service-card__media">
-              <img src="background2.png" alt="Аэрофотосъемка земельного участка">
-            </figure>
-          </article>
-          <article class="dom-service-card dom-service-card--dark">
-            <div class="dom-service-card__top">
-              <span>Стратегическое сопровождение проектов</span>
-              <a class="dom-arrow" href="#urban-support" aria-label="Стратегическое сопровождение проектов"></a>
-            </div>
-            <p>Комплексное управление рисками для девелоперов и инвесторов: от глубокого аудита актива до успешного получения ГПЗУ и разрешения на строительство.</p>
-            <strong>Индивидуально</strong>
-            <figure class="dom-service-card__media">
-              <img src="photo3.png" alt="Градостроительный проект и территория">
-            </figure>
-          </article>
+          {% endfor %}
         </div>
       </div>
     </section>
 
     <section class="dom-process" id="process">
       <div class="container">
-        <div class="dom-section__head dom-section__head--row">
-          <h2>Как проходит проверка участка</h2>
-          <a class="button navy dom-process__button" href="#cta">Проверить участок</a>
-        </div>
-        <div class="dom-process__grid">
-          <article><span>01</span><h3>Заявка</h3><p>Вы отправляете кадастровый номер рассматриваемого участка.</p></article>
-          <article><span>02</span><h3>Первичный анализ</h3><p>Я провожу базовую проверку, после чего мы обсуждаем параметры вашего будущего объекта.</p></article>
-          <article><span>03</span><h3>Глубокий аудит</h3><p>Я проверяю правоустанавливающие документы, градостроительные регламенты и инфраструктуру.</p></article>
-          <article><span>04</span><h3>Заключение</h3><p>Вы получаете развернутый официальный отчет со схемами и принимаете безопасное решение о покупке.</p></article>
-        </div>
+        <div class="dom-section__head dom-section__head--row"><h2>{{ services.process.title | escape }}</h2><a class="button navy dom-process__button" href="#cta">{{ services.process.action | escape }}</a></div>
+        <div class="dom-process__grid">{% for step in services.process.steps %}<article><span>{{ step.number | escape }}</span><h3>{{ step.title | escape }}</h3><p>{{ step.text | escape }}</p></article>{% endfor %}</div>
       </div>
     </section>
 
     <section class="dom-feature" id="express-audit">
       <div class="container dom-feature__grid dom-feature__grid--half">
         <article class="dom-feature__intro dom-feature__intro--image">
-          <img src="photo2.png" alt="Инженерные коммуникации на земельном участке">
+          <img src="{{ services.express.image | relative_url }}" alt="{{ services.express.image_alt | escape }}">
           <div>
-            <span>Москва и Московская область</span>
+            <span>{{ services.express.location | escape }}</span>
             <div class="dom-feature__intro-copy">
-              <h2>Экспресс-аудит земельного участка</h2>
-              <p>Быстрая проверка по закрытым и открытым базам данных. Выявляю скрытые риски и "стоп-факторы" до того, как вы отдадите деньги продавцу.</p>
-              <strong>Цена: от 35 000 ₽</strong>
-              <div class="dom-feature__actions">
-                <a class="button navy dom-process__button" href="#cta">Проверить участок</a>
-                <a class="button dom-feature__button-secondary" href="#cta">Получить консультацию</a>
-              </div>
+              <h2>{{ services.express.title | escape }}</h2>
+              <p>{{ services.express.lead | escape }}</p>
+              <strong>{{ services.express.price | escape }}</strong>
+              <div class="dom-feature__actions"><a class="button navy dom-process__button" href="#cta">{{ services.express.primary_action | escape }}</a><a class="button dom-feature__button-secondary" href="#cta">{{ services.express.secondary_action | escape }}</a></div>
             </div>
           </div>
         </article>
         <article class="dom-feature__text">
-          <h2>Узнайте риски земельного участка до покупки</h2>
-          <p>Экспресс-аудит - это инструмент быстрого отсева заведомо проблемных активов. Услуга позволяет в кратчайшие сроки (1-2 дня) получить профессиональное заключение о том, можно ли в принципе реализовать ваш проект на выбранной территории.</p>
-          <p>Это идеальное решение для инвесторов, застройщиков и частных лиц, которым необходимо быстро оценить несколько вариантов участков и принять решение о целесообразности их глубокой проверки или покупки. Я анализирую ключевые градостроительные ограничения и даю прямой ответ: стоит ли этот участок ваших инвестиций.</p>
+          <h2>{{ services.express.about_title | escape }}</h2>
+          {% for paragraph in services.express.about_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}
         </article>
       </div>
       <div class="container dom-tile-grid dom-tile-grid--four">
-        <article class="dom-mini-tile"><span>01</span><h3>Скорость принятия решений</h3><p>Отчет готов в срок от 1 до 2 дней.</p></article>
-        <article class="dom-mini-tile"><span>02</span><h3>Выявление стоп-факторов</h3><p>Сразу покажу критические зоны, где строить нельзя.</p></article>
-        <article class="dom-mini-tile"><span>03</span><h3>Экономия бюджета</h3><p>Защита от покупки земли, которая не подходит под ваши цели.</p></article>
-        <article class="dom-mini-tile"><span>04</span><h3>Четкие рекомендации</h3><p>Конкретный план: покупать, отказываться или проверять глубже.</p></article>
+        {% for item in services.express.advantages %}<article class="dom-mini-tile"><span>{{ item.number | escape }}</span><h3>{{ item.title | escape }}</h3><p>{{ item.text | escape }}</p></article>{% endfor %}
       </div>
       <div class="container dom-audit-form">
-        <div class="dom-audit-form__text">
-          <h3>Узнайте, есть ли на вашем участке явные ограничения</h3>
-          <p>Отправьте кадастровый номер участка и получите первичную оценку рисков.</p>
-        </div>
+        <div class="dom-audit-form__text"><h3>{{ services.express.form_title | escape }}</h3><p>{{ services.express.form_text | escape }}</p></div>
         <form class="dom-audit-form__fields" data-static-form>
-          <label class="sr-only" for="audit-cadastral">Кадастровый номер или адрес</label>
-          <input id="audit-cadastral" placeholder="Кадастровый номер или адрес">
-          <label class="sr-only" for="audit-phone">Телефон</label>
-          <input id="audit-phone" placeholder="Телефон">
-          <button class="button navy dom-process__button" type="submit">Проверить участок</button>
+          <label class="sr-only" for="audit-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+          <input id="audit-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          <label class="sr-only" for="audit-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+          <input id="audit-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <button class="button navy dom-process__button" type="submit">{{ services.express.form_action | escape }}</button>
         </form>
       </div>
       <div class="container dom-info-grid">
-        <article class="dom-info-card dom-info-card--wide">
-          <h3>Что проверяется в рамках экспресс-аудита?</h3>
-          <ul><li>вид разрешенного использования земельного участка;</li><li>территориальная зона по ПЗЗ;</li><li>градостроительные регламенты и их соответствие вашей задаче;</li><li>санитарно-защитные зоны;</li><li>охранные зоны инженерных коммуникаций;</li><li>красные линии и проекты планировки территории;</li><li>зоны охраны объектов культурного наследия;</li><li>водоохранные зоны и прибрежные полосы;</li><li>базовая оценка возможности размещения объекта.</li></ul>
+        {% for card in services.express.info_cards %}
+        <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
+          <h3>{{ card.title | escape }}</h3>
+          {% if card.list_type == 'ol' %}<ol>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ol>{% else %}<ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>{% endif %}
         </article>
-        <article class="dom-info-card dom-info-card--green">
-          <h3>Что получает заказчик?</h3>
-          <ul><li>письменное экспертное заключение;</li><li>перечень выявленных градостроительных рисков;</li><li>оценку перспектив реализации проекта;</li><li>резюме: покупать, отказаться или переходить к глубокой экспертизе.</li></ul>
-        </article>
-        <article class="dom-info-card dom-info-card--dark">
-          <h3>Как проходит проверка земельного участка?</h3>
-          <ol><li>Вы отправляете кадастровый номер.</li><li>Я провожу проверку по базам данных и градостроительной документации.</li><li>Формирую понятное экспертное заключение.</li><li>Вы принимаете финансово безопасное решение.</li></ol>
-        </article>
-        <article class="dom-info-card dom-info-card--blue">
-          <h3>Когда необходим экспресс-аудит участка?</h3>
-          <ul><li>перед покупкой земельного участка;</li><li>перед заключением инвестиционной сделки;</li><li>перед подачей документов на проектирование;</li><li>перед изменением вида разрешенного использования;</li><li>при оценке инвестиционной привлекательности территории.</li></ul>
-        </article>
+        {% endfor %}
       </div>
     </section>
 
     <section class="dom-feature dom-feature--full-expertise" id="full-expertise">
       <div class="container dom-full-hero">
         <article class="dom-full-hero__summary">
-          <span>Москва и Московская область</span>
-          <div>
-            <h2>Полная градостроительная экспертиза</h2>
-            <p>Глубокий анализ земли по 5 уровням перед покупкой. Нахожу все скрытые ограничения (ЗОУИТ) и защищаю ваш капитал от многомиллионных потерь.</p>
-          </div>
-          <div>
-            <strong>Цена: от 150 000 ₽</strong>
-            <div class="dom-feature__actions">
-              <a class="button navy dom-process__button" href="#cta">Проверить участок</a>
-              <a class="button navy dom-full-hero__button-secondary" href="#cta">Получить консультацию</a>
-            </div>
-          </div>
+          <span>{{ services.full.location | escape }}</span>
+          <div><h2>{{ services.full.title | escape }}</h2><p>{{ services.full.lead | escape }}</p></div>
+          <div><strong>{{ services.full.price | escape }}</strong><div class="dom-feature__actions"><a class="button navy dom-process__button" href="#cta">{{ services.full.primary_action | escape }}</a><a class="button navy dom-full-hero__button-secondary" href="#cta">{{ services.full.secondary_action | escape }}</a></div></div>
         </article>
         <article class="dom-full-hero__analysis">
-          <div>
-            <h2>Комплексный анализ участка для принятия инвестиционных решений</h2>
-            <p>Полная градостроительная экспертиза — это детальное "расследование" истории и потенциала земельного участка. Это не просто сбор справок, это глубокая аналитика, которая покажет реальную картину: что, в каких объемах и с какими сложностями вы сможете здесь построить.</p>
-            <p>Экспертиза выявляет скрытые юридические пороки, наложение охранных зон (о которых часто нет данных в ЕГРН) и проблемы с инфраструктурой. Данная услуга — это обязательный этап перед крупной сделкой для девелоперов, строительных компаний и частных лиц, инвестирующих в недвижимость.</p>
-          </div>
-          <figure class="dom-full-hero__media">
-            <img src="photo2.png" alt="Полная градостроительная экспертиза земельного участка">
-          </figure>
+          <div><h2>{{ services.full.analysis_title | escape }}</h2>{% for paragraph in services.full.analysis_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</div>
+          <figure class="dom-full-hero__media"><img src="{{ services.full.image | relative_url }}" alt="{{ services.full.image_alt | escape }}"></figure>
         </article>
       </div>
       <div class="container dom-info-grid dom-info-grid--four dom-full-scope">
-        <article class="dom-info-card dom-info-card--dark"><h3>Анализ градостроительной документации</h3><ul><li>Генеральный план поселения/городского округа;</li><li>Правила землепользования и застройки (ПЗЗ);</li><li>Проекты планировки территории (ППТ) и проекты межевания (ПМТ);</li><li>Анализ выданных ранее ГПЗУ.</li></ul></article>
-        <article class="dom-info-card"><h3>Анализ скрытых ограничений (ЗОУИТ)</h3><ul><li>Санитарно-защитные зоны предприятий и кладбищ;</li><li>Охранные зоны сетей (ЛЭП, газ, водопровод);</li><li>Приаэродромные территории (все подзоны);</li><li>Природоохранные ограничения и водоохранные зоны;</li><li>Зоны охраны объектов культурного наследия.</li></ul></article>
-        <article class="dom-info-card dom-info-card--green"><h3>Анализ инженерной<br>и транспортной инфраструктуры</h3><ul><li>Транспортная доступность и подъездные пути (статус дорог);</li><li>Возможность подключения к электроснабжению;</li><li>Перспективы газификации;</li><li>Водоснабжение и водоотведение.</li></ul></article>
-        <article class="dom-info-card dom-info-card--blue"><h3>Правовой анализ</h3><ul><li>История перехода прав и правовой статус участка;</li><li>Риски оспаривания сделки третьими лицами;</li><li>Наличие неформальных обременений и сервитутов.</li></ul></article>
+        {% for card in services.full.scope_cards %}
+        <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
+          {% if forloop.index == 3 %}{% assign scope_title = card.title | split: " и транспортной" %}<h3>{{ scope_title[0] | escape }}<br>и транспортной{{ scope_title[1] | escape }}</h3>{% else %}<h3>{{ card.title | escape }}</h3>{% endif %}
+          <ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
       </div>
       <div class="container dom-info-grid dom-full-result">
-        <article class="dom-info-card dom-info-card--wide dom-info-card--dark"><h3>Итоговый результат</h3><p>Вы получаете развернутый экспертный отчет (от 10 до 30 страниц) с наглядными схемами и картами. Документ содержит четкие ответы на вопросы:</p><ul><li>Можно ли законно реализовать ваш проект?</li><li>Какие ТЭП (технико-экономические показатели) допустимы?</li><li>Какие риски существуют и сколько будет стоить их устранение?</li><li>Пошаговый алгоритм дальнейших действий (Дорожная карта).</li></ul></article>
+        <article class="dom-info-card dom-info-card--wide dom-info-card--dark"><h3>{{ services.full.result_title | escape }}</h3><p>{{ services.full.result_text | escape }}</p><ul>{% for item in services.full.result_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
       </div>
     </section>
 
     <section class="dom-feature dom-feature--urban-support" id="urban-support">
       <div class="container dom-urban-hero">
-        <article class="dom-urban-hero__media">
-          <img src="photo3.png" alt="Сопровождение в сфере градостроительства и землепользования">
-        </article>
+        <article class="dom-urban-hero__media"><img src="{{ services.urban.image | relative_url }}" alt="{{ services.urban.image_alt | escape }}"></article>
         <article class="dom-urban-hero__content">
-          <span>Москва и Московская область</span>
-          <h2>Сопровождение в сфере градостроительства и землепользования</h2>
-          <p>Комплексное управление проектом "под ключ": беру на себя решение всех бюрократических и правовых проблем от подбора актива до ввода объекта в эксплуатацию и регистрации прав на него.</p>
-          <div>
-            <strong>Цена: индивидуально</strong>
-            <a class="button navy dom-process__button" href="#cta">Получить консультацию</a>
-          </div>
+          <span>{{ services.urban.location | escape }}</span>
+          <h2>{{ services.urban.title | escape }}</h2>
+          <p>{{ services.urban.lead | escape }}</p>
+          <div><strong>{{ services.urban.price | escape }}</strong><a class="button navy dom-process__button" href="#cta">{{ services.urban.action | escape }}</a></div>
         </article>
       </div>
 
       <div class="container dom-urban-intro">
-        <article>
-          <h2>Экспертная поддержка на всех этапах реализации проекта</h2>
-        </article>
-        <article>
-          <p>Градостроительное законодательство Московского региона — это лабиринт из постоянных изменений и негласных правил. Процедуры согласования требуют не только безупречного знания нормативной базы, но и понимания реальной практики взаимодействия с чиновниками и ведомствами.</p>
-          <p>Имея 13-летний опыт работы в девелопменте, я стану вашим надежным "внешним партнером". Я беру на себя управление градостроительными рисками и решение любых непредвиденных проблем, чтобы вы могли сфокусироваться на бизнесе. Я проведу ваш проект через все преграды: от идеи и глубокого аудита земли до получения Разрешения на строительство (РНС), успешного ввода готового объекта в эксплуатацию и финальной регистрации права собственности.</p>
-        </article>
+        <article><h2>{{ services.urban.intro_title | escape }}</h2></article>
+        <article>{% for paragraph in services.urban.intro_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</article>
       </div>
 
       <div class="container dom-urban-work">
-        <article class="dom-urban-help">
-          <h3>Чем я могу вам помочь?</h3>
-          <ul><li>Комплексная градостроительная экспертиза перед сделкой;</li><li>Разработка "Дорожной карты" реализации инвестиционного проекта;</li><li>Сопровождение процедуры изменения Вида разрешенного использования (ВРИ);</li><li>Сопровождение внесения изменений в ПЗЗ и Генплан;</li><li>Помощь в получении и снятии ограничений по ГПЗУ;</li><li>Подготовка правовых заключений для защиты интересов в суде или госорганах;</li><li>Сопровождение получения Разрешения на строительство (РНС);</li><li>Оперативное решение правовых коллизий на этапе строительства;</li><li>Сопровождение ввода объекта в эксплуатацию (ЗОС, Разрешение на ввод);</li><li>Помощь в постановке объекта на кадастровый учет и регистрации прав собственности.</li></ul>
-        </article>
-        <article class="dom-urban-format">
-          <h3>Формат работы</h3>
-          <ol><li><strong>Анализ и Стратегия:</strong> Глубокий аудит вашей ситуации и формирование пошаговой "дорожной карты".</li><li><strong>Реализация:</strong> Подготовка документов, прохождение комиссий, прямое взаимодействие с ведомствами.</li><li><strong>Сопровождение стройки:</strong> Контроль градостроительных аспектов в процессе возведения объекта.</li><li><strong>Финальный результат:</strong> Ваш объект легально построен, введен в эксплуатацию и является зарегистрированным активом.</li></ol>
-        </article>
+        <article class="dom-urban-help"><h3>{{ services.urban.help_title | escape }}</h3><ul>{% for item in services.urban.help_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
+        <article class="dom-urban-format"><h3>{{ services.urban.format_title | escape }}</h3><ol>{% for step in services.urban.format_steps %}<li><strong>{{ step.title | escape }}</strong> {{ step.text | escape }}</li>{% endfor %}</ol></article>
       </div>
     </section>
 
     <section class="dom-expert" id="expert">
       <div class="container">
         <div class="dom-expert__grid">
-          <article class="dom-expert__text">
-            <span>О эксперте</span>
-            <h2>Работаю на стороне покупателя и заранее показываю градостроительные риски.</h2>
-            <p>Мой опыт реального девелопмента и сопровождения проектов помогает смотреть на участок не как на строку в выписке, а как на будущий актив с ограничениями, согласованиями, инженерией и финансовыми последствиями.</p>
-            <a class="button navy" href="#cta">Получить консультацию</a>
-          </article>
-          <article class="dom-expert__photo">
-            <img src="alexandr.png" alt="Эксперт ГрадАудит">
-          </article>
+          <article class="dom-expert__text"><span>{{ services.expert.label | escape }}</span><h2>{{ services.expert.title | escape }}</h2><p>{{ services.expert.text | escape }}</p><a class="button navy" href="#cta">{{ services.expert.action | escape }}</a></article>
+          <article class="dom-expert__photo"><img src="{{ services.expert.image | relative_url }}" alt="{{ services.expert.image_alt | escape }}"></article>
         </div>
-        <div class="dom-expert__proof">
-          <div class="dom-proof__grid">
-            <article><span>100%</span><h3>Независимость</h3><p>Я работаю исключительно в интересах покупателя, не аффилирован с продавцами и агентствами недвижимости.</p></article>
-            <article><span>13</span><h3>Лет практики</h3><p>Опыт реального девелопмента и сопровождения проектов позволяет мне видеть риски на несколько шагов вперед.</p></article>
-            <article><span>&gt; 1 МЛРД</span><h3>Рублей</h3><p>Общая сумма средств, сохраненных моим клиентам за счет своевременного отказа от покупки проблемных активов.</p></article>
-            <article><span>Официальные отчеты</span><h3>От 10 до 20 страниц</h3><p>Вы получаете не устный "совет", а документ с картами, схемами и обоснованными выводами.</p></article>
-          </div>
-        </div>
+        <div class="dom-expert__proof"><div class="dom-proof__grid">{% for fact in services.expert.facts %}<article><span>{{ fact.value | escape }}</span><h3>{{ fact.title | escape }}</h3><p>{{ fact.text | escape }}</p></article>{% endfor %}</div></div>
       </div>
     </section>
 
     <section class="dom-cta" id="cta">
       <div class="container dom-cta__grid">
-        <article class="dom-cta__text">
-          <span>Первичная оценка - бесплатно</span>
-          <h2>Отправьте кадастровый номер участка и получите первичную оценку.</h2>
-          <div class="dom-cta__facts">
-            <p>Результат - в течение рабочего дня</p>
-            <p>Без обязательств до подписания договора</p>
-            <p>Конфиденциальность гарантирована</p>
-          </div>
-        </article>
+        <article class="dom-cta__text"><span>{{ services.cta.label | escape }}</span><h2>{{ services.cta.title | escape }}</h2><div class="dom-cta__facts">{% for benefit in services.cta.benefits %}<p>{{ benefit | escape }}</p>{% endfor %}</div></article>
         <article class="dom-cta__form">
-          <h3>Оставьте заявку</h3>
+          <h3>{{ services.cta.form_title | escape }}</h3>
           <form data-static-form>
-            <label class="sr-only" for="cta-cadastral">Кадастровый номер или адрес</label>
-            <input id="cta-cadastral" placeholder="Кадастровый номер или адрес">
-            <label class="sr-only" for="cta-phone">Телефон</label>
-            <input id="cta-phone" placeholder="Телефон">
-            <button class="button navy" type="submit">Получить первичную оценку</button>
-            <p class="consent">Нажимая на кнопку, вы соглашаетесь на обработку персональных данных.</p>
+            <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="cta-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="cta-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <button class="button navy" type="submit">{{ site.data.site.forms.submit | escape }}</button>
+            <p class="consent">{{ site.data.site.forms.consent | escape }}</p>
           </form>
         </article>
       </div>
     </section>
   </main>
 
-  <footer class="footer hp-footer" id="contacts">
-    <div class="container footer-grid">
-      <div>
-        <a class="logo logo--inverted" href="index.html"><img class="logo__image" src="logo3.svg" alt="ГрадАудит"></a>
-        <p>Независимая проверка земельных участков перед покупкой в Москве и Московской области.</p>
-      </div>
-      <nav aria-label="Навигация в футере"><h2>Навигация</h2><ul><li><a href="services.html">Услуги</a></li><li><a href="index.html#cases">Кейсы</a></li><li><a href="index.html#process">Как проходит проверка</a></li><li><a href="#expert">О эксперте</a></li><li><a href="index.html#blog">Блог</a></li><li><a href="#contacts">Контакты</a></li></ul></nav>
-      <div><h2>Услуги</h2><ul><li><a href="#express-audit">Экспресс-аудит участка</a></li><li><a href="#full-expertise">Полная градостроительная экспертиза</a></li><li><a href="#urban-support">Стратегическое сопровождение проектов</a></li></ul></div>
-      <div><h2>Контакты</h2><address><a href="tel:+70000000000">+7 (000) 000-00-00</a><a href="mailto:info@example.ru">info@example.ru</a><p>Москва и Московская область</p></address><p style="margin-top:22px"><a href="#">Политика конфиденциальности</a></p><p><a href="#">Пользовательское соглашение</a></p></div>
-    </div>
-    <div class="container footer-bottom"><p>© 2026 ГрадАудит. Все права защищены.</p><p>ИНН 770000000000 · ОГРН 100000000000000</p></div>
-  </footer>
-
-  <script>
-    const menuButton = document.querySelector("[data-menu-button]");
-    const mobileMenu = document.querySelector("[data-mobile-menu]");
-
-    menuButton.addEventListener("click", () => {
-      const isOpen = menuButton.classList.toggle("is-open");
-      mobileMenu.classList.toggle("is-open", isOpen);
-      menuButton.setAttribute("aria-expanded", String(isOpen));
-    });
-
-    mobileMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        menuButton.classList.remove("is-open");
-        mobileMenu.classList.remove("is-open");
-        menuButton.setAttribute("aria-expanded", "false");
-      });
-    });
-
-    document.querySelectorAll("[data-static-form]").forEach((form) => {
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-      });
-    });
-  </script>
+{% include footer.html %}
+{% include site-scripts.html %}
 </body>
 </html>

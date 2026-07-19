@@ -1,0 +1,23 @@
+  <header class="header hp-header">
+    <div class="container header__inner">
+      <a class="logo" href="{% if page_type == 'home' %}#top{% else %}index.html{% endif %}" aria-label="На главную">
+        <img class="logo__image" src="{{ site.data.site.brand.logo | relative_url }}" alt="{{ site.data.site.brand.name | escape }}">
+      </a>
+      <nav class="nav" aria-label="Главное меню">
+        {% for item in site.data.site.header.menu %}
+        <a href="{% if page_type == 'home' %}{{ item.home_url }}{% else %}{{ item.services_url }}{% endif %}">{{ item.label | escape }}</a>
+        {% endfor %}
+      </nav>
+      <div class="header__actions">
+        <a class="phone" href="tel:{{ site.data.site.contacts.phone_link | escape }}">{{ site.data.site.contacts.phone_display | escape }}</a>
+        <a class="button navy" href="#cta">{{ site.data.site.header.cta | escape }} <i aria-hidden="true">→</i></a>
+      </div>
+      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-button><span></span></button>
+    </div>
+    <div class="mobile-menu" data-mobile-menu>
+      {% for item in site.data.site.header.menu %}
+      <a href="{% if page_type == 'home' %}{{ item.home_url }}{% else %}{{ item.services_url }}{% endif %}">{{ item.label | escape }}</a>
+      {% endfor %}
+      <a class="button navy" href="#cta">{{ site.data.site.header.cta | escape }} <i aria-hidden="true">→</i></a>
+    </div>
+  </header>

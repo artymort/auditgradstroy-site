@@ -1,0 +1,29 @@
+  <footer class="footer hp-footer" id="contacts">
+    <div class="container footer-grid">
+      <div>
+        <a class="logo logo--inverted" href="{% if page_type == 'home' %}#top{% else %}index.html{% endif %}"><img class="logo__image" src="{{ site.data.site.brand.logo | relative_url }}" alt="{{ site.data.site.brand.name | escape }}"></a>
+        <p>{{ site.data.site.footer.description | escape }}</p>
+      </div>
+      <nav aria-label="Навигация в футере">
+        <h2>{{ site.data.site.footer.navigation_title | escape }}</h2>
+        <ul>
+          {% for item in site.data.site.header.menu %}<li><a href="{% if page_type == 'home' %}{{ item.home_url }}{% else %}{{ item.services_url }}{% endif %}">{{ item.label | escape }}</a></li>{% endfor %}
+        </ul>
+      </nav>
+      <div>
+        <h2>{{ site.data.site.footer.services_title | escape }}</h2>
+        <ul>{% for item in site.data.site.footer.services %}<li><a href="{{ item.url }}">{{ item.label | escape }}</a></li>{% endfor %}</ul>
+      </div>
+      <div>
+        <h2>{{ site.data.site.footer.contacts_title | escape }}</h2>
+        <address>
+          <a href="tel:{{ site.data.site.contacts.phone_link | escape }}">{{ site.data.site.contacts.phone_display | escape }}</a>
+          <a href="mailto:{{ site.data.site.contacts.email | escape }}">{{ site.data.site.contacts.email | escape }}</a>
+          <p>{{ site.data.site.contacts.region | escape }}</p>
+        </address>
+        <p style="margin-top:22px"><a href="{{ site.data.site.contacts.privacy_url }}">{{ site.data.site.contacts.privacy_label | escape }}</a></p>
+        <p><a href="{{ site.data.site.contacts.agreement_url }}">{{ site.data.site.contacts.agreement_label | escape }}</a></p>
+      </div>
+    </div>
+    <div class="container footer-bottom"><p>{{ site.data.site.footer.copyright | escape }}</p><p>{{ site.data.site.footer.requisites | escape }}</p></div>
+  </footer>

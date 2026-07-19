@@ -1,0 +1,1098 @@
+media:
+  input: .
+  output: /
+  rename: safe
+  extensions: [png, jpg, jpeg, webp, svg]
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: user
+    templates:
+      update: "Обновление сайта через админ-панель: {path}"
+
+components:
+  metric:
+    type: object
+    fields:
+      - name: value
+        label: Значение
+        type: string
+        required: true
+        options: { maxlength: 30 }
+      - name: label
+        label: Подпись
+        type: string
+        required: true
+        options: { maxlength: 90 }
+
+  numbered_card:
+    type: object
+    fields:
+      - name: number
+        label: Номер
+        type: string
+        required: true
+        options: { maxlength: 10 }
+      - name: title
+        label: Заголовок
+        type: string
+        required: true
+        options: { maxlength: 120 }
+      - name: text
+        label: Текст
+        type: text
+        required: true
+        options: { maxlength: 500 }
+
+  proof_fact:
+    type: object
+    fields:
+      - name: value
+        label: Значение
+        type: string
+        required: true
+        options: { maxlength: 40 }
+      - name: title
+        label: Заголовок
+        type: string
+        required: true
+        options: { maxlength: 100 }
+      - name: text
+        label: Пояснение
+        type: text
+        required: true
+        options: { maxlength: 500 }
+
+content:
+  - name: common
+    label: Общие настройки
+    type: file
+    path: _data/site.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: brand
+        label: Бренд
+        type: object
+        fields:
+          - name: name
+            label: Название
+            type: string
+            required: true
+            options: { maxlength: 40 }
+          - name: logo
+            label: Логотип
+            type: image
+            required: true
+
+      - name: header
+        label: Шапка сайта
+        type: object
+        fields:
+          - name: cta
+            label: Текст главной кнопки
+            type: string
+            required: true
+            options: { maxlength: 45 }
+          - name: menu
+            label: Пункты меню
+            type: object
+            list:
+              min: 6
+              max: 6
+              collapsible: { collapsed: true, summary: "{label}" }
+            fields:
+              - name: label
+                label: Название пункта
+                type: string
+                required: true
+                options: { maxlength: 40 }
+              - name: home_url
+                label: Ссылка на главной
+                type: string
+                readonly: true
+              - name: services_url
+                label: Ссылка на странице услуг
+                type: string
+                readonly: true
+
+      - name: contacts
+        label: Контакты и документы
+        type: object
+        fields:
+          - name: phone_display
+            label: Телефон — как показывать
+            type: string
+            required: true
+            options: { maxlength: 30 }
+          - name: phone_link
+            label: Телефон для ссылки
+            type: string
+            description: Только цифры и знак +, например +79991234567
+            required: true
+            options: { maxlength: 20 }
+          - name: email
+            label: Электронная почта
+            type: string
+            required: true
+            options: { maxlength: 100 }
+          - name: region
+            label: Регион работы
+            type: string
+            required: true
+            options: { maxlength: 100 }
+          - name: privacy_label
+            label: Название политики конфиденциальности
+            type: string
+            required: true
+          - name: privacy_url
+            label: Ссылка на политику
+            type: string
+            required: true
+          - name: agreement_label
+            label: Название пользовательского соглашения
+            type: string
+            required: true
+          - name: agreement_url
+            label: Ссылка на соглашение
+            type: string
+            required: true
+
+      - name: forms
+        label: Формы заявок
+        type: object
+        fields:
+          - name: cadastral_label
+            label: Поле кадастрового номера
+            type: string
+            required: true
+            options: { maxlength: 60 }
+          - name: phone_label
+            label: Поле телефона
+            type: string
+            required: true
+            options: { maxlength: 30 }
+          - name: submit
+            label: Текст кнопки
+            type: string
+            required: true
+            options: { maxlength: 45 }
+          - name: consent
+            label: Согласие на обработку данных
+            type: text
+            required: true
+            options: { maxlength: 250 }
+
+      - name: footer
+        label: Подвал сайта
+        type: object
+        fields:
+          - name: description
+            label: Описание компании
+            type: text
+            required: true
+            options: { maxlength: 250 }
+          - name: navigation_title
+            label: Заголовок навигации
+            type: string
+            required: true
+          - name: services_title
+            label: Заголовок услуг
+            type: string
+            required: true
+          - name: contacts_title
+            label: Заголовок контактов
+            type: string
+            required: true
+          - name: services
+            label: Ссылки на услуги
+            type: object
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{label}" }
+            fields:
+              - name: label
+                label: Название
+                type: string
+                required: true
+              - name: url
+                label: Ссылка
+                type: string
+                readonly: true
+          - name: copyright
+            label: Авторские права
+            type: string
+            required: true
+          - name: requisites
+            label: ИНН и ОГРН
+            type: string
+            required: true
+
+  - name: home
+    label: Главная страница
+    type: file
+    path: _data/home.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+          - name: keywords
+            label: Ключевые слова
+            type: text
+          - name: og_title
+            label: Заголовок для социальных сетей
+            type: string
+            required: true
+            options: { maxlength: 90 }
+          - name: og_description
+            label: Описание для социальных сетей
+            type: text
+            required: true
+            options: { maxlength: 200 }
+
+      - name: hero
+        label: Первый экран
+        type: object
+        fields:
+          - name: location
+            label: Регион
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: promise
+            label: Короткое обещание
+            type: text
+            required: true
+            options: { maxlength: 140 }
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 90 }
+          - name: lead
+            label: Основной текст
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: primary_action
+            label: Главная кнопка
+            type: string
+            required: true
+            options: { maxlength: 45 }
+          - name: secondary_action
+            label: Вторая кнопка
+            type: string
+            required: true
+            options: { maxlength: 45 }
+          - name: image
+            label: Фоновое изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+            options: { maxlength: 140 }
+          - name: object_label
+            label: Подпись объекта
+            type: string
+            required: true
+            options: { maxlength: 40 }
+          - name: coordinates
+            label: Координаты
+            type: string
+            description: Разделяйте две строки символом |
+            required: true
+          - name: scan_status
+            label: Статус анализа
+            type: string
+            required: true
+          - name: scan_title
+            label: Заголовок анализа
+            type: string
+            required: true
+          - name: scan_tags
+            label: Метки анализа
+            type: string
+            list: { min: 4, max: 4 }
+          - name: metrics
+            label: Показатели под первым экраном
+            component: metric
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{value} — {label}" }
+          - name: form_label
+            label: Метка быстрой формы
+            type: string
+            required: true
+          - name: form_title
+            label: Заголовок быстрой формы
+            type: text
+            required: true
+            options: { maxlength: 170 }
+
+      - name: manifesto
+        label: Блок «Почему это риск»
+        type: object
+        fields:
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+            description: Для переноса используйте конструкцию «первая часть — вторая часть»
+            options: { maxlength: 90 }
+          - name: text
+            label: Текст
+            type: text
+            required: true
+            options: { maxlength: 250 }
+          - name: link
+            label: Текст ссылки
+            type: string
+            required: true
+            options: { maxlength: 45 }
+
+      - name: risks
+        label: Карточки рисков
+        type: object
+        fields:
+          - name: first
+            label: Строительство
+            type: object
+            fields:
+              - name: label
+                label: Метка
+                type: string
+                required: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 180 }
+              - name: image
+                label: Изображение
+                type: image
+                required: true
+              - name: image_alt
+                label: Описание изображения
+                type: string
+                required: true
+          - name: second
+            label: Ограничения
+            type: object
+            fields:
+              - name: label
+                label: Метка
+                type: string
+                required: true
+              - name: value
+                label: Крупное значение
+                type: string
+                required: true
+                options: { maxlength: 20 }
+              - name: title
+                label: Пояснение
+                type: text
+                required: true
+                options: { maxlength: 180 }
+          - name: third
+            label: ВРИ
+            type: object
+            fields:
+              - name: label
+                label: Метка
+                type: string
+                required: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 220 }
+              - name: image
+                label: Изображение
+                type: image
+                required: true
+              - name: image_alt
+                label: Описание изображения
+                type: string
+                required: true
+          - name: fourth
+            label: Территория
+            type: object
+            fields:
+              - name: label
+                label: Метка
+                type: string
+                required: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 220 }
+          - name: note
+            label: Итоговое предупреждение
+            type: text
+            required: true
+            options: { maxlength: 220 }
+
+      - name: method
+        label: Алгоритм работы
+        type: object
+        fields:
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+            options: { maxlength: 90 }
+          - name: text
+            label: Описание
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: action
+            label: Текст кнопки
+            type: string
+            required: true
+          - name: steps
+            label: Этапы
+            type: object
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{number}. {title}" }
+            fields:
+              - name: number
+                label: Номер
+                type: string
+                required: true
+              - name: label
+                label: Подпись шага
+                type: string
+                required: true
+              - name: title
+                label: Заголовок
+                type: string
+                required: true
+                options: { maxlength: 80 }
+              - name: text
+                label: Описание
+                type: text
+                required: true
+                options: { maxlength: 300 }
+
+      - name: services
+        label: Карточки услуг
+        type: object
+        fields:
+          - name: title
+            label: Заголовок секции
+            type: string
+            required: true
+            options: { maxlength: 90 }
+          - name: text
+            label: Описание секции
+            type: text
+            required: true
+            options: { maxlength: 250 }
+          - name: cards
+            label: Услуги
+            type: object
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{number}. {title}" }
+            fields:
+              - name: style
+                label: Тип карточки
+                type: string
+                readonly: true
+              - name: number
+                label: Номер
+                type: string
+                required: true
+              - name: url
+                label: Ссылка
+                type: string
+                readonly: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 120 }
+              - name: price
+                label: Цена
+                type: string
+                required: true
+                options: { maxlength: 40 }
+              - name: text
+                label: Описание
+                type: text
+                required: true
+                options: { maxlength: 450 }
+              - name: image
+                label: Изображение
+                type: image
+                required: true
+              - name: image_alt
+                label: Описание изображения
+                type: string
+                required: true
+
+      - name: expert
+        label: Эксперт
+        type: object
+        fields:
+          - name: image
+            label: Фотография
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание фотографии
+            type: string
+            required: true
+          - name: name
+            label: Имя
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: role
+            label: Должность
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 160 }
+          - name: paragraphs
+            label: Текст об эксперте
+            type: text
+            list: { min: 3, max: 3 }
+            options: { maxlength: 1200 }
+          - name: facts
+            label: Показатели эксперта
+            component: metric
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{value} — {label}" }
+
+      - name: proof
+        label: Факты и гарантии
+        type: object
+        fields:
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 120 }
+          - name: subtitle
+            label: Подзаголовок
+            type: text
+            required: true
+            options: { maxlength: 160 }
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+          - name: cards
+            label: Карточки фактов
+            component: numbered_card
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{number}. {title}" }
+
+      - name: cta
+        label: Финальный призыв
+        type: object
+        fields:
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 180 }
+          - name: benefits
+            label: Преимущества
+            type: string
+            list: { min: 3, max: 3 }
+            options: { maxlength: 100 }
+          - name: form_title
+            label: Заголовок формы
+            type: string
+            required: true
+            options: { maxlength: 60 }
+
+  - name: services
+    label: Страница услуг
+    type: file
+    path: _data/services.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+
+      - name: hero
+        label: Первый экран
+        type: object
+        fields:
+          - name: title
+            label: Главный заголовок
+            type: string
+            required: true
+            options: { maxlength: 50 }
+          - name: text
+            label: Описание
+            type: text
+            required: true
+            options: { maxlength: 250 }
+          - name: location
+            label: Регион
+            type: string
+            required: true
+          - name: image_title
+            label: Заголовок на изображении
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+
+      - name: cards_section
+        label: Карточки услуг
+        type: object
+        fields:
+          - name: title
+            label: Заголовок секции
+            type: string
+            required: true
+            options: { maxlength: 100 }
+          - name: cards
+            label: Услуги
+            type: object
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{title}" }
+            fields:
+              - name: style
+                label: Стиль
+                type: string
+                readonly: true
+              - name: anchor
+                label: Якорь
+                type: string
+                readonly: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 120 }
+              - name: text
+                label: Описание
+                type: text
+                required: true
+                options: { maxlength: 450 }
+              - name: price
+                label: Цена
+                type: string
+                required: true
+                options: { maxlength: 50 }
+              - name: image
+                label: Изображение
+                type: image
+                required: true
+              - name: image_alt
+                label: Описание изображения
+                type: string
+                required: true
+
+      - name: process
+        label: Этапы проверки
+        type: object
+        fields:
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+            options: { maxlength: 100 }
+          - name: action
+            label: Текст кнопки
+            type: string
+            required: true
+          - name: steps
+            label: Этапы
+            component: numbered_card
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{number}. {title}" }
+
+      - name: express
+        label: Экспресс-аудит
+        type: object
+        fields:
+          - name: location
+            label: Регион
+            type: string
+            required: true
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 120 }
+          - name: lead
+            label: Текст на изображении
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: price
+            label: Цена
+            type: string
+            required: true
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+          - name: primary_action
+            label: Главная кнопка
+            type: string
+            required: true
+          - name: secondary_action
+            label: Вторая кнопка
+            type: string
+            required: true
+          - name: about_title
+            label: Заголовок описания
+            type: text
+            required: true
+            options: { maxlength: 120 }
+          - name: about_paragraphs
+            label: Описание услуги
+            type: text
+            list: { min: 2, max: 2 }
+            options: { maxlength: 1000 }
+          - name: advantages
+            label: Преимущества
+            component: numbered_card
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{number}. {title}" }
+          - name: form_title
+            label: Заголовок формы
+            type: text
+            required: true
+            options: { maxlength: 140 }
+          - name: form_text
+            label: Пояснение формы
+            type: text
+            required: true
+            options: { maxlength: 220 }
+          - name: form_action
+            label: Кнопка формы
+            type: string
+            required: true
+          - name: info_cards
+            label: Информационные карточки
+            type: object
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{title}" }
+            fields:
+              - name: style
+                label: Стиль
+                type: string
+                readonly: true
+              - name: list_type
+                label: Вид списка
+                type: string
+                readonly: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 140 }
+              - name: items
+                label: Пункты
+                type: string
+                list: { min: 1, max: 12 }
+                options: { maxlength: 250 }
+
+      - name: full
+        label: Полная экспертиза
+        type: object
+        fields:
+          - name: location
+            label: Регион
+            type: string
+            required: true
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 120 }
+          - name: lead
+            label: Основной текст
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: price
+            label: Цена
+            type: string
+            required: true
+          - name: primary_action
+            label: Главная кнопка
+            type: string
+            required: true
+          - name: secondary_action
+            label: Вторая кнопка
+            type: string
+            required: true
+          - name: analysis_title
+            label: Заголовок анализа
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: analysis_paragraphs
+            label: Описание анализа
+            type: text
+            list: { min: 2, max: 2 }
+            options: { maxlength: 1200 }
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+          - name: scope_cards
+            label: Что входит в экспертизу
+            type: object
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{title}" }
+            fields:
+              - name: style
+                label: Стиль
+                type: string
+                readonly: true
+              - name: title
+                label: Заголовок
+                type: text
+                required: true
+                options: { maxlength: 140 }
+              - name: items
+                label: Пункты
+                type: string
+                list: { min: 1, max: 10 }
+                options: { maxlength: 250 }
+          - name: result_title
+            label: Заголовок результата
+            type: string
+            required: true
+          - name: result_text
+            label: Описание результата
+            type: text
+            required: true
+            options: { maxlength: 450 }
+          - name: result_items
+            label: Вопросы результата
+            type: string
+            list: { min: 1, max: 8 }
+            options: { maxlength: 250 }
+
+      - name: urban
+        label: Сопровождение проектов
+        type: object
+        fields:
+          - name: location
+            label: Регион
+            type: string
+            required: true
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: lead
+            label: Основной текст
+            type: text
+            required: true
+            options: { maxlength: 450 }
+          - name: price
+            label: Цена
+            type: string
+            required: true
+          - name: action
+            label: Текст кнопки
+            type: string
+            required: true
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+          - name: intro_title
+            label: Заголовок описания
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: intro_paragraphs
+            label: Описание услуги
+            type: text
+            list: { min: 2, max: 2 }
+            options: { maxlength: 1400 }
+          - name: help_title
+            label: Заголовок списка помощи
+            type: string
+            required: true
+          - name: help_items
+            label: Виды помощи
+            type: string
+            list: { min: 1, max: 15 }
+            options: { maxlength: 250 }
+          - name: format_title
+            label: Заголовок формата работы
+            type: string
+            required: true
+          - name: format_steps
+            label: Этапы работы
+            type: object
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{title}" }
+            fields:
+              - name: title
+                label: Заголовок
+                type: string
+                required: true
+                options: { maxlength: 80 }
+              - name: text
+                label: Описание
+                type: text
+                required: true
+                options: { maxlength: 350 }
+
+      - name: expert
+        label: Эксперт
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 160 }
+          - name: text
+            label: Описание
+            type: text
+            required: true
+            options: { maxlength: 500 }
+          - name: action
+            label: Текст кнопки
+            type: string
+            required: true
+          - name: image
+            label: Фотография
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание фотографии
+            type: string
+            required: true
+          - name: facts
+            label: Факты
+            component: proof_fact
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{value} — {title}" }
+
+      - name: cta
+        label: Финальная форма
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 170 }
+          - name: benefits
+            label: Преимущества
+            type: string
+            list: { min: 3, max: 3 }
+            options: { maxlength: 100 }
+          - name: form_title
+            label: Заголовок формы
+            type: string
+            required: true
+            options: { maxlength: 70 }

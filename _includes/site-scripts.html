@@ -1,0 +1,17 @@
+  <script>
+    const menuButton = document.querySelector('[data-menu-button]');
+    const mobileMenu = document.querySelector('[data-mobile-menu]');
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener('click', () => {
+        const open = menuButton.classList.toggle('is-open');
+        mobileMenu.classList.toggle('is-open', open);
+        menuButton.setAttribute('aria-expanded', String(open));
+      });
+      mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+        menuButton.classList.remove('is-open');
+        mobileMenu.classList.remove('is-open');
+        menuButton.setAttribute('aria-expanded', 'false');
+      }));
+    }
+    document.querySelectorAll('[data-static-form]').forEach(form => form.addEventListener('submit', event => event.preventDefault()));
+  </script>

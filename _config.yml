@@ -1,0 +1,14 @@
+title: ГрадАудит
+lang: ru
+url: https://artymort.github.io
+baseurl: /auditgradstroy-site
+exclude:
+  - node_modules
+  - scripts
+  - package.json
+  - package-lock.json
+  - PROJECT_NOTES.md
+  - playwright-screenshots
+  - tmp
+  - debug.log
+  - "*.pdf"
