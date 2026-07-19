@@ -8482,3 +8482,265 @@ body {
     hyphens: none;
   }
 }
+
+/* Unified typography roles: one family and a limited 400/500/600 weight system */
+:root {
+  --type-body-size: 15px;
+  --type-body-weight: 400;
+  --type-body-leading: 1.6;
+  --type-support-size: 14px;
+  --type-support-weight: 500;
+  --type-ui-size: 14px;
+  --type-ui-weight: 600;
+  --type-meta-size: 12px;
+  --type-meta-weight: 600;
+  --type-card-size: 25px;
+  --type-card-weight: 600;
+}
+
+body,
+button,
+input,
+textarea,
+select,
+.hp-header,
+.hp-home,
+.dom-services,
+.hp-footer {
+  font-family: "Manrope", Arial, sans-serif;
+  font-synthesis: none;
+}
+
+.hp-home p,
+.dom-services p,
+.dom-services li,
+.hp-footer p,
+.hp-footer li {
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-leading);
+  letter-spacing: 0;
+}
+
+.hp-home strong,
+.dom-services strong,
+.hp-home h3,
+.dom-services h3 {
+  font-weight: var(--type-card-weight);
+}
+
+.hp-home .hp-hero h1,
+.dom-services .dom-hero h1 {
+  font-weight: 600;
+}
+
+.hp-home .hp-manifesto h2,
+.hp-home .hp-method__intro h2,
+.hp-home .hp-section-head h2,
+.hp-home .hp-expert__copy h2,
+.hp-home .hp-proof__headline h2,
+.hp-home .hp-cta__copy h2,
+.dom-services .dom-hero__panel--image h2,
+.dom-services .dom-section__head h2,
+.dom-services .dom-feature__intro h2,
+.dom-services .dom-full-hero__summary h2,
+.dom-services .dom-urban-hero__content h2,
+.dom-services .dom-expert__text h2,
+.dom-services .dom-cta__text h2 {
+  font-weight: 500;
+}
+
+.hp-home .hp-risk h3,
+.hp-home .hp-risk-note p,
+.hp-home .hp-method__steps h3,
+.hp-home .hp-service h3,
+.hp-home .hp-service strong,
+.hp-home .hp-proof__cards h3,
+.hp-home .hp-cta__form h3,
+.hp-home .hp-quick-form > div strong,
+.dom-services .dom-service-card__top span,
+.dom-services .dom-service-card strong,
+.dom-services .dom-process__grid h3,
+.dom-services .dom-feature__text h2,
+.dom-services .dom-feature__text h3,
+.dom-services .dom-info-card h3,
+.dom-services .dom-mini-tile h3,
+.dom-services .dom-audit-form__text h3,
+.dom-services .dom-full-hero__analysis h2,
+.dom-services .dom-full-scope .dom-info-card h3,
+.dom-services .dom-full-result .dom-info-card--wide h3,
+.dom-services .dom-urban-intro h2,
+.dom-services .dom-urban-help h3,
+.dom-services .dom-urban-format h3,
+.dom-services .dom-proof__grid h3,
+.dom-services .dom-cta__form h3,
+.dom-services .dom-feature__intro-copy strong,
+.dom-services .dom-full-hero__summary strong,
+.dom-services .dom-urban-hero__content strong,
+#express-audit .dom-audit-form + .dom-info-grid .dom-info-card h3 {
+  font-size: var(--type-card-size);
+  font-weight: var(--type-card-weight);
+  line-height: 1.16;
+  letter-spacing: -.03em;
+}
+
+.hp-header .nav a,
+.hp-header .phone,
+.hp-header .mobile-menu a,
+.hp-header .button,
+.hp-home .hp-button,
+.hp-home .hp-text-link,
+.hp-home .hp-manifesto__aside a,
+.hp-home .hp-quick-form button,
+.dom-services .button {
+  font-size: var(--type-ui-size);
+  font-weight: var(--type-ui-weight);
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hp-home .hp-kicker,
+.hp-home .hp-hero__promise,
+.dom-services .dom-hero__panel--image > div > span,
+.dom-services .dom-feature__intro > div > span,
+.dom-services .dom-feature__intro--image > div > span,
+#express-audit .dom-feature__intro > div > span,
+.dom-services .dom-full-hero__summary > span,
+.dom-services .dom-urban-hero__content > span,
+.dom-services .dom-expert__text > span,
+.dom-services .dom-cta__text > span {
+  font-size: var(--type-support-size);
+  font-weight: var(--type-support-weight);
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hp-home .hp-quick-form > div > span {
+  font-size: var(--type-ui-size);
+  font-weight: var(--type-ui-weight);
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hp-home .hp-section-index,
+.hp-home .hp-risk > span,
+.hp-home .hp-risk--image > div > span,
+.hp-home .hp-risk__overlay > span,
+.hp-home .hp-service__top > span,
+.hp-home .hp-method__steps > li > span,
+.hp-home .hp-method__steps > li > i,
+.hp-home .hp-expert__photo figcaption > span,
+.hp-home .hp-expert__facts span,
+.hp-home .hp-proof__cards > article > span,
+.dom-services .dom-process__grid > article > span,
+.dom-services .dom-mini-tile > span,
+.hp-footer h2,
+#express-audit .dom-audit-form + .dom-info-grid .dom-info-card:not(.dom-info-card--wide)::before {
+  font-size: var(--type-meta-size);
+  font-weight: var(--type-meta-weight);
+  line-height: 1.4;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.hp-home .hp-quick-form__label,
+.hp-home .hp-cta__form label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hp-home .hp-hero__lead {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.62;
+}
+
+.hp-home .hp-expert__text p:first-child {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.hp-home .hp-hero__proof strong,
+.hp-home .hp-expert__facts strong,
+.dom-services .dom-proof__grid > article > span,
+.hp-home .hp-risk--lime > strong {
+  font-weight: 500;
+}
+
+.dom-services .dom-urban-format li strong {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+
+.hp-home .hp-cta__benefits span,
+.dom-services .dom-cta__facts p {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.hp-footer h2 {
+  margin-bottom: 22px;
+}
+
+.hp-footer a,
+.hp-footer address,
+.hp-footer address p {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hp-footer .footer-bottom p {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.hp-home .hp-cta__form small,
+.dom-services .dom-cta__form .consent {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --type-card-size: 23px;
+  }
+
+  .hp-home .hp-hero__lead {
+    font-size: 15px;
+  }
+
+  .hp-home .hp-kicker,
+  .hp-home .hp-hero__promise,
+  .dom-services .dom-hero__panel--image > div > span,
+  .dom-services .dom-feature__intro > div > span,
+  .dom-services .dom-feature__intro--image > div > span,
+  .dom-services .dom-full-hero__summary > span,
+  .dom-services .dom-urban-hero__content > span,
+  .dom-services .dom-expert__text > span,
+  .dom-services .dom-cta__text > span {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .dom-services .dom-service-card__top span {
+    font-size: 20px;
+  }
+}

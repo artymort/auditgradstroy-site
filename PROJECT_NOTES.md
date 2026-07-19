@@ -788,3 +788,25 @@ Final verification:
 - homepage expert label left coordinates are identical at 390px;
 - proof subtitle-to-image gap computes to `28px`;
 - the public GitHub Pages URL still shows the previous deployed version until these local changes are published.
+
+## 2026-07-19 Site-wide Typography Role Unification
+
+Completed a full typography consistency pass across `index.html` and `services.html` without changing the approved content, palette, section order, or composition:
+- limited the loaded Manrope family to the three weights actually used by the interface: `400`, `500`, and `600`;
+- introduced shared typography tokens for body copy, supporting copy, actions, metadata, and card titles;
+- normalized body copy to `15px / 1.6 / 400`, supporting text to `14px / 500`, actions to `14px / 600`, metadata to `12px / 600`, and card titles to `25px / 600` (`23px` on mobile);
+- aligned the homepage location, promise, express-evaluation label, consultation link, and risk link to the same role-based system;
+- aligned service-page locations, section labels, card titles, prices, process steps, information cards, expert labels, CTA labels, and footer text to the same roles;
+- normalized homepage expert-stat labels to one left edge and one `12px / 600` metadata treatment;
+- kept numeric metrics at weight `500` and prevented metric values from wrapping;
+- retained Arial only for standalone arrow glyphs, where it is used as an icon rather than body text;
+- added a narrow-screen service-card title override at `320-360px` so long Russian words fit without clipping or mid-word breaks.
+
+Verification:
+- checked both pages at `320`, `390`, `768`, `1074`, and `1440` px;
+- horizontal overflow elements: `0` at every tested width;
+- meaningful clipped visible text elements: `0` after excluding intentionally hidden accessibility labels;
+- Manrope loaded successfully on both pages;
+- all visible content text uses only the `400`, `500`, and `600` role weights;
+- reviewed every top-level section at `390px` and `1074px`, plus the service-card grid at `320px`;
+- confirmed the homepage expert facts and proof headline/subtitle keep the corrected alignment and spacing.
