@@ -35,6 +35,31 @@ const parseFrontMatter = (source) => {
   return { attributes: YAML.parse(match[1]) || {}, body: match[2].trim() };
 };
 
+const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+const collectChangedPaths = (before, after, prefix = '', changes = []) => {
+  if (Object.is(before, after)) return changes;
+  if (Array.isArray(before) && Array.isArray(after)) {
+    if (before.length !== after.length && prefix) changes.push(prefix);
+    const length = Math.max(before.length, after.length);
+    for (let index = 0; index < length; index += 1) {
+      collectChangedPaths(before[index], after[index], prefix ? `${prefix}.${index}` : String(index), changes);
+    }
+    return changes;
+  }
+  if (isRecord(before) && isRecord(after)) {
+    const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
+    for (const key of keys) {
+      collectChangedPaths(before[key], after[key], prefix ? `${prefix}.${key}` : key, changes);
+    }
+    return changes;
+  }
+  if (prefix) changes.push(prefix);
+  return changes;
+};
+
+const activityTarget = (value) => JSON.stringify(value);
+
 export class CmsDatabase {
   constructor({ root, filename }) {
     this.root = root;
@@ -257,13 +282,20 @@ export class CmsDatabase {
   }
 
   savePage(key, data, userId) {
+    const previous = this.getPage(key)?.data || {};
+    const changedPaths = [...new Set(collectChangedPaths(previous, data))];
     const now = this.now();
     this.db.prepare(`
       INSERT INTO content_pages (key, data_json, updated_at, updated_by)
       VALUES (?, ?, ?, ?)
       ON CONFLICT(key) DO UPDATE SET data_json=excluded.data_json, updated_at=excluded.updated_at, updated_by=excluded.updated_by
     `).run(key, JSON.stringify(data, null, 2), now, userId);
-    this.log(userId, 'save_page', key);
+    this.log(userId, 'save_page', activityTarget({
+      kind: 'page',
+      key,
+      paths: changedPaths.slice(0, 20),
+      count: changedPaths.length,
+    }));
     return this.getPage(key);
   }
 
@@ -279,6 +311,7 @@ export class CmsDatabase {
   }
 
   saveEntry(item, userId) {
+    const previous = item.id ? this.getEntry(Number(item.id)) : null;
     const now = this.now();
     const values = [
       item.type,
@@ -317,7 +350,17 @@ export class CmsDatabase {
       `).run(...values.slice(0, 17), now, now, userId);
       id = Number(result.lastInsertRowid);
     }
-    this.log(userId, item.id ? 'update_entry' : 'create_entry', `${item.type}:${id}`);
+    const changedFields = previous
+      ? Object.keys(item).filter((key) => key !== 'id' && !Object.is(previous[key], item[key]))
+      : [];
+    this.log(userId, item.id ? 'update_entry' : 'create_entry', activityTarget({
+      kind: 'entry',
+      type: item.type,
+      id,
+      title: item.title,
+      fields: changedFields,
+      count: changedFields.length,
+    }));
     return this.getEntry(id);
   }
 
@@ -325,7 +368,12 @@ export class CmsDatabase {
     const current = this.getEntry(id);
     if (!current) return false;
     this.db.prepare('DELETE FROM entries WHERE id = ?').run(id);
-    this.log(userId, 'delete_entry', `${current.type}:${id}`);
+    this.log(userId, 'delete_entry', activityTarget({
+      kind: 'entry',
+      type: current.type,
+      id,
+      title: current.title,
+    }));
     return true;
   }
 
@@ -343,7 +391,10 @@ export class CmsDatabase {
       INSERT INTO media (filename, original_name, mime_type, size, url, created_at, uploaded_by)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(item.filename, item.originalName, item.mimeType, item.size, item.url, now, userId);
-    this.log(userId, 'upload_media', item.filename);
+    this.log(userId, 'upload_media', activityTarget({
+      kind: 'media',
+      name: item.originalName,
+    }));
     return this.db.prepare('SELECT * FROM media WHERE id = ?').get(Number(result.lastInsertRowid));
   }
 
@@ -393,7 +444,10 @@ export class CmsDatabase {
     const item = this.getMedia(id);
     if (!item) return null;
     this.db.prepare('DELETE FROM media WHERE id = ?').run(id);
-    this.log(userId, 'delete_media', item.filename);
+    this.log(userId, 'delete_media', activityTarget({
+      kind: 'media',
+      name: item.original_name,
+    }));
     return item;
   }
 
@@ -487,6 +541,7 @@ export class CmsDatabase {
       recent: this.db.prepare(`
         SELECT activity.*, users.name AS user_name FROM activity
         LEFT JOIN users ON users.id = activity.user_id
+        WHERE activity.action NOT IN ('publish', 'login')
         ORDER BY activity.id DESC LIMIT 8
       `).all(),
     };

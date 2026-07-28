@@ -242,6 +242,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
 .activity-list { list-style: none; margin: 0; padding: 0; }
 .activity-list li { display: grid; grid-template-columns: 10px 1fr; gap: 10px; padding: 11px 0; border-bottom: 1px solid #eef1ee; color: #3f4b51; font-size: 13px; }
 .activity-list i { width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: var(--lime-dark); }
+.activity-list strong,
+.activity-list span { display: block; }
+.activity-list strong { color: var(--ink); font-weight: 600; }
+.activity-list span { max-width: 58ch; margin-top: 3px; color: #56646b; line-height: 1.4; }
 .activity-list small { display: block; margin-top: 4px; color: #879197; }
 
 .editor-layout { display: grid; grid-template-columns: minmax(0,1fr) 260px; align-items: start; gap: 20px; }

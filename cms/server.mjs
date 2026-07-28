@@ -428,7 +428,11 @@ app.post('/api/users', requireUser, requireAdmin, (request, response, next) => {
       return;
     }
     const user = database.createUser({ email, name, password, role: request.body.role });
-    database.log(request.user.id, 'create_user', String(user.id));
+    database.log(request.user.id, 'create_user', JSON.stringify({
+      kind: 'user',
+      id: user.id,
+      name: user.name,
+    }));
     response.status(201).json(user);
   } catch (error) {
     next(error);
@@ -455,7 +459,11 @@ app.put('/api/users/:id', requireUser, requireAdmin, (request, response, next) =
       return;
     }
     const user = database.updateUser(id, changes);
-    database.log(request.user.id, 'update_user', String(id));
+    database.log(request.user.id, 'update_user', JSON.stringify({
+      kind: 'user',
+      id: user.id,
+      name: user.name,
+    }));
     response.json(user);
   } catch (error) {
     next(error);
