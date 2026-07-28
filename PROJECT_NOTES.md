@@ -1038,3 +1038,11 @@ VPS migration still requires:
 - Connected the public icon set to every static page and to generated article/case detail pages through one shared head include.
 - Added a separate CMS favicon matching the simplified square mark used inside the administration interface.
 - Updated the self-hosted build asset list so every icon is included in VPS publications.
+
+## 2026-07-28 Non-blocking lead delivery
+
+- Fixed public forms hanging on `Отправляем…` while the local mail transport waited for Postfix.
+- Lead requests now save to SQLite and return success to the browser immediately; email notification delivery continues in the background.
+- Background mail delivery has a 15-second safety timeout and records failures on the corresponding CMS lead instead of blocking the visitor.
+- Public forms also abort an unresponsive API request after 15 seconds, restore the submit button, and show an explicit error.
+- `npm run check`, `node --check cms/server.mjs`, and `node --check forms.js` pass.

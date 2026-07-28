@@ -42,6 +42,7 @@ const smtpPassword = String(process.env.SMTP_PASSWORD || '');
 const smtpFrom = String(process.env.SMTP_FROM || smtpUser).trim();
 const leadDelivery = String(process.env.LEAD_DELIVERY || '').trim().toLowerCase();
 const sendmailPath = String(process.env.SENDMAIL_PATH || '/usr/sbin/sendmail').trim();
+const leadDeliveryTimeout = Math.max(5_000, Number(process.env.LEAD_DELIVERY_TIMEOUT_MS || 15_000));
 const leadMailer = smtpPassword
   ? nodemailer.createTransport({
       host: smtpHost,
@@ -279,6 +280,39 @@ const escapeLeadHtml = (value) => String(value || '')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#39;');
 
+const deliverLeadNotification = async ({ storedLead, lead, text, html }) => {
+  let timeoutId;
+  try {
+    await Promise.race([
+      leadMailer.sendMail({
+        from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
+        to: leadEmailTo,
+        subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
+        text,
+        html,
+      }),
+      new Promise((resolve, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error(`Почтовая служба не ответила за ${Math.round(leadDeliveryTimeout / 1_000)} секунд.`)),
+          leadDeliveryTimeout,
+        );
+      }),
+    ]);
+    database.markLeadDelivery(storedLead.id, {
+      status: 'queued',
+      sentAt: new Date().toISOString(),
+    });
+  } catch (deliveryError) {
+    database.markLeadDelivery(storedLead.id, {
+      status: 'failed',
+      error: deliveryError.message,
+    });
+    console.error(`Заявка №${storedLead.id} сохранена, но почтовое уведомление не поставлено в очередь:`, deliveryError.message);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
 app.post('/api/leads', async (request, response, next) => {
   try {
     if (leadLimited(request.ip)) {
@@ -329,27 +363,10 @@ app.post('/api/leads', async (request, response, next) => {
       return;
     }
 
-    try {
-      await leadMailer.sendMail({
-        from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
-        to: leadEmailTo,
-        subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
-        text,
-        html,
-      });
-      database.markLeadDelivery(storedLead.id, {
-        status: 'queued',
-        sentAt: new Date().toISOString(),
-      });
-    } catch (deliveryError) {
-      database.markLeadDelivery(storedLead.id, {
-        status: 'failed',
-        error: deliveryError.message,
-      });
-      console.error(`Заявка №${storedLead.id} сохранена, но почтовое уведомление не поставлено в очередь:`, deliveryError.message);
-    }
-
-    response.status(201).json({ ok: true, id: storedLead.id });
+    response.status(202).json({ ok: true, id: storedLead.id, queued: true });
+    setImmediate(() => {
+      void deliverLeadNotification({ storedLead, lead, text, html });
+    });
   } catch (error) {
     next(error);
   }

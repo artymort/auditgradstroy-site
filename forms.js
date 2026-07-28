@@ -96,6 +96,8 @@
       }
       showStatus(status, '', 'loading');
 
+      const controller = new AbortController();
+      const requestTimeout = window.setTimeout(() => controller.abort(), 15_000);
       try {
         const lead = {
           name: fieldValue(form, 'name'),
@@ -114,6 +116,7 @@
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
+          signal: controller.signal,
           body: JSON.stringify(lead),
         });
         const result = await response.json().catch(() => ({}));
@@ -127,10 +130,13 @@
         showStatus(status, 'Заявка успешно отправлена.', 'success');
         showNotice('Заявка успешно отправлена', message, 'success');
       } catch (error) {
-        const message = error.message || 'Попробуйте ещё раз или свяжитесь с нами по телефону.';
+        const message = error.name === 'AbortError'
+          ? 'Сервер не ответил. Повторите попытку или свяжитесь с нами по телефону.'
+          : error.message || 'Попробуйте ещё раз или свяжитесь с нами по телефону.';
         showStatus(status, message, 'error');
         showNotice('Заявка не отправлена', message, 'error');
       } finally {
+        window.clearTimeout(requestTimeout);
         if (button) {
           button.disabled = false;
           button.removeAttribute('aria-busy');
