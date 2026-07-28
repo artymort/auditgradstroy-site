@@ -276,6 +276,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
 .image-preview img { width: 100%; height: 100%; object-fit: cover; }
 .image-controls { display: grid; gap: 9px; }
 .upload-button { width: max-content; min-height: 38px; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 0 14px; background: #fff; font-size: 12px; font-weight: 800; }
+.document-field { align-content: start; padding: 4px 0; }
+.document-current { min-height: 48px; display: flex; align-items: center; border: 1px solid var(--line); background: #f7f9f6; padding: 12px 14px; color: var(--muted); font-size: 13px; }
+.document-current a { color: var(--navy); font-weight: 600; text-decoration: none; }
+.media-card__document { min-height: 160px; display: grid; place-items: center; background: var(--blue); color: var(--navy); font-size: 32px; font-weight: 600; }
 .array-field { border: 1px dashed #cfd6d1; padding: 14px; background: #fbfcfa; }
 .array-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .array-head strong { font-size: 13px; }

@@ -23,6 +23,7 @@ const PAGE_META = {
   site: { title: 'Общие данные', description: 'Название, логотип, телефон, почта, меню, футер и тексты форм.' },
   blog: { title: 'Оформление блога', description: 'Заголовки и описания общей страницы блога.' },
   cases: { title: 'Оформление кейсов', description: 'Заголовки и описания общей страницы кейсов.' },
+  legal: { title: 'Документы', description: 'Загрузка PDF с политикой конфиденциальности и согласием на обработку персональных данных.' },
 };
 
 const LABELS = {
@@ -84,10 +85,6 @@ const LABELS = {
   phone_link: 'Телефон для звонка',
   email: 'Электронная почта',
   region: 'Регион работы',
-  privacy_label: 'Название политики конфиденциальности',
-  privacy_url: 'Ссылка на политику',
-  agreement_label: 'Название пользовательского соглашения',
-  agreement_url: 'Ссылка на соглашение',
   forms: 'Формы заявок',
   cadastral_label: 'Поле кадастрового номера',
   phone_label: 'Поле телефона',
@@ -123,6 +120,9 @@ const LABELS = {
   featured: 'Показывать в избранном',
   published: 'Статус публикации',
   body: 'Текст материала',
+  file: 'Документ PDF',
+  consent: 'Согласие на обработку персональных данных',
+  privacy: 'Политика конфиденциальности',
 };
 
 const PAGE_SECTIONS = {
@@ -182,6 +182,10 @@ const PAGE_SECTIONS = {
     contacts: ['03. Контактные данные', 'Телефон, электронная почта и регион работы.'],
     forms: ['04. Общие тексты форм', 'Подписи полей, кнопок и согласий во всех формах.'],
     footer: ['05. Подвал сайта', 'Навигация, реквизиты и информация в нижней части страниц.'],
+  },
+  legal: {
+    privacy: ['01. Политика конфиденциальности', 'Загрузите готовый PDF. Ссылка в формах и подвале сайта будет открывать этот документ в новой вкладке.'],
+    consent: ['02. Согласие на обработку персональных данных', 'Загрузите готовый PDF с текстом согласия. Файл откроется в новой вкладке без оформления сайта.'],
   },
 };
 
@@ -351,8 +355,8 @@ const renderDashboard = async () => {
     create_entry: 'Создан материал',
     update_entry: 'Изменён материал',
     delete_entry: 'Удалён материал',
-    upload_media: 'Загружено изображение',
-    delete_media: 'Удалено изображение',
+    upload_media: 'Загружен файл',
+    delete_media: 'Удалён файл',
     publish: 'Сайт опубликован',
     create_user: 'Добавлен пользователь',
     update_user: 'Изменён пользователь',
@@ -366,6 +370,7 @@ const renderDashboard = async () => {
     site: 'Общие данные',
     blog: 'Блог',
     cases: 'Кейсы',
+    legal: 'Документы',
   };
   const parseActivityTarget = (value) => {
     try {
@@ -420,7 +425,7 @@ const renderDashboard = async () => {
           <button class="quick-card" data-go="page-home"><span>Страница</span><strong>Изменить главную →</strong></button>
           <button class="quick-card" data-go="articles"><span>Блог</span><strong>Добавить статью →</strong></button>
           <button class="quick-card" data-go="cases"><span>Портфолио</span><strong>Добавить кейс →</strong></button>
-          <button class="quick-card" data-go="media"><span>Файлы</span><strong>Загрузить фото →</strong></button>
+          <button class="quick-card" data-go="media"><span>Файлы</span><strong>Загрузить файл →</strong></button>
         </div>
       </div>
       <div class="panel">
@@ -437,7 +442,7 @@ const renderDashboard = async () => {
     <section class="metric-grid">
       <article class="metric-card"><strong>${data.articles}</strong><span>Статей</span></article>
       <article class="metric-card"><strong>${data.cases}</strong><span>Кейсов</span></article>
-      <article class="metric-card"><strong>${data.media}</strong><span>Изображений</span></article>
+      <article class="metric-card"><strong>${data.media}</strong><span>Файлов</span></article>
       <article class="metric-card"><strong>${data.users}</strong><span>Пользователей</span></article>
     </section>
     <div class="section-divider"><span>Статистика посещений</span></div>
@@ -510,7 +515,7 @@ const plainTextKeys = new Set([
   'keywords', 'og_title', 'og_description', 'image_alt', 'url', 'anchor', 'style',
   'price', 'number', 'value', 'email', 'phone_link', 'phone_display', 'coordinates',
   'date', 'slug', 'logo', 'image', 'name', 'role', 'primary_action', 'secondary_action',
-  'action', 'submit', 'link', 'privacy_label', 'agreement_label',
+  'action', 'submit', 'link', 'file',
 ]);
 
 const isRichTextField = (key, value, pathParts = []) => {
@@ -711,9 +716,9 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
   };
 };
 
-const uploadImage = async (file) => {
+const uploadFile = async (file) => {
   const body = new FormData();
-  body.append('image', file);
+  body.append('file', file);
   return api('/api/media', { method: 'POST', body });
 };
 
@@ -725,6 +730,48 @@ const createField = (key, value, pathParts, refresh) => {
   const label = document.createElement('span');
   label.textContent = labelFor(key);
   wrapper.append(label);
+
+  if (state.pageKey === 'legal' && key === 'file') {
+    wrapper.classList.add('field-wide', 'document-field');
+    const current = document.createElement('div');
+    current.className = 'document-current';
+    if (value) {
+      const link = document.createElement('a');
+      link.href = `/${String(value).replace(/^\/+/, '')}`;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = `Открыть загруженный PDF ↗`;
+      current.append(link);
+    } else {
+      current.textContent = 'PDF пока не загружен. Ссылка на сайте появится после сохранения.';
+    }
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'application/pdf,.pdf';
+    fileInput.hidden = true;
+    const uploadButton = document.createElement('button');
+    uploadButton.type = 'button';
+    uploadButton.className = 'upload-button';
+    uploadButton.textContent = value ? 'Заменить PDF' : 'Загрузить PDF';
+    uploadButton.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async () => {
+      if (!fileInput.files[0]) return;
+      uploadButton.disabled = true;
+      uploadButton.textContent = 'Загружаем…';
+      try {
+        const media = await uploadFile(fileInput.files[0]);
+        setAtPath(state.pageDraft, pathParts, media.url);
+        refresh();
+        notify('PDF загружен. Нажмите «Сохранить и опубликовать».');
+      } catch (error) {
+        notify(error.message, true);
+        uploadButton.disabled = false;
+        uploadButton.textContent = value ? 'Заменить PDF' : 'Загрузить PDF';
+      }
+    });
+    wrapper.append(current, uploadButton, fileInput);
+    return wrapper;
+  }
 
   if (typeof value === 'boolean') {
     const input = document.createElement('input');
@@ -768,7 +815,7 @@ const createField = (key, value, pathParts, refresh) => {
       uploadButton.disabled = true;
       uploadButton.textContent = 'Загружаем…';
       try {
-        const media = await uploadImage(fileInput.files[0]);
+        const media = await uploadFile(fileInput.files[0]);
         setAtPath(state.pageDraft, pathParts, media.url);
         refresh();
         notify('Изображение загружено. Сохраните страницу.');
@@ -1077,7 +1124,7 @@ const openEntryEditor = async (type, id = null) => {
     const file = event.target.files[0];
     if (!file) return;
     try {
-      const media = await uploadImage(file);
+      const media = await uploadFile(file);
       form.elements.image.value = media.url;
       if (!form.elements.image_alt.value) form.elements.image_alt.value = file.name.replace(/\.[^.]+$/, '');
       notify('Обложка загружена.');
@@ -1088,7 +1135,7 @@ const openEntryEditor = async (type, id = null) => {
     const file = event.target.files[0];
     if (!file) return;
     try {
-      const media = await uploadImage(file);
+      const media = await uploadFile(file);
       entryEditor.insertHtml(`<p><img src="/${escapeHtml(media.url)}" alt="${escapeHtml(file.name.replace(/\.[^.]+$/, ''))}"></p>`);
       notify('Изображение добавлено в текст.');
     } catch (error) { notify(error.message, true); }
@@ -1144,39 +1191,39 @@ const deleteEntry = async (id, type) => {
 };
 
 const renderMedia = async () => {
-  setHeading('Изображения', 'Файлы сайта');
+  setHeading('Файлы', 'Изображения и документы');
   state.media = await api('/api/media');
   view.innerHTML = `
     <div class="section-head">
-      <div><h2>Библиотека изображений</h2><p>Загруженные файлы можно использовать на страницах, в статьях и кейсах.</p></div>
-      <label class="primary-button">Загрузить изображение<input id="media-upload" type="file" accept="image/jpeg,image/png,image/webp" hidden></label>
+      <div><h2>Библиотека файлов</h2><p>Здесь хранятся изображения сайта и загруженные PDF-документы.</p></div>
+      <label class="primary-button">Загрузить файл<input id="media-upload" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.pdf" hidden></label>
     </div>
     <div class="media-grid">
       ${state.media.length ? state.media.map((item) => `
         <article class="media-card">
-          <img src="/${escapeHtml(item.url)}" alt="">
+          ${item.mime_type === 'application/pdf' ? '<div class="media-card__document">PDF</div>' : `<img src="/${escapeHtml(item.url)}" alt="">`}
           <div><strong title="${escapeHtml(item.original_name)}">${escapeHtml(item.original_name)}</strong><small>${item.system ? 'Используется на сайте' : `${Math.max(1, Math.round(item.size / 1024))} КБ`}</small><div class="button-row"><button class="text-button" data-copy="${escapeHtml(item.url)}">Копировать путь</button>${state.user.role === 'admin' && !item.system ? `<button class="text-button danger" data-media-delete="${item.id}">Удалить</button>` : ''}</div></div>
         </article>
-      `).join('') : '<div class="empty-state"><strong>Изображений пока нет</strong><p>Загрузите первый файл кнопкой выше.</p></div>'}
+      `).join('') : '<div class="empty-state"><strong>Файлов пока нет</strong><p>Загрузите первый файл кнопкой выше.</p></div>'}
     </div>
   `;
   $('#media-upload').addEventListener('change', async (event) => {
     if (!event.target.files[0]) return;
     try {
-      await uploadImage(event.target.files[0]);
-      notify('Изображение загружено.');
+      await uploadFile(event.target.files[0]);
+      notify('Файл загружен.');
       await renderMedia();
     } catch (error) { notify(error.message, true); }
   });
   $$('[data-copy]', view).forEach((button) => button.addEventListener('click', async () => {
     await navigator.clipboard.writeText(button.dataset.copy);
-    notify('Путь к изображению скопирован.');
+    notify('Путь к файлу скопирован.');
   }));
   $$('[data-media-delete]', view).forEach((button) => button.addEventListener('click', async () => {
-    if (!confirm('Удалить изображение? Сначала убедитесь, что оно не используется на сайте.')) return;
+    if (!confirm('Удалить файл? Сначала убедитесь, что он не используется на сайте.')) return;
     try {
       await api(`/api/media/${button.dataset.mediaDelete}`, { method: 'DELETE' });
-      notify('Изображение удалено.');
+      notify('Файл удалён.');
       await renderMedia();
     } catch (error) { notify(error.message, true); }
   }));
