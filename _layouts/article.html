@@ -6,8 +6,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title | escape }} — ГрадАудит</title>
-  <meta name="description" content="{{ page.excerpt_text | escape }}">
+  <title>{{ page.seo_title | default: page.title | escape }} — ГрадАудит</title>
+  <meta name="description" content="{{ page.seo_description | default: page.excerpt_text | escape }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  <meta property="og:title" content="{{ page.seo_title | default: page.title | escape }}">
+  <meta property="og:description" content="{{ page.seo_description | default: page.excerpt_text | escape }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  {% if page.image %}<meta property="og:image" content="{{ page.image | absolute_url }}">{% endif %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,7 +28,7 @@
           <a class="article-back" href="{{ 'blog.html' | relative_url }}">← Все материалы</a>
           <div class="article-meta"><span>{{ page.category | default: "Материал" | escape }}</span><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%d.%m.%Y" }}</time></div>
           <h1>{{ page.title | escape }}</h1>
-          {% if page.excerpt_text %}<p>{{ page.excerpt_text | escape }}</p>{% endif %}
+          {% if page.subtitle %}<p class="article-hero__subtitle">{{ page.subtitle | escape }}</p>{% endif %}
         </div>
         {% if page.image %}<figure><img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}"></figure>{% endif %}
       </div>

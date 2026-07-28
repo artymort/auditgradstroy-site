@@ -48,8 +48,9 @@ layout: null
             <div class="blog-card__body">
               <div class="blog-card__meta"><span>{{ post.category | default: "Материал" | escape }}</span><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%d.%m.%Y" }}</time></div>
               <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
-              {% if post.excerpt_text %}<p>{{ post.excerpt_text | escape }}</p>{% endif %}
-              <a class="content-link" href="{{ post.url | relative_url }}">Читать материал <span aria-hidden="true">→</span></a>
+              {% if post.subtitle %}<p class="blog-card__subtitle">{{ post.subtitle | escape }}</p>{% endif %}
+              {% if post.excerpt_text %}<p class="blog-card__excerpt">{{ post.excerpt_text | escape }}</p>{% endif %}
+              <a class="content-link" href="{{ post.url | relative_url }}">Читать далее <span aria-hidden="true">→</span></a>
             </div>
           </article>
           {% endfor %}
