@@ -7,7 +7,7 @@
     "cta": "Бесплатная экспресс-оценка",
     "menu": [
       { "label": "Услуги", "url": "services.html" },
-      { "label": "Кейсы", "url": "index.html#cases" },
+      { "label": "Кейсы", "url": "cases.html" },
       { "label": "Как проходит проверка", "url": "index.html#process" },
       { "label": "О эксперте", "url": "expert.html" },
       { "label": "Блог", "url": "blog.html" },

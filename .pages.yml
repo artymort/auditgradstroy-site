@@ -1207,6 +1207,227 @@ content:
             type: string
             required: true
 
+  - name: cases_page
+    label: Страница кейсов
+    type: file
+    path: _data/cases.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+      - name: hero
+        label: Первый экран
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: intro
+            label: Вводный текст
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: text
+            label: Описание раздела
+            type: text
+            required: true
+            options: { maxlength: 700 }
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+      - name: cases
+        label: Раздел выполненных проектов
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+          - name: empty_title
+            label: Заголовок до появления кейсов
+            type: string
+            required: true
+          - name: empty_text
+            label: Текст до появления кейсов
+            type: text
+            required: true
+      - name: featured
+        label: Избранные кейсы
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+          - name: empty_text
+            label: Текст до появления кейсов
+            type: text
+            required: true
+      - name: cta
+        label: Финальная форма
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 140 }
+          - name: text
+            label: Описание
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: form_title
+            label: Заголовок формы
+            type: string
+            required: true
+
+  - name: cases
+    label: Кейсы
+    type: collection
+    path: _cases
+    format: yaml-frontmatter
+    exclude: [".gitkeep"]
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      fields: [title, service, location, date, published, featured]
+      primary: title
+      sort: [date, title]
+      search: [title, subtitle, service, location, result, excerpt_text]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: layout
+        label: Шаблон
+        type: string
+        default: case
+        hidden: true
+      - name: title
+        label: Название кейса
+        type: string
+        required: true
+        options: { maxlength: 140 }
+      - name: subtitle
+        label: Краткое описание задачи
+        type: text
+        required: true
+        description: Показывается под главным заголовком на странице кейса.
+        options: { maxlength: 240 }
+      - name: date
+        label: Дата публикации
+        type: date
+        required: true
+        options:
+          time: true
+          format: yyyy-MM-dd HH:mm:ss Z
+      - name: service
+        label: Вид услуги
+        type: string
+        required: true
+        options: { maxlength: 100 }
+      - name: location
+        label: Местоположение
+        type: string
+        required: true
+        description: Например, район или населённый пункт без точного адреса.
+        options: { maxlength: 100 }
+      - name: result
+        label: Главный результат
+        type: text
+        required: true
+        description: Короткий итог проекта, который выделяется на карточке и странице кейса.
+        options: { maxlength: 220 }
+      - name: excerpt_text
+        label: Анонс для карточки
+        type: text
+        required: true
+        description: Одно короткое предложение перед кнопкой «Смотреть кейс».
+        options: { maxlength: 220 }
+      - name: seo_title
+        label: SEO-заголовок
+        type: string
+        required: false
+        description: Можно оставить пустым — тогда используется название кейса.
+        options: { maxlength: 70 }
+      - name: seo_description
+        label: SEO-описание
+        type: text
+        required: false
+        description: Можно оставить пустым — тогда используется анонс карточки.
+        options: { maxlength: 170 }
+      - name: image
+        label: Обложка
+        type: image
+        required: true
+        options:
+          path: media/cases
+          rename: safe
+      - name: image_alt
+        label: Описание обложки
+        type: string
+        required: true
+        options: { maxlength: 160 }
+      - name: featured
+        label: Показывать в избранных
+        type: boolean
+        default: false
+      - name: published
+        label: Опубликовано
+        type: boolean
+        default: true
+      - name: body
+        label: Полное описание кейса
+        type: rich-text
+        required: true
+        description: Здесь можно добавить исходную задачу, ход работы, найденные риски, результат, заголовки, списки и фотографии.
+        options:
+          format: markdown
+          path: media/cases
+          rename: safe
+          switcher: true
+
   - name: articles
     label: Статьи блога
     type: collection
