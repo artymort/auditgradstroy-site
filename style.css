@@ -10240,3 +10240,98 @@ button[aria-busy="true"] {
   cursor: wait;
   opacity: 0.72;
 }
+
+.form-notice {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  width: min(420px, calc(100vw - 32px));
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 14px;
+  transform: translateY(24px);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px;
+  background: #050706;
+  padding: 16px;
+  color: #fff;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 20px 60px rgba(5,7,6,.28);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+
+.form-notice.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.form-notice__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #a7e35c;
+  color: #050706;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.form-notice strong,
+.form-notice p {
+  display: block;
+  margin: 0;
+  color: inherit;
+  font-family: "Manrope", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.form-notice strong {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.form-notice p {
+  margin-top: 4px;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.form-notice > button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.1);
+  padding: 0;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.form-notice--error {
+  background: #7f2020;
+}
+
+.form-notice--error .form-notice__icon {
+  background: #fff;
+  color: #7f2020;
+}
+
+@media (max-width: 600px) {
+  .form-notice {
+    right: 16px;
+    bottom: 16px;
+  }
+}

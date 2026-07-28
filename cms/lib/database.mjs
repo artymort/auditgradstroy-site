@@ -134,6 +134,24 @@ export class CmsDatabase {
         created_at TEXT NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id)
       );
+      CREATE TABLE IF NOT EXISTS leads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL DEFAULT '',
+        phone TEXT NOT NULL,
+        cadastral TEXT NOT NULL DEFAULT '',
+        message TEXT NOT NULL DEFAULT '',
+        form_name TEXT NOT NULL DEFAULT '',
+        page_path TEXT NOT NULL DEFAULT '',
+        page_title TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'new'
+          CHECK(status IN ('new', 'queued', 'failed', 'handled')),
+        delivery_error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        sent_at TEXT NOT NULL DEFAULT '',
+        handled_at TEXT NOT NULL DEFAULT ''
+      );
+      CREATE INDEX IF NOT EXISTS leads_status_idx ON leads(status);
+      CREATE INDEX IF NOT EXISTS leads_created_idx ON leads(created_at);
       CREATE TABLE IF NOT EXISTS analytics_pageviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         visitor_id TEXT NOT NULL,
@@ -467,6 +485,60 @@ export class CmsDatabase {
     return item;
   }
 
+  createLead(item) {
+    const now = this.now();
+    const result = this.db.prepare(`
+      INSERT INTO leads (
+        name, phone, cadastral, message, form_name, page_path, page_title,
+        status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'new', ?)
+    `).run(
+      item.name || '',
+      item.phone,
+      item.cadastral || '',
+      item.message || '',
+      item.form || '',
+      item.page || '',
+      item.pageTitle || '',
+      now,
+    );
+    return this.getLead(Number(result.lastInsertRowid));
+  }
+
+  getLead(id) {
+    return this.db.prepare('SELECT * FROM leads WHERE id = ?').get(id);
+  }
+
+  listLeads(limit = 200) {
+    const safeLimit = Math.min(500, Math.max(1, Number(limit) || 200));
+    return this.db.prepare('SELECT * FROM leads ORDER BY id DESC LIMIT ?').all(safeLimit);
+  }
+
+  markLeadDelivery(id, { status, error = '', sentAt = '' }) {
+    this.db.prepare(`
+      UPDATE leads
+      SET status = ?, delivery_error = ?, sent_at = ?
+      WHERE id = ?
+    `).run(status, String(error || '').slice(0, 1_000), sentAt, id);
+    return this.getLead(id);
+  }
+
+  markLeadHandled(id, userId) {
+    const lead = this.getLead(id);
+    if (!lead) return null;
+    const handled = lead.status === 'handled';
+    const status = handled ? (lead.sent_at ? 'queued' : 'new') : 'handled';
+    const handledAt = handled ? '' : this.now();
+    this.db.prepare('UPDATE leads SET status = ?, handled_at = ? WHERE id = ?')
+      .run(status, handledAt, id);
+    this.log(userId, handled ? 'reopen_lead' : 'handle_lead', activityTarget({
+      kind: 'lead',
+      id,
+      phone: lead.phone,
+    }));
+    return this.getLead(id);
+  }
+
   setSetting(key, value) {
     this.db.prepare(`
       INSERT INTO settings (key, value) VALUES (?, ?)
@@ -552,6 +624,8 @@ export class CmsDatabase {
       cases: this.db.prepare("SELECT COUNT(*) AS count FROM entries WHERE type='case'").get().count,
       media: this.listMedia().length,
       users: this.db.prepare('SELECT COUNT(*) AS count FROM users WHERE active=1').get().count,
+      leads: this.db.prepare('SELECT COUNT(*) AS count FROM leads').get().count,
+      newLeads: this.db.prepare("SELECT COUNT(*) AS count FROM leads WHERE status != 'handled'").get().count,
       analytics: this.getAnalytics(),
       lastPublishedAt: this.getSetting('last_published_at', ''),
       recent: this.db.prepare(`

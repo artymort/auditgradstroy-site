@@ -247,6 +247,25 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
 .activity-list strong { color: var(--ink); font-weight: 600; }
 .activity-list span { max-width: 58ch; margin-top: 3px; color: #56646b; line-height: 1.4; }
 .activity-list small { display: block; margin-top: 4px; color: #879197; }
+.leads-list { display: grid; gap: 14px; }
+.lead-card { border: 1px solid var(--line); background: #fff; padding: 22px; }
+.lead-card.is-handled { background: #f6f8f6; opacity: .78; }
+.lead-card header,
+.lead-card footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.lead-card header p { margin: 0 0 5px; color: var(--muted); font-size: 12px; }
+.lead-card h2 { margin: 0; font-size: 22px; font-weight: 600; }
+.lead-status { flex: 0 0 auto; border-radius: 999px; padding: 7px 11px; background: #edf1ed; color: #405047; font-size: 11px; font-weight: 600; }
+.lead-status--new { background: var(--lime); color: #162314; }
+.lead-status--queued { background: var(--blue); color: #18334a; }
+.lead-status--failed { background: #ffe1e1; color: #9f2929; }
+.lead-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; margin: 22px 0; padding: 20px 0; border-top: 1px solid #e8ece8; border-bottom: 1px solid #e8ece8; }
+.lead-details div { display: grid; gap: 5px; }
+.lead-details span { color: var(--muted); font-size: 11px; }
+.lead-details strong { white-space: pre-wrap; font-size: 15px; font-weight: 500; line-height: 1.45; }
+.lead-card footer > div { display: grid; gap: 4px; color: #526169; font-size: 12px; }
+.lead-card footer strong { color: var(--ink); font-weight: 500; }
+.lead-card footer a { color: var(--navy); text-decoration: underline; text-underline-offset: 2px; }
+.lead-card footer small { max-width: 80ch; color: var(--danger); }
 
 .editor-layout { display: grid; grid-template-columns: minmax(0,1fr) 260px; align-items: start; gap: 20px; }
 .editor-main { display: grid; gap: 22px; }
@@ -471,6 +490,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
   .content-card { grid-template-columns: 1fr; }
   .content-card__image { height: 180px; }
   .quick-grid { grid-template-columns: 1fr; }
+  .lead-card header,
+  .lead-card footer { align-items: stretch; flex-direction: column; }
+  .lead-details { grid-template-columns: 1fr; }
+  .lead-card footer .secondary-button { width: 100%; }
   .media-grid { grid-template-columns: 1fr; }
   .user-row { grid-template-columns: 38px 1fr auto; }
   .user-row > .status-pill { display: none; }

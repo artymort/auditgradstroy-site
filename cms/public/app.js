@@ -320,6 +320,7 @@ const navigate = async (target) => {
   view.innerHTML = '<div class="empty-state"><strong>Загружаем раздел…</strong></div>';
   try {
     if (target === 'dashboard') return await renderDashboard();
+    if (target === 'leads') return await renderLeads();
     if (target.startsWith('page-')) return await renderPageEditor(target.replace('page-', ''));
     if (target === 'articles') return await renderEntries('article');
     if (target === 'cases') return await renderEntries('case');
@@ -360,6 +361,8 @@ const renderDashboard = async () => {
     publish: 'Сайт опубликован',
     create_user: 'Добавлен пользователь',
     update_user: 'Изменён пользователь',
+    handle_lead: 'Заявка обработана',
+    reopen_lead: 'Заявка возвращена в работу',
     login: 'Вход в админку',
   };
   const activityPageNames = {
@@ -408,6 +411,7 @@ const renderDashboard = async () => {
     }
     if (target?.kind === 'media') return `Файл «${target.name}»`;
     if (target?.kind === 'user') return target.name || `Пользователь №${target.id}`;
+    if (target?.kind === 'lead') return `Заявка №${target.id} · ${target.phone}`;
     if (item.action === 'save_page') return activityPageNames[item.target] || item.target;
     if (['create_entry', 'update_entry', 'delete_entry'].includes(item.action)) {
       const [type, id] = String(item.target || '').split(':');
@@ -422,6 +426,7 @@ const renderDashboard = async () => {
       <div class="panel">
         <h2>Быстрые действия</h2>
         <div class="quick-grid">
+          <button class="quick-card" data-go="leads"><span>Обращения</span><strong>Открыть заявки →</strong></button>
           <button class="quick-card" data-go="page-home"><span>Страница</span><strong>Изменить главную →</strong></button>
           <button class="quick-card" data-go="articles"><span>Блог</span><strong>Добавить статью →</strong></button>
           <button class="quick-card" data-go="cases"><span>Портфолио</span><strong>Добавить кейс →</strong></button>
@@ -443,7 +448,7 @@ const renderDashboard = async () => {
       <article class="metric-card"><strong>${data.articles}</strong><span>Статей</span></article>
       <article class="metric-card"><strong>${data.cases}</strong><span>Кейсов</span></article>
       <article class="metric-card"><strong>${data.media}</strong><span>Файлов</span></article>
-      <article class="metric-card"><strong>${data.users}</strong><span>Пользователей</span></article>
+      <article class="metric-card"><strong>${data.newLeads}</strong><span>Новых заявок</span></article>
     </section>
     <div class="section-divider"><span>Статистика посещений</span></div>
     <p class="view-intro">Посещаемость обновляется автоматически. «Онлайн» — посетители, активные на сайте за последние пять минут.</p>
@@ -485,6 +490,70 @@ const renderDashboard = async () => {
   state.dashboardTimer = setTimeout(() => {
     if (state.currentView === 'dashboard' && document.visibilityState === 'visible') renderDashboard();
   }, 30_000);
+};
+
+const renderLeads = async () => {
+  setHeading('Заявки', 'Обращения с сайта');
+  const leads = await api('/api/leads');
+  const statusLabels = {
+    new: 'Сохранена',
+    queued: 'Письмо в очереди',
+    failed: 'Письмо не отправлено',
+    handled: 'Обработана',
+  };
+  const details = (lead) => [
+    lead.name && ['Имя', lead.name],
+    lead.phone && ['Телефон', lead.phone],
+    lead.cadastral && ['Участок или адрес', lead.cadastral],
+    lead.message && ['Сообщение', lead.message],
+  ].filter(Boolean).map(([label, value]) => (
+    `<div><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`
+  )).join('');
+
+  view.innerHTML = `
+    <p class="view-intro">Все обращения сначала сохраняются здесь, поэтому заявка не потеряется даже при временной задержке почты.</p>
+    <section class="leads-list">
+      ${leads.length ? leads.map((lead) => `
+        <article class="lead-card${lead.status === 'handled' ? ' is-handled' : ''}">
+          <header>
+            <div>
+              <p>${escapeHtml(lead.form_name || 'Форма обратной связи')}</p>
+              <h2>Заявка №${lead.id}</h2>
+            </div>
+            <span class="lead-status lead-status--${escapeHtml(lead.status)}">${escapeHtml(statusLabels[lead.status] || lead.status)}</span>
+          </header>
+          <div class="lead-details">${details(lead)}</div>
+          <footer>
+            <div>
+              <strong>${formatDate(lead.created_at, true)}</strong>
+              ${lead.page_title ? `<span>${escapeHtml(lead.page_title)}</span>` : ''}
+              ${lead.page_path ? `<a href="${escapeHtml(lead.page_path)}" target="_blank" rel="noopener">Открыть страницу ↗</a>` : ''}
+              ${lead.delivery_error ? `<small>Почтовое уведомление: ${escapeHtml(lead.delivery_error)}</small>` : ''}
+            </div>
+            <button class="secondary-button" data-handle-lead="${lead.id}">
+              ${lead.status === 'handled' ? 'Вернуть в работу' : 'Отметить обработанной'}
+            </button>
+          </footer>
+        </article>
+      `).join('') : `
+        <div class="empty-state">
+          <strong>Заявок пока нет</strong>
+          <p>После отправки любой формы обращение сразу появится в этом разделе.</p>
+        </div>
+      `}
+    </section>
+  `;
+  $$('[data-handle-lead]', view).forEach((button) => button.addEventListener('click', async () => {
+    button.disabled = true;
+    try {
+      await api(`/api/leads/${button.dataset.handleLead}/handled`, { method: 'PUT' });
+      notify('Статус заявки обновлён.');
+      await renderLeads();
+    } catch (error) {
+      notify(error.message, true);
+      button.disabled = false;
+    }
+  }));
 };
 
 const labelFor = (key) => LABELS[key] || String(key).replaceAll('_', ' ').replace(/^./, (letter) => letter.toUpperCase());

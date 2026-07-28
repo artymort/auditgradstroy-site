@@ -61,6 +61,7 @@ CMS_DB_PATH=./data/cms.sqlite
 CMS_MEDIA_DIR=./media/uploads
 CMS_BACKUP_DIR=./backups
 CMS_BACKUP_KEEP=14
+LEAD_EMAIL_TO=${ADMIN_EMAIL}
 EOF
 chmod 600 "$APP_DIR/.env"
 

@@ -1,11 +1,39 @@
 (() => {
   if (location.pathname.startsWith('/cms')) return;
 
-  const recipient = String(document.currentScript?.dataset.formRecipient || '').trim();
-  const endpoint = recipient.includes('@')
-    ? `https://formsubmit.co/ajax/${recipient}`
-    : '';
+  const endpoint = '/api/leads';
   const forms = document.querySelectorAll('[data-static-form]');
+  let noticeTimer = 0;
+
+  const notice = document.createElement('div');
+  notice.className = 'form-notice';
+  notice.setAttribute('aria-live', 'polite');
+  notice.innerHTML = `
+    <span class="form-notice__icon" aria-hidden="true">✓</span>
+    <div>
+      <strong></strong>
+      <p></p>
+    </div>
+    <button type="button" aria-label="Закрыть уведомление">×</button>
+  `;
+  document.body.append(notice);
+
+  const hideNotice = () => {
+    notice.classList.remove('is-visible');
+  };
+
+  notice.querySelector('button').addEventListener('click', hideNotice);
+
+  const showNotice = (title, message, state) => {
+    clearTimeout(noticeTimer);
+    notice.className = `form-notice form-notice--${state}`;
+    notice.setAttribute('role', state === 'error' ? 'alert' : 'status');
+    notice.querySelector('strong').textContent = title;
+    notice.querySelector('p').textContent = message;
+    notice.querySelector('.form-notice__icon').textContent = state === 'error' ? '!' : '✓';
+    requestAnimationFrame(() => notice.classList.add('is-visible'));
+    noticeTimer = window.setTimeout(hideNotice, state === 'error' ? 9_000 : 6_000);
+  };
 
   const findField = (form, name) => (
     form.querySelector(`[name="${name}"]`)
@@ -27,6 +55,7 @@
   };
 
   forms.forEach((form) => {
+    let startedAt = Date.now();
     const trap = document.createElement('label');
     trap.className = 'form-trap';
     trap.setAttribute('aria-hidden', 'true');
@@ -42,15 +71,20 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const button = form.querySelector('button[type="submit"]');
-      const originalHtml = button?.innerHTML || '';
+      const buttonLabel = button?.querySelector('span');
+      const originalLabel = buttonLabel?.textContent || '';
       const phone = fieldValue(form, 'phone');
 
       if (!endpoint) {
-        showStatus(status, 'Отправка временно недоступна. Позвоните нам по телефону.', 'error');
+        const message = 'Отправка временно недоступна. Позвоните нам по телефону.';
+        showStatus(status, message, 'error');
+        showNotice('Заявка не отправлена', message, 'error');
         return;
       }
       if (phone.replace(/\D/g, '').length < 7) {
-        showStatus(status, 'Укажите корректный номер телефона.', 'error');
+        const message = 'Укажите корректный номер телефона.';
+        showStatus(status, message, 'error');
+        showNotice('Проверьте номер телефона', message, 'error');
         findField(form, 'phone')?.focus();
         return;
       }
@@ -58,44 +92,49 @@
       if (button) {
         button.disabled = true;
         button.setAttribute('aria-busy', 'true');
-        button.textContent = 'Отправляем…';
+        if (buttonLabel) buttonLabel.textContent = 'Отправляем…';
       }
       showStatus(status, '', 'loading');
 
       try {
+        const lead = {
+          name: fieldValue(form, 'name'),
+          phone,
+          cadastral: fieldValue(form, 'cadastral'),
+          message: fieldValue(form, 'message'),
+          form: formTitle(form),
+          page: `${location.pathname}${location.search}`,
+          pageTitle: document.title,
+          website: fieldValue(form, 'website'),
+          startedAt,
+        };
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-          body: JSON.stringify({
-            Имя: fieldValue(form, 'name'),
-            Телефон: phone,
-            'Кадастровый номер или адрес': fieldValue(form, 'cadastral'),
-            Сообщение: fieldValue(form, 'message'),
-            Форма: formTitle(form),
-            Страница: location.href,
-            '_subject': `Новая заявка с сайта — ${formTitle(form)}`,
-            '_template': 'table',
-            '_captcha': 'false',
-            '_honey': fieldValue(form, 'website'),
-          }),
+          body: JSON.stringify(lead),
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || result.success === false) {
-          throw new Error(result.message || 'Не удалось отправить заявку.');
+          throw new Error(result.error || result.message || 'Не удалось отправить заявку.');
         }
 
         form.reset();
-        showStatus(status, 'Спасибо! Заявка отправлена. Мы скоро свяжемся с вами.', 'success');
+        startedAt = Date.now();
+        const message = 'Спасибо! Мы получили ваши данные и скоро свяжемся с вами.';
+        showStatus(status, 'Заявка успешно отправлена.', 'success');
+        showNotice('Заявка успешно отправлена', message, 'success');
       } catch (error) {
-        showStatus(status, error.message || 'Не удалось отправить заявку. Попробуйте ещё раз.', 'error');
+        const message = error.message || 'Попробуйте ещё раз или свяжитесь с нами по телефону.';
+        showStatus(status, message, 'error');
+        showNotice('Заявка не отправлена', message, 'error');
       } finally {
         if (button) {
           button.disabled = false;
           button.removeAttribute('aria-busy');
-          button.innerHTML = originalHtml;
+          if (buttonLabel) buttonLabel.textContent = originalLabel;
         }
       }
     });

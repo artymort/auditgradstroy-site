@@ -40,15 +40,25 @@ const smtpSecure = process.env.SMTP_SECURE !== '0';
 const smtpUser = String(process.env.SMTP_USER || leadEmailTo).trim();
 const smtpPassword = String(process.env.SMTP_PASSWORD || '');
 const smtpFrom = String(process.env.SMTP_FROM || smtpUser).trim();
-const leadMailer = smtpPassword ? nodemailer.createTransport({
-  host: smtpHost,
-  port: smtpPort,
-  secure: smtpSecure,
-  auth: {
-    user: smtpUser,
-    pass: smtpPassword,
-  },
-}) : null;
+const leadDelivery = String(process.env.LEAD_DELIVERY || '').trim().toLowerCase();
+const sendmailPath = String(process.env.SENDMAIL_PATH || '/usr/sbin/sendmail').trim();
+const leadMailer = smtpPassword
+  ? nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth: {
+        user: smtpUser,
+        pass: smtpPassword,
+      },
+    })
+  : leadDelivery === 'sendmail'
+    ? nodemailer.createTransport({
+        sendmail: true,
+        newline: 'unix',
+        path: sendmailPath,
+      })
+    : null;
 
 if (!sessionSecret || sessionSecret.length < 32) {
   throw new Error('CMS_SESSION_SECRET должен содержать не менее 32 символов.');
@@ -91,7 +101,7 @@ app.use((request, response, next) => {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "script-src 'self'",
-    "connect-src 'self' https://formsubmit.co",
+    "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -297,11 +307,6 @@ app.post('/api/leads', async (request, response, next) => {
       response.status(400).json({ error: 'Укажите корректный номер телефона.' });
       return;
     }
-    if (!leadMailer) {
-      response.status(503).json({ error: 'Отправка заявок временно недоступна. Позвоните нам по телефону.' });
-      return;
-    }
-
     const rows = [
       ['Имя', lead.name],
       ['Телефон', lead.phone],
@@ -318,15 +323,33 @@ app.post('/api/leads', async (request, response, next) => {
       `<p style="margin:0 0 14px"><strong>${escapeLeadHtml(label)}:</strong><br>${escapeLeadHtml(value).replaceAll('\n', '<br>')}</p>`
     )).join('');
 
-    await leadMailer.sendMail({
-      from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
-      to: leadEmailTo,
-      subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
-      text,
-      html,
-    });
+    const storedLead = database.createLead(lead);
+    if (!leadMailer) {
+      response.status(202).json({ ok: true, id: storedLead.id, queued: true });
+      return;
+    }
 
-    response.status(201).json({ ok: true });
+    try {
+      await leadMailer.sendMail({
+        from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
+        to: leadEmailTo,
+        subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
+        text,
+        html,
+      });
+      database.markLeadDelivery(storedLead.id, {
+        status: 'queued',
+        sentAt: new Date().toISOString(),
+      });
+    } catch (deliveryError) {
+      database.markLeadDelivery(storedLead.id, {
+        status: 'failed',
+        error: deliveryError.message,
+      });
+      console.error(`Заявка №${storedLead.id} сохранена, но почтовое уведомление не поставлено в очередь:`, deliveryError.message);
+    }
+
+    response.status(201).json({ ok: true, id: storedLead.id });
   } catch (error) {
     next(error);
   }
@@ -338,6 +361,19 @@ app.get('/api/auth/me', requireUser, (request, response) => {
 
 app.get('/api/dashboard', requireUser, (request, response) => {
   response.json(database.getDashboard());
+});
+
+app.get('/api/leads', requireUser, (request, response) => {
+  response.json(database.listLeads());
+});
+
+app.put('/api/leads/:id/handled', requireUser, (request, response) => {
+  const lead = database.markLeadHandled(Number(request.params.id), request.user.id);
+  if (!lead) {
+    response.status(404).json({ error: 'Заявка не найдена.' });
+    return;
+  }
+  response.json(lead);
 });
 
 app.get('/api/pages', requireUser, (request, response) => {
