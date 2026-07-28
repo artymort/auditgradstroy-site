@@ -91,7 +91,7 @@ app.use((request, response, next) => {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "script-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' https://formsubmit.co",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

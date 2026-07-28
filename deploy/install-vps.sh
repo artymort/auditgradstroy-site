@@ -61,13 +61,6 @@ CMS_DB_PATH=./data/cms.sqlite
 CMS_MEDIA_DIR=./media/uploads
 CMS_BACKUP_DIR=./backups
 CMS_BACKUP_KEEP=14
-LEAD_EMAIL_TO=veritasetlex@mail.ru
-SMTP_HOST=smtp.mail.ru
-SMTP_PORT=465
-SMTP_SECURE=1
-SMTP_USER=veritasetlex@mail.ru
-SMTP_PASSWORD=
-SMTP_FROM=veritasetlex@mail.ru
 EOF
 chmod 600 "$APP_DIR/.env"
 

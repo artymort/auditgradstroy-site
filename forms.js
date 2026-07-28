@@ -1,6 +1,10 @@
 (() => {
   if (location.pathname.startsWith('/cms')) return;
 
+  const recipient = String(document.currentScript?.dataset.formRecipient || '').trim();
+  const endpoint = recipient.includes('@')
+    ? `https://formsubmit.co/ajax/${recipient}`
+    : '';
   const forms = document.querySelectorAll('[data-static-form]');
 
   const findField = (form, name) => (
@@ -23,7 +27,6 @@
   };
 
   forms.forEach((form) => {
-    const startedAt = Date.now();
     const trap = document.createElement('label');
     trap.className = 'form-trap';
     trap.setAttribute('aria-hidden', 'true');
@@ -42,6 +45,10 @@
       const originalHtml = button?.innerHTML || '';
       const phone = fieldValue(form, 'phone');
 
+      if (!endpoint) {
+        showStatus(status, 'Отправка временно недоступна. Позвоните нам по телефону.', 'error');
+        return;
+      }
       if (phone.replace(/\D/g, '').length < 7) {
         showStatus(status, 'Укажите корректный номер телефона.', 'error');
         findField(form, 'phone')?.focus();
@@ -56,23 +63,29 @@
       showStatus(status, '', 'loading');
 
       try {
-        const response = await fetch('/api/leads', {
+        const response = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
           body: JSON.stringify({
-            name: fieldValue(form, 'name'),
-            phone,
-            cadastral: fieldValue(form, 'cadastral'),
-            message: fieldValue(form, 'message'),
-            website: fieldValue(form, 'website'),
-            form: formTitle(form),
-            page: `${location.pathname}${location.search}`,
-            pageTitle: document.title,
-            startedAt,
+            Имя: fieldValue(form, 'name'),
+            Телефон: phone,
+            'Кадастровый номер или адрес': fieldValue(form, 'cadastral'),
+            Сообщение: fieldValue(form, 'message'),
+            Форма: formTitle(form),
+            Страница: location.href,
+            '_subject': `Новая заявка с сайта — ${formTitle(form)}`,
+            '_template': 'table',
+            '_captcha': 'false',
+            '_honey': fieldValue(form, 'website'),
           }),
         });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || 'Не удалось отправить заявку.');
+        if (!response.ok || result.success === false) {
+          throw new Error(result.message || 'Не удалось отправить заявку.');
+        }
 
         form.reset();
         showStatus(status, 'Спасибо! Заявка отправлена. Мы скоро свяжемся с вами.', 'success');
