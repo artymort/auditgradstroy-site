@@ -9297,13 +9297,13 @@ select,
 }
 
 .expert-facts > div {
-  min-height: 128px;
-  display: grid;
-  grid-template-columns: minmax(130px, .65fr) minmax(0, 1fr);
-  gap: 24px;
+  min-height: 118px;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   border-right: 1px solid rgba(5,7,6,.16);
-  padding: 24px 30px;
+  padding: 22px 30px;
 }
 
 .expert-facts > div:nth-child(1) { background: var(--content-lime); }
@@ -9311,17 +9311,20 @@ select,
 .expert-facts > div:nth-child(3) { background: var(--content-beige); border-right: 0; }
 
 .expert-facts strong {
+  flex: 0 0 auto;
   font-size: clamp(34px, 3.2vw, 46px);
   font-weight: 500;
-  line-height: .95;
+  line-height: .9;
   letter-spacing: -.06em;
+  white-space: nowrap;
 }
 
 .expert-facts span {
-  max-width: 190px;
+  max-width: 150px;
+  color: rgba(5,7,6,.72);
   font-size: var(--type-meta-size);
   font-weight: var(--type-meta-weight);
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: .05em;
   text-transform: uppercase;
 }
@@ -9898,6 +9901,7 @@ select,
 
   .expert-facts > div {
     min-height: 116px;
+    display: grid;
     grid-template-columns: 132px minmax(0, 1fr);
     gap: 18px;
     border-right: 0;
