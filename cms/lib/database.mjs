@@ -539,6 +539,18 @@ export class CmsDatabase {
     return this.getLead(id);
   }
 
+  deleteLead(id, userId) {
+    const lead = this.getLead(id);
+    if (!lead) return null;
+    this.db.prepare('DELETE FROM leads WHERE id = ?').run(id);
+    this.log(userId, 'delete_lead', activityTarget({
+      kind: 'lead',
+      id,
+      phone: lead.phone,
+    }));
+    return lead;
+  }
+
   setSetting(key, value) {
     this.db.prepare(`
       INSERT INTO settings (key, value) VALUES (?, ?)

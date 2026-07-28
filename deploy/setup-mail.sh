@@ -110,8 +110,7 @@ set_env() {
 }
 
 set_env "LEAD_EMAIL_TO" "$RECIPIENT"
-set_env "LEAD_DELIVERY" "sendmail"
-set_env "SENDMAIL_PATH" "/usr/sbin/sendmail"
+set_env "LEAD_DELIVERY" "local"
 set_env "SMTP_FROM" "site@${DOMAIN}"
 chown gradstroy:gradstroy "$APP_DIR/.env"
 chmod 0600 "$APP_DIR/.env"

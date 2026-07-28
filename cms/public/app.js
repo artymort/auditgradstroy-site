@@ -363,6 +363,8 @@ const renderDashboard = async () => {
     update_user: 'Изменён пользователь',
     handle_lead: 'Заявка обработана',
     reopen_lead: 'Заявка возвращена в работу',
+    delete_lead: 'Удалена заявка',
+    update_lead_email: 'Изменена почта для заявок',
     login: 'Вход в админку',
   };
   const activityPageNames = {
@@ -412,6 +414,7 @@ const renderDashboard = async () => {
     if (target?.kind === 'media') return `Файл «${target.name}»`;
     if (target?.kind === 'user') return target.name || `Пользователь №${target.id}`;
     if (target?.kind === 'lead') return `Заявка №${target.id} · ${target.phone}`;
+    if (target?.kind === 'setting') return target.name || 'Настройка';
     if (item.action === 'save_page') return activityPageNames[item.target] || item.target;
     if (['create_entry', 'update_entry', 'delete_entry'].includes(item.action)) {
       const [type, id] = String(item.target || '').split(':');
@@ -530,9 +533,12 @@ const renderLeads = async () => {
               ${lead.page_path ? `<a href="${escapeHtml(lead.page_path)}" target="_blank" rel="noopener">Открыть страницу ↗</a>` : ''}
               ${lead.delivery_error ? `<small>Почтовое уведомление: ${escapeHtml(lead.delivery_error)}</small>` : ''}
             </div>
-            <button class="secondary-button" data-handle-lead="${lead.id}">
-              ${lead.status === 'handled' ? 'Вернуть в работу' : 'Отметить обработанной'}
-            </button>
+            <div class="lead-actions">
+              <button class="secondary-button" data-handle-lead="${lead.id}">
+                ${lead.status === 'handled' ? 'Вернуть в работу' : 'Отметить обработанной'}
+              </button>
+              <button class="danger-button" data-delete-lead="${lead.id}">Удалить заявку</button>
+            </div>
           </footer>
         </article>
       `).join('') : `
@@ -548,6 +554,19 @@ const renderLeads = async () => {
     try {
       await api(`/api/leads/${button.dataset.handleLead}/handled`, { method: 'PUT' });
       notify('Статус заявки обновлён.');
+      await renderLeads();
+    } catch (error) {
+      notify(error.message, true);
+      button.disabled = false;
+    }
+  }));
+  $$('[data-delete-lead]', view).forEach((button) => button.addEventListener('click', async () => {
+    const id = Number(button.dataset.deleteLead);
+    if (!confirm(`Удалить заявку №${id}? Восстановить её после удаления будет нельзя.`)) return;
+    button.disabled = true;
+    try {
+      await api(`/api/leads/${id}`, { method: 'DELETE' });
+      notify(`Заявка №${id} удалена.`);
       await renderLeads();
     } catch (error) {
       notify(error.message, true);
@@ -1020,11 +1039,28 @@ const renderPageEditor = async (key) => {
   const meta = PAGE_META[key];
   if (!meta) throw new Error('Неизвестная страница.');
   setHeading(meta.title, 'Страницы сайта');
-  const page = await api(`/api/pages/${key}`);
+  const [page, leadEmailSetting] = await Promise.all([
+    api(`/api/pages/${key}`),
+    key === 'site' ? api('/api/settings/lead-email') : Promise.resolve(null),
+  ]);
   state.pageDraft = structuredClone(page.data);
   state.pageKey = key;
   view.innerHTML = `
     <p class="view-intro">${escapeHtml(meta.description)} После нажатия «Сохранить» сайт обновится автоматически.</p>
+    ${key === 'site' ? `
+      <section class="notification-settings">
+        <div>
+          <h2>Получение заявок</h2>
+          <p>Сюда будут приходить письма из всех форм сайта. Это отдельная настройка: публичная почта в контактах не изменится.</p>
+        </div>
+        <form id="lead-email-form">
+          <label>Почта для получения заявок
+            <input id="lead-email-input" type="email" value="${escapeHtml(leadEmailSetting.email)}" required maxlength="254" autocomplete="email">
+          </label>
+          <button class="primary-button" type="submit">Сохранить почту</button>
+        </form>
+      </section>
+    ` : ''}
     <div class="editor-layout">
       <div class="editor-main" id="page-fields"></div>
       <aside class="editor-aside">
@@ -1037,6 +1073,27 @@ const renderPageEditor = async (key) => {
   `;
   renderPageFields();
   $('#save-page').addEventListener('click', savePage);
+  if (key === 'site') {
+    $('#lead-email-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = event.currentTarget.querySelector('button');
+      button.disabled = true;
+      button.textContent = 'Сохраняем…';
+      try {
+        const saved = await api('/api/settings/lead-email', {
+          method: 'PUT',
+          body: { email: $('#lead-email-input').value },
+        });
+        $('#lead-email-input').value = saved.email;
+        notify('Почта для получения заявок сохранена.');
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Сохранить почту';
+      }
+    });
+  }
 };
 
 const savePage = async () => {

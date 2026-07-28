@@ -41,8 +41,8 @@ const smtpUser = String(process.env.SMTP_USER || leadEmailTo).trim();
 const smtpPassword = String(process.env.SMTP_PASSWORD || '');
 const smtpFrom = String(process.env.SMTP_FROM || smtpUser).trim();
 const leadDelivery = String(process.env.LEAD_DELIVERY || '').trim().toLowerCase();
-const sendmailPath = String(process.env.SENDMAIL_PATH || '/usr/sbin/sendmail').trim();
 const leadDeliveryTimeout = Math.max(5_000, Number(process.env.LEAD_DELIVERY_TIMEOUT_MS || 15_000));
+const useLocalMail = ['local', 'sendmail'].includes(leadDelivery);
 const leadMailer = smtpPassword
   ? nodemailer.createTransport({
       host: smtpHost,
@@ -53,11 +53,15 @@ const leadMailer = smtpPassword
         pass: smtpPassword,
       },
     })
-  : leadDelivery === 'sendmail'
+  : useLocalMail
     ? nodemailer.createTransport({
-        sendmail: true,
-        newline: 'unix',
-        path: sendmailPath,
+        host: '127.0.0.1',
+        port: 25,
+        secure: false,
+        ignoreTLS: true,
+        connectionTimeout: 5_000,
+        greetingTimeout: 5_000,
+        socketTimeout: 10_000,
       })
     : null;
 
@@ -76,6 +80,9 @@ if (process.env.CMS_RESET_DATABASE === '1' && !production) {
 
 const database = new CmsDatabase({ root, filename: databaseFile });
 await database.init();
+if (!database.getSetting('lead_email_to')) {
+  database.setSetting('lead_email_to', leadEmailTo);
+}
 
 const initialEmail = process.env.CMS_ADMIN_EMAIL || (production ? '' : 'admin@gradstroy.local');
 const initialPassword = process.env.CMS_ADMIN_PASSWORD || (production ? '' : 'admin12345');
@@ -283,10 +290,11 @@ const escapeLeadHtml = (value) => String(value || '')
 const deliverLeadNotification = async ({ storedLead, lead, text, html }) => {
   let timeoutId;
   try {
+    const recipient = database.getSetting('lead_email_to', leadEmailTo).trim();
     await Promise.race([
       leadMailer.sendMail({
         from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
-        to: leadEmailTo,
+        to: recipient,
         subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
         text,
         html,
@@ -391,6 +399,33 @@ app.put('/api/leads/:id/handled', requireUser, (request, response) => {
     return;
   }
   response.json(lead);
+});
+
+app.delete('/api/leads/:id', requireUser, (request, response) => {
+  const lead = database.deleteLead(Number(request.params.id), request.user.id);
+  if (!lead) {
+    response.status(404).json({ error: 'Заявка не найдена.' });
+    return;
+  }
+  response.json({ ok: true });
+});
+
+app.get('/api/settings/lead-email', requireUser, (request, response) => {
+  response.json({ email: database.getSetting('lead_email_to', leadEmailTo) });
+});
+
+app.put('/api/settings/lead-email', requireUser, (request, response) => {
+  const email = String(request.body?.email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    response.status(400).json({ error: 'Укажите корректный адрес электронной почты.' });
+    return;
+  }
+  database.setSetting('lead_email_to', email);
+  database.log(request.user.id, 'update_lead_email', JSON.stringify({
+    kind: 'setting',
+    name: 'Почта для получения заявок',
+  }));
+  response.json({ email });
 });
 
 app.get('/api/pages', requireUser, (request, response) => {

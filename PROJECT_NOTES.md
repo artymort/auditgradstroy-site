@@ -1046,3 +1046,8 @@ VPS migration still requires:
 - Background mail delivery has a 15-second safety timeout and records failures on the corresponding CMS lead instead of blocking the visitor.
 - Public forms also abort an unresponsive API request after 15 seconds, restore the submit button, and show an explicit error.
 - `npm run check`, `node --check cms/server.mjs`, and `node --check forms.js` pass.
+- Replaced the local `sendmail` subprocess transport with an SMTP connection to Postfix on `127.0.0.1:25`.
+- This avoids the setgid permissions required by Postfix `postdrop`, which conflict with the CMS systemd service's `NoNewPrivileges=true` hardening and caused the 15-second delivery timeout.
+- Added a separate `Почта для получения заявок` setting to the CMS `Общие данные` screen. It is stored in SQLite, applies immediately to new leads, and does not change the public contact email.
+- Added permanent lead deletion to the CMS with an explicit confirmation prompt and activity-log entry.
+- Existing VPS installations using `LEAD_DELIVERY=sendmail` automatically use the corrected local SMTP transport; future setup writes `LEAD_DELIVERY=local`.
