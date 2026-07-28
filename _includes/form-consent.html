@@ -2,11 +2,11 @@
 {% if site.data.legal.privacy.file != blank %}
 <a href="{{ site.data.legal.privacy.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.privacy.title | escape }}</a>
 {% else %}
-<span class="form-consent__document">{{ site.data.legal.privacy.title | escape }}</span>
+<a href="" data-legal-placeholder>{{ site.data.legal.privacy.title | escape }}</a>
 {% endif %}
 <span aria-hidden="true">·</span>
 {% if site.data.legal.consent.file != blank %}
 <a href="{{ site.data.legal.consent.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.consent.title | escape }}</a>
 {% else %}
-<span class="form-consent__document">{{ site.data.legal.consent.title | escape }}</span>
+<a href="" data-legal-placeholder>{{ site.data.legal.consent.title | escape }}</a>
 {% endif %}

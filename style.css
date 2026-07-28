@@ -9208,32 +9208,54 @@ select,
   overflow-wrap: anywhere;
 }
 
-.form-consent {
+body .form-consent.form-consent {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 16px auto 0;
+  padding: 0;
+  color: rgba(5,7,6,.65);
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: none;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
-.form-consent span,
-.form-consent a {
+body .form-consent.form-consent span,
+body .form-consent.form-consent a {
   display: inline;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
 }
 
-.form-consent a {
-  color: inherit;
-  font: inherit;
+body .form-consent.form-consent a {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
 
-.form-consent a:hover {
+body .form-consent.form-consent a:hover {
   color: #050706;
 }
 
-.dom-cta__form .form-consent {
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
+.hp-quick-form .form-consent,
+.dom-audit-form__fields .form-consent {
+  grid-column: 1 / -1;
+  justify-self: center;
 }
 
 .content-button {
@@ -9258,6 +9280,11 @@ select,
 .contact-form .content-button {
   width: min(100%, 360px);
   margin: 24px auto 0;
+}
+
+.contact-form .content-button {
+  width: 100%;
+  max-width: none;
 }
 
 .content-button i {
