@@ -1220,7 +1220,7 @@ content:
       fields: [title, category, date, published, popular]
       primary: title
       sort: [date, title]
-      search: [title, category, excerpt_text]
+      search: [title, subtitle, category, excerpt_text]
       default:
         sort: date
         order: desc
@@ -1235,6 +1235,12 @@ content:
         type: string
         required: true
         options: { maxlength: 140 }
+      - name: subtitle
+        label: Подзаголовок статьи
+        type: text
+        required: true
+        description: Показывается под главным заголовком на странице статьи.
+        options: { maxlength: 220 }
       - name: date
         label: Дата публикации
         type: date
@@ -1248,10 +1254,23 @@ content:
         required: true
         options: { maxlength: 80 }
       - name: excerpt_text
-        label: Краткое описание для карточки
+        label: Анонс для карточки
         type: text
         required: true
-        options: { maxlength: 320 }
+        description: Одно короткое предложение перед кнопкой «Читать далее».
+        options: { maxlength: 220 }
+      - name: seo_title
+        label: SEO-заголовок
+        type: string
+        required: false
+        description: Можно оставить пустым — тогда используется название статьи.
+        options: { maxlength: 70 }
+      - name: seo_description
+        label: SEO-описание
+        type: text
+        required: false
+        description: Можно оставить пустым — тогда используется анонс карточки.
+        options: { maxlength: 170 }
       - name: image
         label: Обложка
         type: image
@@ -1276,6 +1295,7 @@ content:
         label: Текст статьи
         type: rich-text
         required: true
+        description: Здесь можно добавлять обычный текст, заголовки разных уровней, списки, ссылки и фотографии.
         options:
           format: markdown
           path: media/blog
