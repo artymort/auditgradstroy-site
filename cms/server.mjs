@@ -350,6 +350,7 @@ const allowedTypes = new Map([
   ['image/jpeg', '.jpg'],
   ['image/png', '.png'],
   ['image/webp', '.webp'],
+  ['application/pdf', '.pdf'],
 ]);
 const upload = multer({
   storage: multer.diskStorage({
@@ -367,23 +368,24 @@ app.get('/api/media', requireUser, (request, response) => {
   response.json(database.listMedia());
 });
 
-const isRealImage = async (filename, mimeType) => {
+const isAllowedFile = async (filename, mimeType) => {
   const bytes = await readFile(filename);
   if (mimeType === 'image/jpeg') return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
   if (mimeType === 'image/png') return bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
   if (mimeType === 'image/webp') return bytes.subarray(0, 4).toString() === 'RIFF' && bytes.subarray(8, 12).toString() === 'WEBP';
+  if (mimeType === 'application/pdf') return bytes.subarray(0, 5).toString() === '%PDF-';
   return false;
 };
 
-app.post('/api/media', requireUser, upload.single('image'), async (request, response, next) => {
+app.post('/api/media', requireUser, upload.single('file'), async (request, response, next) => {
   if (!request.file) {
-    response.status(400).json({ error: 'Выберите изображение JPG, PNG или WEBP размером до 10 МБ.' });
+    response.status(400).json({ error: 'Выберите JPG, PNG, WEBP или PDF размером до 10 МБ.' });
     return;
   }
   try {
-    if (!await isRealImage(request.file.path, request.file.mimetype)) {
+    if (!await isAllowedFile(request.file.path, request.file.mimetype)) {
       await rm(request.file.path, { force: true });
-      response.status(400).json({ error: 'Содержимое файла не похоже на изображение.' });
+      response.status(400).json({ error: 'Содержимое файла не соответствует выбранному формату.' });
       return;
     }
     const url = `media/uploads/${request.file.filename}`;
