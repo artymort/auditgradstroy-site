@@ -9092,6 +9092,13 @@ select,
   grid-template-columns: minmax(0, 1.65fr) minmax(360px, .85fr);
 }
 
+.inner-cta__grid > *,
+.contact-form-layout > *,
+.contacts-hero__grid > *,
+.expert-hero__stage > * {
+  min-width: 0;
+}
+
 .inner-cta__copy {
   display: flex;
   flex-direction: column;
@@ -9446,6 +9453,7 @@ select,
 }
 
 .contacts-cards {
+  min-width: 0;
   display: grid;
   grid-template-rows: repeat(3, minmax(180px, 1fr));
 }
@@ -9708,7 +9716,7 @@ select,
   .content-hero__grid,
   .contacts-hero__grid,
   .article-hero__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .content-hero__grid,
@@ -9757,7 +9765,7 @@ select,
 
   .inner-cta__grid,
   .contact-form-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .advantages-layout {
@@ -9868,7 +9876,7 @@ select,
   }
 
   .expert-hero__stage {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "copy" "photo" "facts";
   }
 
