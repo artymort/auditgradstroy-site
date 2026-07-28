@@ -4,7 +4,7 @@ Last updated: 2026-07-19
 
 ## Project
 
-Static website for GradAudit, a Russian-language landing/site about checking land plots before purchase and urban-planning due diligence.
+Static website for GradstroyAudit, a Russian-language landing/site about checking land plots before purchase and urban-planning due diligence.
 
 Main files:
 - `index.html` - Liquid/Jekyll template for the home page.
