@@ -36,11 +36,7 @@
     "phone_display": "+7 920 940-96-88",
     "phone_link": "+79209409688",
     "email": "veritasetlex@mail.ru",
-    "region": "Москва и Московская область",
-    "privacy_label": "Политика конфиденциальности",
-    "privacy_url": "#",
-    "agreement_label": "Пользовательское соглашение",
-    "agreement_url": "#"
+    "region": "Москва и Московская область"
   },
   "forms": {
     "cadastral_label": "Кадастровый номер или адрес",
