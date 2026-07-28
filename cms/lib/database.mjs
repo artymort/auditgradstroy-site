@@ -5,7 +5,7 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { hashPassword } from './auth.mjs';
 
-const PAGE_KEYS = ['site', 'home', 'services', 'blog', 'cases', 'expert', 'contacts'];
+const PAGE_KEYS = ['site', 'home', 'services', 'blog', 'cases', 'expert', 'contacts', 'legal'];
 const ANALYTICS_TIME_ZONE = process.env.CMS_ANALYTICS_TIME_ZONE || 'Europe/Moscow';
 
 const analyticsDay = (date = new Date()) => {
@@ -172,6 +172,22 @@ export class CmsDatabase {
     for (const key of PAGE_KEYS) {
       const data = await readFile(path.join(this.root, '_data', `${key}.json`), 'utf8');
       insert.run(key, data, this.now());
+    }
+
+    const sitePage = this.db.prepare('SELECT data_json FROM content_pages WHERE key = ?').get('site');
+    if (sitePage) {
+      const siteData = JSON.parse(sitePage.data_json);
+      let changed = false;
+      for (const obsoleteKey of ['privacy_label', 'privacy_url', 'agreement_label', 'agreement_url']) {
+        if (Object.hasOwn(siteData.contacts || {}, obsoleteKey)) {
+          delete siteData.contacts[obsoleteKey];
+          changed = true;
+        }
+      }
+      if (changed) {
+        this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
+          .run(JSON.stringify(siteData), this.now(), 'site');
+      }
     }
   }
 
