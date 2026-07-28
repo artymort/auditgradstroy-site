@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import multer from 'multer';
 import { marked } from 'marked';
+import nodemailer from 'nodemailer';
 import { CmsDatabase, PAGE_KEYS } from './lib/database.mjs';
 import {
   clearSessionCookie,
@@ -32,6 +33,22 @@ const baseurl = (process.env.BASEURL || '').replace(/\/$/, '');
 const databaseFile = path.resolve(root, process.env.CMS_DB_PATH || 'data/cms.sqlite');
 const mediaDirectory = path.resolve(root, process.env.CMS_MEDIA_DIR || 'media/uploads');
 const sessionSecret = process.env.CMS_SESSION_SECRET || (production ? '' : crypto.randomBytes(32).toString('hex'));
+const leadEmailTo = String(process.env.LEAD_EMAIL_TO || 'veritasetlex@mail.ru').trim();
+const smtpHost = String(process.env.SMTP_HOST || 'smtp.mail.ru').trim();
+const smtpPort = Number(process.env.SMTP_PORT || 465);
+const smtpSecure = process.env.SMTP_SECURE !== '0';
+const smtpUser = String(process.env.SMTP_USER || leadEmailTo).trim();
+const smtpPassword = String(process.env.SMTP_PASSWORD || '');
+const smtpFrom = String(process.env.SMTP_FROM || smtpUser).trim();
+const leadMailer = smtpPassword ? nodemailer.createTransport({
+  host: smtpHost,
+  port: smtpPort,
+  secure: smtpSecure,
+  auth: {
+    user: smtpUser,
+    pass: smtpPassword,
+  },
+}) : null;
 
 if (!sessionSecret || sessionSecret.length < 32) {
   throw new Error('CMS_SESSION_SECRET должен содержать не менее 32 символов.');
@@ -104,6 +121,7 @@ const rejectDamagedEncoding = (value) => {
 
 const loginAttempts = new Map();
 const analyticsAttempts = new Map();
+const leadAttempts = new Map();
 
 const analyticsLimited = (ip) => {
   const now = Date.now();
@@ -124,6 +142,17 @@ const loginLimited = (ip) => {
     return false;
   }
   return entry.count >= 10;
+};
+
+const leadLimited = (ip) => {
+  const now = Date.now();
+  const current = leadAttempts.get(ip);
+  if (!current || now - current.startedAt > 15 * 60 * 1000) {
+    leadAttempts.set(ip, { count: 1, startedAt: now });
+    return false;
+  }
+  current.count += 1;
+  return current.count > 8;
 };
 
 const registerFailedLogin = (ip) => {
@@ -220,6 +249,87 @@ app.post('/api/analytics/track', (request, response) => {
     pageview: request.body?.type === 'pageview',
   });
   response.sendStatus(204);
+});
+
+const cleanLeadLine = (value, maxLength) => String(value || '')
+  .replace(/[\r\n\t]+/g, ' ')
+  .replace(/\s{2,}/g, ' ')
+  .trim()
+  .slice(0, maxLength);
+
+const cleanLeadText = (value, maxLength) => String(value || '')
+  .replace(/\r\n?/g, '\n')
+  .trim()
+  .slice(0, maxLength);
+
+const escapeLeadHtml = (value) => String(value || '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
+app.post('/api/leads', async (request, response, next) => {
+  try {
+    if (leadLimited(request.ip)) {
+      response.status(429).json({ error: 'Слишком много попыток. Повторите отправку через 15 минут.' });
+      return;
+    }
+
+    const honeypot = cleanLeadLine(request.body?.website, 200);
+    const startedAt = Number(request.body?.startedAt || 0);
+    if (honeypot || !startedAt || Date.now() - startedAt < 800) {
+      response.status(202).json({ ok: true });
+      return;
+    }
+
+    const lead = {
+      name: cleanLeadLine(request.body?.name, 120),
+      phone: cleanLeadLine(request.body?.phone, 60),
+      cadastral: cleanLeadLine(request.body?.cadastral, 160),
+      message: cleanLeadText(request.body?.message, 4_000),
+      form: cleanLeadLine(request.body?.form, 180),
+      page: cleanLeadLine(request.body?.page, 500),
+      pageTitle: cleanLeadLine(request.body?.pageTitle, 200),
+    };
+
+    if (lead.phone.replace(/\D/g, '').length < 7) {
+      response.status(400).json({ error: 'Укажите корректный номер телефона.' });
+      return;
+    }
+    if (!leadMailer) {
+      response.status(503).json({ error: 'Отправка заявок временно недоступна. Позвоните нам по телефону.' });
+      return;
+    }
+
+    const rows = [
+      ['Имя', lead.name],
+      ['Телефон', lead.phone],
+      ['Кадастровый номер или адрес', lead.cadastral],
+      ['Сообщение', lead.message],
+      ['Форма', lead.form],
+      ['Страница', `${siteUrl}${lead.page || '/'}`],
+      ['Заголовок страницы', lead.pageTitle],
+      ['Время', new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Yekaterinburg' })],
+    ].filter(([, value]) => value);
+
+    const text = rows.map(([label, value]) => `${label}: ${value}`).join('\n\n');
+    const html = rows.map(([label, value]) => (
+      `<p style="margin:0 0 14px"><strong>${escapeLeadHtml(label)}:</strong><br>${escapeLeadHtml(value).replaceAll('\n', '<br>')}</p>`
+    )).join('');
+
+    await leadMailer.sendMail({
+      from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
+      to: leadEmailTo,
+      subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
+      text,
+      html,
+    });
+
+    response.status(201).json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/api/auth/me', requireUser, (request, response) => {
