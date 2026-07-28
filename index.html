@@ -178,7 +178,7 @@ layout: null
           <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
           <input id="cta-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <button class="hp-button hp-button--dark" type="submit">{{ site.data.site.forms.submit | escape }} <i>→</i></button>
-          <small>{{ site.data.site.forms.consent | escape }}</small>
+          <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>
     </section>

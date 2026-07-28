@@ -142,22 +142,6 @@ content:
             type: string
             required: true
             options: { maxlength: 100 }
-          - name: privacy_label
-            label: Название политики конфиденциальности
-            type: string
-            required: true
-          - name: privacy_url
-            label: Ссылка на политику
-            type: string
-            required: true
-          - name: agreement_label
-            label: Название пользовательского соглашения
-            type: string
-            required: true
-          - name: agreement_url
-            label: Ссылка на соглашение
-            type: string
-            required: true
 
       - name: forms
         label: Формы заявок

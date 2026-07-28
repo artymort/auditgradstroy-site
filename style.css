@@ -6758,7 +6758,7 @@
 .hp-cta__form input { height: 58px; border: 0; border-bottom: 1px solid rgba(5,7,6,.32); background: rgba(255,255,255,.58); padding: 0 18px; outline: 0; font-size: 15px; }
 .hp-cta__form input + .sr-only + input { margin-top: 10px; }
 .hp-cta__form .hp-button { align-self: center; width: min(100%, 360px); min-height: 52px; margin-top: 26px; padding: 9px 9px 9px 22px; }
-.hp-cta__form small { width: min(100%, 360px); max-width: 360px; margin: 16px auto 0; color: rgba(5,7,6,.65); font-size: 11px; line-height: 1.5; text-align: center; white-space: nowrap; }
+.hp-cta__form small { width: min(100%, 360px); max-width: 360px; margin: 16px auto 0; color: rgba(5,7,6,.65); font-size: 11px; line-height: 1.5; text-align: center; white-space: normal; }
 .hp-footer { padding: 72px 0 30px; background: #eef1eb; color: #050706; }
 .hp-footer .footer-grid { grid-template-columns: 1.35fr .75fr 1.15fr .9fr; gap: 56px; }
 .hp-footer .logo { color: #050706; }
@@ -9196,11 +9196,43 @@ select,
 .inner-cta__form small,
 .contact-form small {
   display: block;
+  width: 100%;
+  max-width: 430px;
   margin-top: 15px;
   color: rgba(5,7,6,.64);
   font-size: 11px;
   font-weight: 400;
   line-height: 1.5;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.form-consent {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.form-consent span,
+.form-consent a {
+  display: inline;
+}
+
+.form-consent a {
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.form-consent a:hover {
+  color: #050706;
+}
+
+.dom-cta__form .form-consent {
+  width: 100%;
+  max-width: 100%;
   text-align: center;
 }
 
