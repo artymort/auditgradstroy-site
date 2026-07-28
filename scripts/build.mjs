@@ -233,6 +233,13 @@ for (const preview of previews) {
 for (const asset of [
   'style.css',
   'analytics.js',
+  'favicon.ico',
+  'favicon.svg',
+  'favicon-32x32.png',
+  'apple-touch-icon.png',
+  'icon-192.png',
+  'icon-512.png',
+  'site.webmanifest',
   'logo svg.svg',
   'logo2.svg',
   'logo3.svg',

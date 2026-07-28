@@ -1030,3 +1030,11 @@ VPS migration still requires:
 - Article, case, image, and user events include the material title, original filename, or user name where available.
 - Technical background publication and login events are hidden from `Последние изменения`, leaving only useful editorial actions.
 - Old activity records remain readable through backward-compatible target formatting.
+
+## 2026-07-28 Browser and device icons
+
+- Added a complete public favicon set derived from the standalone symbol in the active header logo `logo3.svg`; no brand-name text is included.
+- Added SVG, ICO, 32 px PNG, Apple touch, 192 px, and 512 px variants plus a web app manifest.
+- Connected the public icon set to every static page and to generated article/case detail pages through one shared head include.
+- Added a separate CMS favicon matching the simplified square mark used inside the administration interface.
+- Updated the self-hosted build asset list so every icon is included in VPS publications.
