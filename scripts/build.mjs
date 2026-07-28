@@ -233,6 +233,7 @@ for (const preview of previews) {
 
 for (const asset of [
   'style.css',
+  'forms.js',
   'analytics.js',
   'favicon.ico',
   'favicon.svg',
