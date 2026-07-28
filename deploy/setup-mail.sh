@@ -55,6 +55,8 @@ chmod 0600 "$KEY_DIR/${SELECTOR}.private"
 cat > /etc/opendkim.conf <<EOF
 Syslog                  yes
 UMask                   007
+PidFile                 /run/opendkim/opendkim.pid
+UserID                  opendkim:opendkim
 Mode                    sv
 Canonicalization        relaxed/simple
 SubDomains              no
@@ -115,6 +117,8 @@ chown gradstroy:gradstroy "$APP_DIR/.env"
 chmod 0600 "$APP_DIR/.env"
 
 postfix check
+install -d -m 0755 -o opendkim -g opendkim /run/opendkim
+rm -f /run/opendkim/opendkim.pid
 systemctl enable --now opendkim postfix
 systemctl restart opendkim postfix gradstroyaudit.service
 
