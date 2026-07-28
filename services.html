@@ -113,7 +113,7 @@ layout: null
       <div class="container dom-info-grid dom-info-grid--four dom-full-scope">
         {% for card in services.full.scope_cards %}
         <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
-          {% if forloop.index == 3 %}{% assign scope_title = card.title | split: " и транспортной" %}<h3>{{ scope_title[0] | escape }}<br>и транспортной{{ scope_title[1] | escape }}</h3>{% else %}<h3>{{ card.title | escape }}</h3>{% endif %}
+          <h3>{{ card.title | escape }}</h3>
           <ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>
         </article>
         {% endfor %}

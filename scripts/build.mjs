@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { Liquid } from 'liquidjs';
 import { marked } from 'marked';
 import YAML from 'yaml';
+import { richTextHtml } from '../cms/lib/rich-text.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.resolve(root, process.env.OUTPUT_DIR || '_site');
@@ -27,6 +28,8 @@ const parseFrontMatter = (source) => {
 };
 
 const renderMarkdown = (source) => {
+  const richHtml = richTextHtml(source);
+  if (richHtml !== null) return richHtml;
   const renderer = new marked.Renderer();
   renderer.html = () => '';
   return marked.parse(source, {
@@ -93,6 +96,15 @@ const engine = new Liquid({
   cache: false,
   dynamicPartials: false,
 });
+
+const escapeHtml = (value) => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
+engine.registerFilter('escape', (value) => richTextHtml(value) ?? escapeHtml(value));
 
 const relativeUrl = (value) => {
   if (!value) return '';

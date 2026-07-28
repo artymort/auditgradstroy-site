@@ -74,8 +74,7 @@ layout: null
 
     <section class="hp-manifesto">
       <div class="container hp-manifesto__grid">
-        {% assign manifesto_parts = home.manifesto.title | split: " — " %}
-        <h2>{{ manifesto_parts[0] | escape }}{% if manifesto_parts.size > 1 %}<br>— {{ manifesto_parts[1] | escape }}{% endif %}</h2>
+        <h2>{{ home.manifesto.title | escape }}</h2>
         <div class="hp-manifesto__aside">
           <p>{{ home.manifesto.text | escape }}</p>
           <a href="#cases">{{ home.manifesto.link | escape }}</a>
@@ -168,7 +167,7 @@ layout: null
         <div class="hp-cta__copy">
           <h2>{{ home.cta.title | escape }}</h2>
           <div class="hp-cta__benefits">
-            {% for benefit in home.cta.benefits %}<span>{% if forloop.first %}{% assign benefit_parts = benefit | split: ' рабочего' %}{{ benefit_parts[0] | escape }}{% if benefit_parts.size > 1 %}<br>рабочего{{ benefit_parts[1] | escape }}{% endif %}{% else %}{{ benefit | escape }}{% endif %}</span>{% endfor %}
+            {% for benefit in home.cta.benefits %}<span>{{ benefit | escape }}</span>{% endfor %}
           </div>
         </div>
         <form class="hp-cta__form" data-static-form>
@@ -178,8 +177,7 @@ layout: null
           <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
           <input id="cta-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <button class="hp-button hp-button--dark" type="submit">{{ site.data.site.forms.submit | escape }} <i>→</i></button>
-          {% assign consent_parts = site.data.site.forms.consent | split: " на обработку " %}
-          <small>{{ consent_parts[0] | escape }} на обработку{% if consent_parts.size > 1 %}<br>{{ consent_parts[1] | escape }}{% endif %}</small>
+          <small>{{ site.data.site.forms.consent | escape }}</small>
         </form>
       </div>
     </section>

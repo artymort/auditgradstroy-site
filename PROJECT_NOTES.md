@@ -1005,3 +1005,13 @@ VPS migration still requires:
 - Reduced title, subtitle, metadata, article, and case preview weights to the same `400/500/600` typography system used by the existing public site.
 - Fixed empty front matter leaking into article and case preview output.
 - Verified in the browser that the local CMS-served site and the GitHub Pages site both load Manrope and report matching navigation and heading weights.
+
+## 2026-07-28 Controlled rich-text editing
+
+- Added a visual rich-text editor to every visible content field in the self-hosted CMS, including card labels, headings, descriptions, warnings, page copy, article subtitles, case results, and full article/case bodies.
+- Kept technical values as plain fields where formatting would break the site: SEO metadata, URLs, slugs, image paths and alt text, phone/email links, dates, prices, numbers, and action-link labels.
+- Inline page fields support bold, italic, links, line breaks, new paragraphs, simple list points, undo/redo, and format clearing.
+- Article and case bodies additionally support section headings, subheadings, numbered and bulleted lists, and inline image uploads.
+- Rich content is stored with an explicit mode marker, sanitized on the server, sanitized again during the static build, and rendered as semantic HTML.
+- Removed template-specific forced line splitting so client-controlled line breaks work consistently in all editable blocks.
+- Verified page publication with bold text and paragraph breaks, article headings/lists, and removal of scripts and unsafe `javascript:` links.
