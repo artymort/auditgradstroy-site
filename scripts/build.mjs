@@ -15,7 +15,11 @@ const site = {
     site: await readJson('site.json'),
     home: await readJson('home.json'),
     services: await readJson('services.json'),
+    blog: await readJson('blog.json'),
+    expert: await readJson('expert.json'),
+    contacts: await readJson('contacts.json'),
   },
+  posts: [],
 };
 
 const engine = new Liquid({
@@ -37,7 +41,7 @@ const stripFrontMatter = (source) => source.replace(/^---\s*\r?\n[\s\S]*?\r?\n--
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 
-for (const page of ['index.html', 'services.html']) {
+for (const page of ['index.html', 'services.html', 'blog.html', 'expert.html', 'contacts.html']) {
   const template = stripFrontMatter(await readFile(path.join(root, page), 'utf8'));
   const html = await engine.parseAndRender(template, { site });
   await writeFile(path.join(output, page), html, 'utf8');

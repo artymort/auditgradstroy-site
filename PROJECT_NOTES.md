@@ -886,3 +886,27 @@ Future VPS/custom-domain migration:
 Deployment status:
 - the Pages CMS integration is currently implemented and verified locally;
 - it has not yet been committed or pushed in this pass.
+
+## 2026-07-28 Blog, Expert and Contacts Pages
+
+Implemented the three content pages specified in `blog_expert_cont.pdf`:
+- `blog.html` — editorial blog landing page with the supplied introduction, publication grid, popular-materials area, and a clean empty state until article names are approved;
+- `expert.html` — full expert profile for Alexander Sysuev with the supplied biography, aligned practice metrics, competency cards, working principles, and consultation form;
+- `contacts.html` — consultation contact page with the supplied phone, email, working hours, and feedback copy.
+
+CMS and publishing:
+- `_data/blog.json`, `_data/expert.json`, and `_data/contacts.json` expose all page copy and images in Pages CMS;
+- `_posts/` is configured as a CMS article collection with title, date, category, excerpt, cover, popular flag, publish flag, and rich-text body;
+- `_layouts/article.html` provides the matching article-detail design;
+- no article titles were invented; the blog is ready for content but currently empty;
+- the global menu now links directly to the new pages;
+- the phone and email from the approved contacts brief are now shared across the header, footer, and contacts page.
+
+Verification:
+- CMS configuration and all six JSON content files pass validation;
+- local builds now generate `index.html`, `services.html`, `blog.html`, `expert.html`, and `contacts.html`;
+- the three new pages were visually reviewed at `320`, `390`, `768`, and `1440` px;
+- horizontal overflow is `0` at every tested width;
+- all five site pages have no broken internal links or images;
+- typography uses the existing Manrope `400/500/600` role system;
+- the new mobile expert metrics use one consistent two-column alignment.

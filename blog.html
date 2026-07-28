@@ -1,0 +1,105 @@
+---
+layout: null
+---
+{% assign page_type = "inner" %}
+{% assign blog = site.data.blog %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ blog.seo.title | escape }}</title>
+  <meta name="description" content="{{ blog.seo.description | escape }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="content-page content-page--blog">
+    <section class="content-hero">
+      <div class="container content-hero__grid">
+        <div class="content-hero__copy">
+          <span class="content-label">{{ blog.hero.label | escape }}</span>
+          <h1>{{ blog.hero.title | escape }}</h1>
+          <p class="content-hero__lead">{{ blog.hero.intro | escape }}</p>
+          <p>{{ blog.hero.text | escape }}</p>
+        </div>
+        <figure class="content-hero__media">
+          <img src="{{ blog.hero.image | relative_url }}" alt="{{ blog.hero.image_alt | escape }}">
+          <figcaption>{{ site.data.site.contacts.region | escape }}</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="content-section blog-list">
+      <div class="container">
+        <div class="content-section__head">
+          <div><span class="content-label">{{ blog.articles.label | escape }}</span><h2>{{ blog.articles.title | escape }}</h2></div>
+          <p>{{ blog.hero.intro | escape }}</p>
+        </div>
+        {% if site.posts.size > 0 %}
+        <div class="blog-grid">
+          {% for post in site.posts %}
+          <article class="blog-card">
+            {% if post.image %}<a class="blog-card__media" href="{{ post.url | relative_url }}"><img src="{{ post.image | relative_url }}" alt="{{ post.image_alt | default: post.title | escape }}"></a>{% endif %}
+            <div class="blog-card__body">
+              <div class="blog-card__meta"><span>{{ post.category | default: "Материал" | escape }}</span><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%d.%m.%Y" }}</time></div>
+              <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
+              {% if post.excerpt_text %}<p>{{ post.excerpt_text | escape }}</p>{% endif %}
+              <a class="content-link" href="{{ post.url | relative_url }}">Читать материал <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="content-empty">
+          <span aria-hidden="true">01</span>
+          <div><h3>{{ blog.articles.empty_title | escape }}</h3><p>{{ blog.articles.empty_text | escape }}</p></div>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="content-section content-section--soft blog-popular">
+      <div class="container">
+        <div class="content-section__head">
+          <div><span class="content-label">{{ blog.popular.label | escape }}</span><h2>{{ blog.popular.title | escape }}</h2></div>
+        </div>
+        {% assign popular_count = 0 %}
+        <div class="popular-grid">
+          {% for post in site.posts %}
+            {% if post.popular %}
+              {% assign popular_count = popular_count | plus: 1 %}
+              <a class="popular-card" href="{{ post.url | relative_url }}"><span>0{{ popular_count }}</span><h3>{{ post.title | escape }}</h3><i aria-hidden="true">→</i></a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% if popular_count == 0 %}<p class="popular-empty">{{ blog.popular.empty_text | escape }}</p>{% endif %}
+      </div>
+    </section>
+
+    <section class="inner-cta" id="cta">
+      <div class="container inner-cta__grid">
+        <div class="inner-cta__copy"><span class="content-label">{{ blog.cta.label | escape }}</span><h2>{{ blog.cta.title | escape }}</h2><p>{{ blog.cta.text | escape }}</p></div>
+        <div class="inner-cta__form">
+          <h3>{{ blog.cta.form_title | escape }}</h3>
+          <form data-static-form>
+            <label class="sr-only" for="blog-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="blog-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <label class="sr-only" for="blog-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="blog-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
+            <small>{{ site.data.site.forms.consent | escape }}</small>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

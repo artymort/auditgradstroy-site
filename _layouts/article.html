@@ -1,0 +1,36 @@
+---
+---
+{% assign page_type = "inner" %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | escape }} — ГрадАудит</title>
+  <meta name="description" content="{{ page.excerpt_text | escape }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+  <main class="content-page article-page">
+    <header class="article-hero">
+      <div class="container article-hero__grid">
+        <div>
+          <a class="article-back" href="{{ 'blog.html' | relative_url }}">← Все материалы</a>
+          <div class="article-meta"><span>{{ page.category | default: "Материал" | escape }}</span><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%d.%m.%Y" }}</time></div>
+          <h1>{{ page.title | escape }}</h1>
+          {% if page.excerpt_text %}<p>{{ page.excerpt_text | escape }}</p>{% endif %}
+        </div>
+        {% if page.image %}<figure><img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}"></figure>{% endif %}
+      </div>
+    </header>
+    <article class="article-content"><div class="container"><div class="article-content__body">{{ content }}</div></div></article>
+    <section class="article-contact" id="cta"><div class="container"><div><span class="content-label">Консультация</span><h2>Нужен разбор вашей ситуации?</h2></div><a class="content-button" href="{{ 'contacts.html' | relative_url }}">Связаться с экспертом <i aria-hidden="true">→</i></a></div></section>
+  </main>
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

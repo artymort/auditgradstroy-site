@@ -1,0 +1,57 @@
+---
+layout: null
+---
+{% assign page_type = "inner" %}
+{% assign contacts = site.data.contacts %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ contacts.seo.title | escape }}</title>
+  <meta name="description" content="{{ contacts.seo.description | escape }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="content-page content-page--contacts">
+    <section class="contacts-hero">
+      <div class="container contacts-hero__grid">
+        <div class="contacts-hero__copy">
+          <span class="content-label">{{ contacts.hero.label | escape }}</span>
+          <h1>{{ contacts.hero.title | escape }}</h1>
+          <p>{{ contacts.hero.intro | escape }}</p>
+        </div>
+        <div class="contacts-cards">
+          <a class="contact-card contact-card--lime" href="tel:{{ site.data.site.contacts.phone_link | escape }}"><span>Телефон</span><strong>{{ site.data.site.contacts.phone_display | escape }}</strong><i aria-hidden="true">→</i></a>
+          <a class="contact-card contact-card--blue" href="mailto:{{ site.data.site.contacts.email | escape }}"><span>Электронная почта</span><strong>{{ site.data.site.contacts.email | escape }}</strong><i aria-hidden="true">→</i></a>
+          <article class="contact-card contact-card--beige"><span>{{ contacts.schedule.label | escape }}</span><div><p>{{ contacts.schedule.weekdays | escape }} <strong>{{ contacts.schedule.weekdays_time | escape }}</strong></p><p>{{ contacts.schedule.weekends | escape }} <strong>{{ contacts.schedule.weekends_time | escape }}</strong></p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-form-section" id="cta">
+      <div class="container contact-form-layout">
+        <div class="contact-form-copy"><span class="content-label">{{ contacts.form.label | escape }}</span><h2>{{ contacts.form.title | escape }}</h2><p>{{ contacts.form.text | escape }}</p></div>
+        <form class="contact-form" data-static-form>
+          <label for="contact-name">{{ contacts.form.name_label | escape }}</label>
+          <input id="contact-name" placeholder="{{ contacts.form.name_label | escape }}">
+          <label for="contact-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+          <input id="contact-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <label for="contact-message">{{ contacts.form.message_label | escape }}</label>
+          <textarea id="contact-message" rows="5" placeholder="{{ contacts.form.message_label | escape }}"></textarea>
+          <button class="content-button" type="submit">{{ contacts.form.submit | escape }} <i aria-hidden="true">→</i></button>
+          <small>{{ site.data.site.forms.consent | escape }}</small>
+        </form>
+      </div>
+    </section>
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

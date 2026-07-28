@@ -112,12 +112,8 @@ content:
                 type: string
                 required: true
                 options: { maxlength: 40 }
-              - name: home_url
-                label: Ссылка на главной
-                type: string
-                readonly: true
-              - name: services_url
-                label: Ссылка на странице услуг
+              - name: url
+                label: Ссылка
                 type: string
                 readonly: true
 
@@ -1096,3 +1092,423 @@ content:
             type: string
             required: true
             options: { maxlength: 70 }
+
+  - name: blog_page
+    label: Страница блога
+    type: file
+    path: _data/blog.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+      - name: hero
+        label: Первый экран
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: intro
+            label: Вводный текст
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: text
+            label: Описание блога
+            type: text
+            required: true
+            options: { maxlength: 700 }
+          - name: image
+            label: Изображение
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание изображения
+            type: string
+            required: true
+      - name: articles
+        label: Раздел публикаций
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+          - name: empty_title
+            label: Заголовок до появления статей
+            type: string
+            required: true
+          - name: empty_text
+            label: Текст до появления статей
+            type: text
+            required: true
+      - name: popular
+        label: Популярные материалы
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: string
+            required: true
+          - name: empty_text
+            label: Текст до появления материалов
+            type: text
+            required: true
+      - name: cta
+        label: Финальная форма
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 140 }
+          - name: text
+            label: Описание
+            type: text
+            required: true
+            options: { maxlength: 350 }
+          - name: form_title
+            label: Заголовок формы
+            type: string
+            required: true
+
+  - name: articles
+    label: Статьи блога
+    type: collection
+    path: _posts
+    format: yaml-frontmatter
+    exclude: [".gitkeep"]
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      fields: [title, category, date, published, popular]
+      primary: title
+      sort: [date, title]
+      search: [title, category, excerpt_text]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: layout
+        label: Шаблон
+        type: string
+        default: article
+        hidden: true
+      - name: title
+        label: Название статьи
+        type: string
+        required: true
+        options: { maxlength: 140 }
+      - name: date
+        label: Дата публикации
+        type: date
+        required: true
+        options:
+          time: true
+          format: yyyy-MM-dd HH:mm:ss Z
+      - name: category
+        label: Рубрика
+        type: string
+        required: true
+        options: { maxlength: 80 }
+      - name: excerpt_text
+        label: Краткое описание для карточки
+        type: text
+        required: true
+        options: { maxlength: 320 }
+      - name: image
+        label: Обложка
+        type: image
+        required: true
+        options:
+          path: media/blog
+          rename: safe
+      - name: image_alt
+        label: Описание обложки
+        type: string
+        required: true
+        options: { maxlength: 160 }
+      - name: popular
+        label: Показывать в популярных
+        type: boolean
+        default: false
+      - name: published
+        label: Опубликовано
+        type: boolean
+        default: true
+      - name: body
+        label: Текст статьи
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          path: media/blog
+          rename: safe
+          switcher: true
+
+  - name: expert_page
+    label: Страница эксперта
+    type: file
+    path: _data/expert.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+      - name: hero
+        label: Первый экран и биография
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 180 }
+          - name: image
+            label: Фотография
+            type: image
+            required: true
+          - name: image_alt
+            label: Описание фотографии
+            type: string
+            required: true
+          - name: name
+            label: Имя эксперта
+            type: string
+            required: true
+          - name: role
+            label: Должность
+            type: string
+            required: true
+          - name: paragraphs
+            label: Биография
+            type: text
+            list: { min: 1, max: 6 }
+            options: { maxlength: 1400 }
+      - name: facts
+        label: Факты и показатели
+        component: metric
+        list:
+          min: 3
+          max: 3
+          collapsible: { collapsed: true, summary: "{value} — {label}" }
+      - name: competencies
+        label: Компетенции
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: items
+            label: Карточки компетенций
+            component: numbered_card
+            list:
+              min: 4
+              max: 4
+              collapsible: { collapsed: true, summary: "{number} — {title}" }
+      - name: advantages
+        label: Принципы работы
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: items
+            label: Преимущества
+            type: object
+            list:
+              min: 3
+              max: 3
+              collapsible: { collapsed: true, summary: "{title}" }
+            fields:
+              - name: title
+                label: Заголовок
+                type: string
+                required: true
+              - name: text
+                label: Описание
+                type: text
+                required: true
+                options: { maxlength: 500 }
+      - name: cta
+        label: Финальная форма
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+          - name: text
+            label: Описание
+            type: text
+            required: true
+          - name: form_title
+            label: Заголовок формы
+            type: string
+            required: true
+
+  - name: contacts_page
+    label: Страница контактов
+    type: file
+    path: _data/contacts.json
+    format: json
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: seo
+        label: Поисковая оптимизация
+        type: object
+        fields:
+          - name: title
+            label: Заголовок вкладки браузера
+            type: string
+            required: true
+            options: { maxlength: 70 }
+          - name: description
+            label: Описание для поисковиков
+            type: text
+            required: true
+            options: { maxlength: 180 }
+      - name: hero
+        label: Первый экран
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Главный заголовок
+            type: text
+            required: true
+            options: { maxlength: 150 }
+          - name: intro
+            label: Вводный текст
+            type: text
+            required: true
+            options: { maxlength: 500 }
+      - name: schedule
+        label: Режим работы
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: weekdays
+            label: Рабочие дни
+            type: string
+            required: true
+          - name: weekdays_time
+            label: Время в рабочие дни
+            type: string
+            required: true
+          - name: weekends
+            label: Выходные дни
+            type: string
+            required: true
+          - name: weekends_time
+            label: Время в выходные дни
+            type: string
+            required: true
+      - name: form
+        label: Форма обратной связи
+        type: object
+        fields:
+          - name: label
+            label: Метка
+            type: string
+            required: true
+          - name: title
+            label: Заголовок
+            type: text
+            required: true
+          - name: text
+            label: Описание
+            type: text
+            required: true
+          - name: name_label
+            label: Поле имени
+            type: string
+            required: true
+          - name: message_label
+            label: Поле сообщения
+            type: string
+            required: true
+          - name: submit
+            label: Текст кнопки
+            type: string
+            required: true
