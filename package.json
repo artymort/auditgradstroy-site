@@ -5,7 +5,8 @@
     "preview": "node scripts/build.mjs && node scripts/serve.mjs",
     "cms": "node cms/server.mjs",
     "start": "node cms/server.mjs",
-    "backup": "node cms/scripts/backup.mjs"
+    "backup": "node cms/scripts/backup.mjs",
+    "import:content": "node cms/scripts/import-content.mjs"
   },
   "engines": {
     "node": ">=22.5"

@@ -21,8 +21,8 @@
           <a href="mailto:{{ site.data.site.contacts.email | escape }}">{{ site.data.site.contacts.email | escape }}</a>
           <p>{{ site.data.site.contacts.region | escape }}</p>
         </address>
-        {% if site.data.legal.privacy.file != blank %}<p style="margin-top:22px"><a href="{{ site.data.legal.privacy.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.privacy.title | escape }}</a></p>{% endif %}
-        {% if site.data.legal.consent.file != blank %}<p><a href="{{ site.data.legal.consent.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.consent.title | escape }}</a></p>{% endif %}
+        <p style="margin-top:22px">{% if site.data.legal.privacy.file != blank %}<a href="{{ site.data.legal.privacy.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.privacy.title | escape }}</a>{% else %}{{ site.data.legal.privacy.title | escape }}{% endif %}</p>
+        <p>{% if site.data.legal.consent.file != blank %}<a href="{{ site.data.legal.consent.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.consent.title | escape }}</a>{% else %}{{ site.data.legal.consent.title | escape }}{% endif %}</p>
       </div>
     </div>
     <div class="container footer-bottom"><p>{{ site.data.site.footer.copyright | escape }}</p><p>{{ site.data.site.footer.requisites | escape }}</p></div>
