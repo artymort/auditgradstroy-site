@@ -1,0 +1,10 @@
+<span>{{ site.data.site.forms.consent | escape }}</span>
+{% if site.data.legal.privacy.file != blank %}
+<a href="{{ site.data.legal.privacy.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.privacy.title | escape }}</a>
+{% endif %}
+{% if site.data.legal.privacy.file != blank and site.data.legal.consent.file != blank %}
+<span aria-hidden="true">·</span>
+{% endif %}
+{% if site.data.legal.consent.file != blank %}
+<a href="{{ site.data.legal.consent.file | relative_url }}" target="_blank" rel="noopener">{{ site.data.legal.consent.title | escape }}</a>
+{% endif %}
