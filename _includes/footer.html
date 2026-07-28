@@ -7,7 +7,7 @@
       <nav aria-label="Навигация в футере">
         <h2>{{ site.data.site.footer.navigation_title | escape }}</h2>
         <ul>
-          {% for item in site.data.site.header.menu %}<li><a href="{% if page_type == 'home' %}{{ item.home_url }}{% else %}{{ item.services_url }}{% endif %}">{{ item.label | escape }}</a></li>{% endfor %}
+          {% for item in site.data.site.header.menu %}<li><a href="{{ item.url | relative_url }}">{{ item.label | escape }}</a></li>{% endfor %}
         </ul>
       </nav>
       <div>

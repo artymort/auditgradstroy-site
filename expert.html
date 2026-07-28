@@ -1,0 +1,82 @@
+---
+layout: null
+---
+{% assign page_type = "inner" %}
+{% assign expert = site.data.expert %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ expert.seo.title | escape }}</title>
+  <meta name="description" content="{{ expert.seo.description | escape }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="content-page content-page--expert">
+    <section class="expert-hero">
+      <div class="container expert-hero__stage">
+        <div class="expert-hero__copy">
+          <span class="content-label">{{ expert.hero.label | escape }}</span>
+          <h1>{{ expert.hero.title | escape }}</h1>
+          <div class="expert-hero__text">{% for paragraph in expert.hero.paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</div>
+        </div>
+        <figure class="expert-hero__photo">
+          <img src="{{ expert.hero.image | relative_url }}" alt="{{ expert.hero.image_alt | escape }}">
+          <figcaption><strong>{{ expert.hero.name | escape }}</strong><span>{{ expert.hero.role | escape }}</span></figcaption>
+        </figure>
+        <div class="expert-facts">{% for fact in expert.facts %}<div><strong>{{ fact.value | escape }}</strong><span>{{ fact.label | escape }}</span></div>{% endfor %}</div>
+      </div>
+    </section>
+
+    <section class="content-section expert-competencies">
+      <div class="container">
+        <div class="content-section__head">
+          <div><span class="content-label">{{ expert.competencies.label | escape }}</span><h2>{{ expert.competencies.title | escape }}</h2></div>
+        </div>
+        <div class="competency-grid">
+          {% for item in expert.competencies.items %}
+          <article class="competency-card"><span>{{ item.number | escape }}</span><h3>{{ item.title | escape }}</h3><p>{{ item.text | escape }}</p></article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section content-section--soft expert-advantages">
+      <div class="container advantages-layout">
+        <div><span class="content-label">{{ expert.advantages.label | escape }}</span><h2>{{ expert.advantages.title | escape }}</h2></div>
+        <div class="advantage-list">
+          {% for item in expert.advantages.items %}
+          <article><span>0{{ forloop.index }}</span><div><h3>{{ item.title | escape }}</h3><p>{{ item.text | escape }}</p></div></article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="inner-cta" id="cta">
+      <div class="container inner-cta__grid">
+        <div class="inner-cta__copy"><span class="content-label">{{ expert.cta.label | escape }}</span><h2>{{ expert.cta.title | escape }}</h2><p>{{ expert.cta.text | escape }}</p></div>
+        <div class="inner-cta__form">
+          <h3>{{ expert.cta.form_title | escape }}</h3>
+          <form data-static-form>
+            <label class="sr-only" for="expert-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="expert-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <label class="sr-only" for="expert-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="expert-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
+            <small>{{ site.data.site.forms.consent | escape }}</small>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

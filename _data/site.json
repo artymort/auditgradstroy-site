@@ -6,18 +6,18 @@
   "header": {
     "cta": "Бесплатная экспресс-оценка",
     "menu": [
-      { "label": "Услуги", "home_url": "services.html", "services_url": "services.html" },
-      { "label": "Кейсы", "home_url": "#cases", "services_url": "index.html#cases" },
-      { "label": "Как проходит проверка", "home_url": "#process", "services_url": "index.html#process" },
-      { "label": "О эксперте", "home_url": "#expert", "services_url": "#expert" },
-      { "label": "Блог", "home_url": "#blog", "services_url": "index.html#blog" },
-      { "label": "Контакты", "home_url": "#contacts", "services_url": "#contacts" }
+      { "label": "Услуги", "url": "services.html" },
+      { "label": "Кейсы", "url": "index.html#cases" },
+      { "label": "Как проходит проверка", "url": "index.html#process" },
+      { "label": "О эксперте", "url": "expert.html" },
+      { "label": "Блог", "url": "blog.html" },
+      { "label": "Контакты", "url": "contacts.html" }
     ]
   },
   "contacts": {
-    "phone_display": "+7 (000) 000-00-00",
-    "phone_link": "+70000000000",
-    "email": "info@example.ru",
+    "phone_display": "+7 920 940-96-88",
+    "phone_link": "+79209409688",
+    "email": "veritasetlex@mail.ru",
     "region": "Москва и Московская область",
     "privacy_label": "Политика конфиденциальности",
     "privacy_url": "#",
