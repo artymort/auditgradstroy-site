@@ -64,11 +64,11 @@ layout: null
         <div class="inner-cta__copy"><span class="content-label">{{ expert.cta.label | escape }}</span><h2>{{ expert.cta.title | escape }}</h2><p>{{ expert.cta.text | escape }}</p></div>
         <div class="inner-cta__form">
           <h3>{{ expert.cta.form_title | escape }}</h3>
-          <form data-static-form>
+          <form data-static-form data-form-name="Эксперт — консультация">
             <label class="sr-only" for="expert-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-            <input id="expert-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <input id="expert-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="expert-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-            <input id="expert-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <input id="expert-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
             <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
             <small class="form-consent">{% include form-consent.html %}</small>
           </form>

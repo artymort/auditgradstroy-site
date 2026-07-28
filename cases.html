@@ -91,11 +91,11 @@ layout: null
         <div class="inner-cta__copy"><span class="content-label">{{ cases_page.cta.label | escape }}</span><h2>{{ cases_page.cta.title | escape }}</h2><p>{{ cases_page.cta.text | escape }}</p></div>
         <div class="inner-cta__form">
           <h3>{{ cases_page.cta.form_title | escape }}</h3>
-          <form data-static-form>
+          <form data-static-form data-form-name="Кейсы — консультация">
             <label class="sr-only" for="cases-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-            <input id="cases-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <input id="cases-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="cases-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-            <input id="cases-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <input id="cases-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
             <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
             <small class="form-consent">{% include form-consent.html %}</small>
           </form>

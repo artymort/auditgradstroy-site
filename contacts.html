@@ -38,13 +38,13 @@ layout: null
     <section class="contact-form-section" id="cta">
       <div class="container contact-form-layout">
         <div class="contact-form-copy"><span class="content-label">{{ contacts.form.label | escape }}</span><h2>{{ contacts.form.title | escape }}</h2><p>{{ contacts.form.text | escape }}</p></div>
-        <form class="contact-form" data-static-form>
+        <form class="contact-form" data-static-form data-form-name="Контакты — обратная связь">
           <label for="contact-name">{{ contacts.form.name_label | escape }}</label>
-          <input id="contact-name" placeholder="{{ contacts.form.name_label | escape }}">
+          <input id="contact-name" name="name" autocomplete="name" placeholder="{{ contacts.form.name_label | escape }}">
           <label for="contact-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="contact-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <label for="contact-message">{{ contacts.form.message_label | escape }}</label>
-          <textarea id="contact-message" rows="5" placeholder="{{ contacts.form.message_label | escape }}"></textarea>
+          <textarea id="contact-message" name="message" rows="5" placeholder="{{ contacts.form.message_label | escape }}"></textarea>
           <button class="content-button" type="submit">{{ contacts.form.submit | escape }} <i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>

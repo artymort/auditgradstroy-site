@@ -59,16 +59,17 @@ layout: null
           {% for metric in home.hero.metrics %}<div><strong>{{ metric.value | escape }}</strong><span>{{ metric.label | escape }}</span></div>{% endfor %}
         </div>
 
-        <form class="hp-quick-form" id="hero-form" data-static-form>
+        <form class="hp-quick-form" id="hero-form" data-static-form data-form-name="Главная — первый экран">
           <div>
             <span>{{ home.hero.form_label | escape }}</span>
             <strong>{{ home.hero.form_title | escape }}</strong>
           </div>
           <label class="hp-quick-form__label" for="hero-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-          <input id="hero-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          <input id="hero-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="hp-quick-form__label" for="hero-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="hero-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <input id="hero-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <button type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
+          <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>
     </section>
@@ -171,12 +172,12 @@ layout: null
             {% for benefit in home.cta.benefits %}<span>{{ benefit | escape }}</span>{% endfor %}
           </div>
         </div>
-        <form class="hp-cta__form" data-static-form>
+        <form class="hp-cta__form" data-static-form data-form-name="Главная — бесплатная оценка">
           <h3>{{ home.cta.form_title | escape }}</h3>
           <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-          <input id="cta-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="cta-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <input id="cta-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <button class="hp-button hp-button--dark" type="submit">{{ site.data.site.forms.submit | escape }} <i>→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
