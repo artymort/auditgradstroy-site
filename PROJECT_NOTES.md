@@ -910,3 +910,21 @@ Verification:
 - all five site pages have no broken internal links or images;
 - typography uses the existing Manrope `400/500/600` role system;
 - the new mobile expert metrics use one consistent two-column alignment.
+
+## 2026-07-28 Cases Page
+
+Implemented a dedicated cases section without inventing client projects:
+- `cases.html` — cases landing page with a two-column project grid, featured-cases area, empty state, and consultation form;
+- `_data/cases.json` — editable SEO, hero, section, empty-state, and CTA copy;
+- `_cases/` — separate Jekyll collection for completed projects;
+- `_layouts/case.html` — SEO-ready detail page with cover image, service, location, highlighted result, rich-text body, and consultation CTA;
+- the global “Кейсы” navigation item now opens `cases.html`; the homepage risk-section anchor remains unchanged;
+- `.pages.yml` exposes page settings and case fields for title, subtitle, date, service, location, result, card excerpt, SEO, cover, featured status, publication status, and rich-text content;
+- case media is stored separately under `media/cases`;
+- no real case names or results were invented; the page shows a designed empty state until the first project is added.
+
+Verification:
+- CMS configuration and all content files pass validation;
+- the local build generates `cases.html` and updates navigation across all pages;
+- the generated page has one H1 and no unresolved Liquid tags;
+- the case grid reuses the approved two-column blog-card system and collapses to one column on mobile.

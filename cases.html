@@ -1,0 +1,109 @@
+---
+layout: null
+---
+{% assign page_type = "inner" %}
+{% assign cases_page = site.data.cases %}
+{% assign sorted_cases = site.cases | sort: "date" | reverse %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ cases_page.seo.title | escape }}</title>
+  <meta name="description" content="{{ cases_page.seo.description | escape }}">
+  <link rel="canonical" href="{{ 'cases.html' | absolute_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="content-page content-page--cases">
+    <section class="content-hero">
+      <div class="container content-hero__grid">
+        <div class="content-hero__copy">
+          <span class="content-label">{{ cases_page.hero.label | escape }}</span>
+          <h1>{{ cases_page.hero.title | escape }}</h1>
+          <p class="content-hero__lead">{{ cases_page.hero.intro | escape }}</p>
+          <p>{{ cases_page.hero.text | escape }}</p>
+        </div>
+        <figure class="content-hero__media">
+          <img src="{{ cases_page.hero.image | relative_url }}" alt="{{ cases_page.hero.image_alt | escape }}">
+          <figcaption>{{ site.data.site.contacts.region | escape }}</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="content-section case-list">
+      <div class="container">
+        <div class="content-section__head">
+          <div><span class="content-label">{{ cases_page.cases.label | escape }}</span><h2>{{ cases_page.cases.title | escape }}</h2></div>
+          <p>{{ cases_page.hero.intro | escape }}</p>
+        </div>
+        {% if sorted_cases.size > 0 %}
+        <div class="blog-grid case-grid">
+          {% for case in sorted_cases %}
+          <article class="blog-card case-card">
+            {% if case.image %}<a class="blog-card__media" href="{{ case.url | relative_url }}"><img src="{{ case.image | relative_url }}" alt="{{ case.image_alt | default: case.title | escape }}"></a>{% endif %}
+            <div class="blog-card__body">
+              <div class="blog-card__meta"><span>{{ case.service | default: "Экспертиза" | escape }}</span><span>{{ case.location | escape }}</span></div>
+              <h3><a href="{{ case.url | relative_url }}">{{ case.title | escape }}</a></h3>
+              {% if case.subtitle %}<p class="blog-card__subtitle">{{ case.subtitle | escape }}</p>{% endif %}
+              {% if case.result %}<p class="case-card__result"><span>Результат</span>{{ case.result | escape }}</p>{% endif %}
+              {% if case.excerpt_text %}<p class="blog-card__excerpt">{{ case.excerpt_text | escape }}</p>{% endif %}
+              <a class="content-link" href="{{ case.url | relative_url }}">Смотреть кейс <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="content-empty">
+          <span aria-hidden="true">01</span>
+          <div><h3>{{ cases_page.cases.empty_title | escape }}</h3><p>{{ cases_page.cases.empty_text | escape }}</p></div>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="content-section content-section--soft case-featured">
+      <div class="container">
+        <div class="content-section__head">
+          <div><span class="content-label">{{ cases_page.featured.label | escape }}</span><h2>{{ cases_page.featured.title | escape }}</h2></div>
+        </div>
+        {% assign featured_count = 0 %}
+        <div class="popular-grid">
+          {% for case in sorted_cases %}
+            {% if case.featured %}
+              {% assign featured_count = featured_count | plus: 1 %}
+              <a class="popular-card" href="{{ case.url | relative_url }}"><span>0{{ featured_count }}</span><h3>{{ case.title | escape }}</h3><i aria-hidden="true">→</i></a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% if featured_count == 0 %}<p class="popular-empty">{{ cases_page.featured.empty_text | escape }}</p>{% endif %}
+      </div>
+    </section>
+
+    <section class="inner-cta" id="cta">
+      <div class="container inner-cta__grid">
+        <div class="inner-cta__copy"><span class="content-label">{{ cases_page.cta.label | escape }}</span><h2>{{ cases_page.cta.title | escape }}</h2><p>{{ cases_page.cta.text | escape }}</p></div>
+        <div class="inner-cta__form">
+          <h3>{{ cases_page.cta.form_title | escape }}</h3>
+          <form data-static-form>
+            <label class="sr-only" for="cases-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="cases-cadastral" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <label class="sr-only" for="cases-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="cases-phone" placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
+            <small>{{ site.data.site.forms.consent | escape }}</small>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>
