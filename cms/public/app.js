@@ -114,6 +114,15 @@ const LABELS = {
   featured: 'Избранные материалы',
   empty_title: 'Заголовок пустого раздела',
   empty_text: 'Текст пустого раздела',
+  category: 'Категория',
+  service: 'Услуга',
+  result: 'Результат',
+  excerpt_text: 'Краткое описание',
+  seo_title: 'SEO-заголовок',
+  seo_description: 'SEO-описание',
+  featured: 'Показывать в избранном',
+  published: 'Статус публикации',
+  body: 'Текст материала',
 };
 
 const PAGE_SECTIONS = {
@@ -349,6 +358,59 @@ const renderDashboard = async () => {
     update_user: 'Изменён пользователь',
     login: 'Вход в админку',
   };
+  const activityPageNames = {
+    home: 'Главная',
+    services: 'Услуги',
+    expert: 'Эксперт',
+    contacts: 'Контакты',
+    site: 'Общие данные',
+    blog: 'Блог',
+    cases: 'Кейсы',
+  };
+  const parseActivityTarget = (value) => {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  };
+  const changedFieldLabel = (pageKey, path) => {
+    const parts = String(path || '').split('.').filter((part) => part && !/^\d+$/.test(part));
+    const sectionKey = parts[0];
+    const fieldKey = parts.at(-1);
+    const sectionName = PAGE_SECTIONS[pageKey]?.[sectionKey]?.[0] || labelFor(sectionKey);
+    if (!fieldKey || fieldKey === sectionKey) return sectionName;
+    return `${sectionName}: ${labelFor(fieldKey)}`;
+  };
+  const activityDetail = (item) => {
+    const target = parseActivityTarget(item.target);
+    if (target?.kind === 'page') {
+      const pageName = activityPageNames[target.key] || target.key;
+      const fields = [...new Set((target.paths || []).map((path) => changedFieldLabel(target.key, path)))];
+      if (!fields.length) return pageName;
+      const visible = fields.slice(0, 2);
+      const remaining = Math.max(0, fields.length - visible.length);
+      return `${pageName} → ${visible.join('; ')}${remaining ? `; ещё ${remaining}` : ''}`;
+    }
+    if (target?.kind === 'entry') {
+      const typeName = target.type === 'case' ? 'Кейс' : 'Статья';
+      const title = target.title ? ` «${target.title}»` : ` №${target.id}`;
+      const fields = [...new Set((target.fields || []).map((field) => labelFor(field)))];
+      if (!fields.length) return `${typeName}${title}`;
+      const visible = fields.slice(0, 2);
+      const remaining = Math.max(0, fields.length - visible.length);
+      return `${typeName}${title} → ${visible.join(', ')}${remaining ? `, ещё ${remaining}` : ''}`;
+    }
+    if (target?.kind === 'media') return `Файл «${target.name}»`;
+    if (target?.kind === 'user') return target.name || `Пользователь №${target.id}`;
+    if (item.action === 'save_page') return activityPageNames[item.target] || item.target;
+    if (['create_entry', 'update_entry', 'delete_entry'].includes(item.action)) {
+      const [type, id] = String(item.target || '').split(':');
+      return `${type === 'case' ? 'Кейс' : 'Статья'} №${id}`;
+    }
+    if (['upload_media', 'delete_media'].includes(item.action)) return `Файл «${item.target}»`;
+    return '';
+  };
   view.innerHTML = `
     <p class="view-intro">Выберите нужное действие — изменения появятся на сайте сразу после сохранения.</p>
     <section class="dashboard-grid">
@@ -364,7 +426,10 @@ const renderDashboard = async () => {
       <div class="panel">
         <h2>Последние изменения</h2>
         <ul class="activity-list">
-          ${data.recent.length ? data.recent.map((item) => `<li><i></i><div>${escapeHtml(actions[item.action] || item.action)}<small>${escapeHtml(item.user_name || 'Система')} · ${formatDate(item.created_at, true)}</small></div></li>`).join('') : '<li><i></i><div>Изменений пока нет</div></li>'}
+          ${data.recent.length ? data.recent.map((item) => {
+            const detail = activityDetail(item);
+            return `<li><i></i><div><strong>${escapeHtml(actions[item.action] || item.action)}</strong>${detail ? `<span>${escapeHtml(detail)}</span>` : ''}<small>${escapeHtml(item.user_name || 'Система')} · ${formatDate(item.created_at, true)}</small></div></li>`;
+          }).join('') : '<li><i></i><div>Изменений пока нет</div></li>'}
         </ul>
       </div>
     </section>

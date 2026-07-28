@@ -1022,3 +1022,11 @@ VPS migration still requires:
 - The `_site` output directory is exposed through `ReadWritePaths` and therefore behaves as a protected mount point inside the service namespace.
 - The build now preserves the `_site` directory itself and removes only its contents, avoiding Linux `EBUSY` errors while retaining a clean static rebuild.
 - `npm run check` passes after the change.
+
+## 2026-07-28 Human-readable change history
+
+- The CMS activity log now records which page section and field changed, without storing copies of the edited text.
+- Dashboard entries show concise Russian summaries such as `Главная → 08. Финальная форма: Заголовок`.
+- Article, case, image, and user events include the material title, original filename, or user name where available.
+- Technical background publication and login events are hidden from `Последние изменения`, leaving only useful editorial actions.
+- Old activity records remain readable through backward-compatible target formatting.
