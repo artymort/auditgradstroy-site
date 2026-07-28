@@ -94,6 +94,7 @@ const site = {
     cases: await readJson('cases.json'),
     expert: await readJson('expert.json'),
     contacts: await readJson('contacts.json'),
+    legal: await readJson('legal.json'),
   },
   posts: await readCollection({ directory: '_posts', type: 'article' }),
   cases: await readCollection({ directory: '_cases', type: 'case' }),
