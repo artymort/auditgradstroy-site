@@ -1015,3 +1015,10 @@ VPS migration still requires:
 - Rich content is stored with an explicit mode marker, sanitized on the server, sanitized again during the static build, and rendered as semantic HTML.
 - Removed template-specific forced line splitting so client-controlled line breaks work consistently in all editable blocks.
 - Verified page publication with bold text and paragraph breaks, article headings/lists, and removal of scripts and unsafe `javascript:` links.
+
+## 2026-07-28 VPS publication directory fix
+
+- Fixed CMS publication under the hardened systemd service.
+- The `_site` output directory is exposed through `ReadWritePaths` and therefore behaves as a protected mount point inside the service namespace.
+- The build now preserves the `_site` directory itself and removes only its contents, avoiding Linux `EBUSY` errors while retaining a clean static rebuild.
+- `npm run check` passes after the change.

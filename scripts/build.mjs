@@ -11,6 +11,15 @@ const output = path.resolve(root, process.env.OUTPUT_DIR || '_site');
 const baseurl = (process.env.BASEURL || '').replace(/\/$/, '');
 const siteUrl = (process.env.SITE_URL || 'https://artymort.github.io').replace(/\/$/, '');
 
+const clearDirectoryContents = async (directory) => {
+  await mkdir(directory, { recursive: true });
+  const entries = await readdir(directory);
+  await Promise.all(entries.map((entry) => rm(path.join(directory, entry), {
+    recursive: true,
+    force: true,
+  })));
+};
+
 const readJson = async (file) => JSON.parse(await readFile(path.join(root, '_data', file), 'utf8'));
 
 const stripFrontMatter = (source) => source.replace(
@@ -130,8 +139,7 @@ engine.registerFilter('date', (value, format) => {
   return date.toISOString();
 });
 
-await rm(output, { recursive: true, force: true });
-await mkdir(output, { recursive: true });
+await clearDirectoryContents(output);
 
 for (const pageName of ['index.html', 'services.html', 'cases.html', 'blog.html', 'expert.html', 'contacts.html']) {
   const template = stripFrontMatter(await readFile(path.join(root, pageName), 'utf8'));
