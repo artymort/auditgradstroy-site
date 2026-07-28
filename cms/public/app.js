@@ -1,5 +1,19 @@
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const RICH_INLINE_PREFIX = '@@CMS_RICH_INLINE@@';
+const RICH_BLOCK_PREFIX = '@@CMS_RICH_BLOCK@@';
+const richSelectionRanges = new WeakMap();
+
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return;
+  const range = selection.getRangeAt(0);
+  const common = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+    ? range.commonAncestorContainer
+    : range.commonAncestorContainer.parentElement;
+  const surface = common?.closest?.('.rich-editor__surface');
+  if (surface) richSelectionRanges.set(surface, range.cloneRange());
+});
 
 const PAGE_META = {
   home: { title: 'Главная страница', description: 'Первый экран, преимущества, риски, этапы проверки и призывы к действию.' },
@@ -413,6 +427,225 @@ const setAtPath = (object, pathParts, value) => {
   parent[pathParts.at(-1)] = value;
 };
 
+const richMode = (value) => {
+  const source = String(value || '');
+  if (source.startsWith(RICH_INLINE_PREFIX)) return 'inline';
+  if (source.startsWith(RICH_BLOCK_PREFIX)) return 'block';
+  return null;
+};
+
+const richEditorHtml = (value) => {
+  const source = String(value || '');
+  if (source.startsWith(RICH_INLINE_PREFIX)) return source.slice(RICH_INLINE_PREFIX.length);
+  if (source.startsWith(RICH_BLOCK_PREFIX)) return source.slice(RICH_BLOCK_PREFIX.length);
+  return escapeHtml(source).replace(/\r?\n/g, '<br>');
+};
+
+const plainTextKeys = new Set([
+  'keywords', 'og_title', 'og_description', 'image_alt', 'url', 'anchor', 'style',
+  'price', 'number', 'value', 'email', 'phone_link', 'phone_display', 'coordinates',
+  'date', 'slug', 'logo', 'image', 'name', 'role', 'primary_action', 'secondary_action',
+  'action', 'submit', 'link', 'privacy_label', 'agreement_label',
+]);
+
+const isRichTextField = (key, value, pathParts = []) => {
+  if (typeof value !== 'string') return false;
+  const stringPath = pathParts.filter((part) => typeof part === 'string');
+  const path = stringPath.join('.');
+  if (
+    stringPath.includes('seo')
+    || plainTextKeys.has(key)
+    || key.endsWith('_alt')
+    || key.endsWith('_url')
+    || /^(?:header\.menu|footer\.services)(?:\.|$)/.test(path)
+  ) return false;
+  return true;
+};
+
+const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, onChange, label = 'Текст' } = {}) => {
+  const root = document.createElement('div');
+  root.className = `rich-editor rich-editor--${mode}${compact ? ' rich-editor--compact' : ''}`;
+  const toolbar = document.createElement('div');
+  toolbar.className = 'rich-editor__toolbar';
+  toolbar.setAttribute('role', 'toolbar');
+  toolbar.setAttribute('aria-label', `Форматирование: ${label}`);
+  const surface = document.createElement('div');
+  surface.className = 'rich-editor__surface';
+  surface.contentEditable = 'true';
+  surface.spellcheck = true;
+  surface.setAttribute('role', 'textbox');
+  surface.setAttribute('aria-multiline', 'true');
+  surface.setAttribute('aria-label', label);
+  surface.innerHTML = richEditorHtml(value);
+
+  const prefix = mode === 'block' ? RICH_BLOCK_PREFIX : RICH_INLINE_PREFIX;
+  const currentValue = () => {
+    const hasContent = surface.textContent.trim() || surface.querySelector('img');
+    return hasContent ? `${prefix}${surface.innerHTML}` : '';
+  };
+  const sync = () => onChange?.(currentValue());
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (!selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (surface.contains(range.commonAncestorContainer)) richSelectionRanges.set(surface, range.cloneRange());
+  };
+  const restoreSelection = () => {
+    const savedRange = richSelectionRanges.get(surface);
+    if (!savedRange) return;
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(savedRange);
+  };
+  const activeRange = () => {
+    surface.focus();
+    restoreSelection();
+    const selection = window.getSelection();
+    if (!selection?.rangeCount) return null;
+    const range = selection.getRangeAt(0);
+    return surface.contains(range.commonAncestorContainer) ? range : null;
+  };
+  const selectNodeContents = (node) => {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    saveSelection();
+  };
+  const wrapSelection = (tagName, attributes = {}) => {
+    const range = activeRange();
+    if (!range) return;
+    if (range.collapsed && tagName !== 'a') {
+      const command = tagName === 'strong' ? 'bold'
+        : tagName === 'em' ? 'italic'
+          : 'formatBlock';
+      document.execCommand(command, false, command === 'formatBlock' ? tagName : null);
+      saveSelection();
+      sync();
+      return;
+    }
+    const element = document.createElement(tagName);
+    Object.entries(attributes).forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    if (range.collapsed) {
+      element.textContent = 'ссылка';
+      range.insertNode(element);
+    } else {
+      element.append(range.extractContents());
+      range.insertNode(element);
+    }
+    selectNodeContents(element);
+    sync();
+  };
+  const insertHtmlAtSelection = (html) => {
+    const range = activeRange();
+    if (!range) return;
+    range.deleteContents();
+    const fragment = range.createContextualFragment(html);
+    const lastNode = fragment.lastChild;
+    range.insertNode(fragment);
+    if (lastNode) {
+      range.setStartAfter(lastNode);
+      range.collapse(true);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      saveSelection();
+    }
+    sync();
+  };
+  const insertList = (ordered) => {
+    const range = activeRange();
+    if (!range) return;
+    const lines = (range.toString() || 'Новый пункт').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    const list = document.createElement(ordered ? 'ol' : 'ul');
+    lines.forEach((line) => {
+      const item = document.createElement('li');
+      item.textContent = line;
+      list.append(item);
+    });
+    range.deleteContents();
+    range.insertNode(list);
+    selectNodeContents(list.lastElementChild || list);
+    sync();
+  };
+  const run = (command, commandValue = null) => {
+    surface.focus();
+    restoreSelection();
+    document.execCommand(command, false, commandValue);
+    saveSelection();
+    sync();
+  };
+  const button = (text, title, action) => {
+    const control = document.createElement('button');
+    control.type = 'button';
+    control.textContent = text;
+    control.title = title;
+    control.setAttribute('aria-label', title);
+    control.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      saveSelection();
+    });
+    control.addEventListener('click', action);
+    toolbar.append(control);
+    return control;
+  };
+
+  if (mode === 'block') {
+    button('Заголовок', 'Заголовок раздела', () => wrapSelection('h2'));
+    button('Подзаголовок', 'Подзаголовок раздела', () => wrapSelection('h3'));
+    button('Абзац', 'Обычный абзац', () => wrapSelection('p'));
+  }
+  button('Жирный', 'Жирное начертание', () => wrapSelection('strong'));
+  button('Курсив', 'Курсивное начертание', () => wrapSelection('em'));
+  button('Перенос', 'Перенос строки', () => insertHtmlAtSelection('<br>'));
+  if (mode === 'block') {
+    button('• Список', 'Маркированный список', () => insertList(false));
+    button('1. Список', 'Нумерованный список', () => insertList(true));
+  } else {
+    button('• Пункт', 'Добавить пункт списка с новой строки', () => insertHtmlAtSelection('<br>• '));
+    button('Новый абзац', 'Начать новый абзац', () => insertHtmlAtSelection('<br><br>'));
+  }
+  button('Ссылка', 'Добавить ссылку', () => {
+    const href = prompt('Вставьте адрес ссылки:');
+    if (href) wrapSelection('a', { href: href.trim() });
+  });
+  button('↶', 'Отменить последнее изменение', () => run('undo'));
+  button('↷', 'Вернуть отменённое изменение', () => run('redo'));
+  button('Очистить', 'Убрать оформление выделенного текста', () => {
+    const range = activeRange();
+    if (!range || range.collapsed) return;
+    const text = document.createTextNode(range.toString());
+    range.deleteContents();
+    range.insertNode(text);
+    selectNodeContents(text);
+    sync();
+  });
+
+  surface.addEventListener('input', sync);
+  surface.addEventListener('keyup', saveSelection);
+  surface.addEventListener('mouseup', saveSelection);
+  surface.addEventListener('focus', saveSelection);
+  surface.addEventListener('blur', () => {
+    saveSelection();
+    sync();
+  });
+  surface.addEventListener('paste', (event) => {
+    event.preventDefault();
+    document.execCommand('insertText', false, event.clipboardData.getData('text/plain'));
+    sync();
+  });
+  root.append(toolbar, surface);
+  return {
+    root,
+    surface,
+    getValue: currentValue,
+    insertHtml(html) {
+      run('insertHTML', html);
+    },
+  };
+};
+
 const uploadImage = async (file) => {
   const body = new FormData();
   body.append('image', file);
@@ -483,6 +716,17 @@ const createField = (key, value, pathParts, refresh) => {
     return wrapper;
   }
 
+  if (isRichTextField(key, value, pathParts)) {
+    const editor = createRichTextEditor({
+      value,
+      compact: !isLongText(key, value),
+      label: labelFor(key),
+      onChange: (nextValue) => setAtPath(state.pageDraft, pathParts, nextValue),
+    });
+    wrapper.append(editor.root);
+    return wrapper;
+  }
+
   const input = isLongText(key, value) ? document.createElement('textarea') : document.createElement('input');
   input.value = value ?? '';
   input.addEventListener('input', () => setAtPath(state.pageDraft, pathParts, input.value));
@@ -531,10 +775,20 @@ const createArrayField = (key, value, pathParts, refresh) => {
       Object.entries(item).forEach(([childKey, childValue]) => body.append(createField(childKey, childValue, [...pathParts, index, childKey], refresh)));
       wrapper.append(body);
     } else {
-      const input = document.createElement('textarea');
-      input.value = item ?? '';
-      input.addEventListener('input', () => setAtPath(state.pageDraft, [...pathParts, index], input.value));
-      wrapper.append(input);
+      if (isRichTextField(key, item, [...pathParts, index])) {
+        const editor = createRichTextEditor({
+          value: item,
+          compact: !isLongText(key, item),
+          label: `${labelFor(key)} ${index + 1}`,
+          onChange: (nextValue) => setAtPath(state.pageDraft, [...pathParts, index], nextValue),
+        });
+        wrapper.append(editor.root);
+      } else {
+        const input = document.createElement('textarea');
+        input.value = item ?? '';
+        input.addEventListener('input', () => setAtPath(state.pageDraft, [...pathParts, index], input.value));
+        wrapper.append(input);
+      }
     }
     const remove = document.createElement('button');
     remove.type = 'button';
@@ -690,10 +944,10 @@ const openEntryEditor = async (type, id = null) => {
     <form class="dialog-form" id="entry-form">
       <div class="form-grid">
         <label class="wide">Название<input name="title" required maxlength="160"></label>
-        <label class="wide">Подзаголовок<textarea name="subtitle" maxlength="500"></textarea></label>
+        <label class="wide">Подзаголовок<div id="entry-subtitle-editor"></div><textarea name="subtitle" hidden></textarea></label>
         <label>Адрес страницы<input name="slug" maxlength="100" placeholder="Сформируется автоматически"></label>
         <label>Дата публикации<input name="date" type="datetime-local" required></label>
-        ${isArticle ? '<label>Рубрика<input name="category" maxlength="100" placeholder="Например: Земельное право"></label>' : '<label>Вид услуги<input name="service" maxlength="120" placeholder="Например: Проверка участка"></label><label>Местоположение<input name="location" maxlength="120" placeholder="Москва или район"></label><label class="wide">Главный результат<textarea name="result" maxlength="600"></textarea></label>'}
+        ${isArticle ? '<label>Рубрика<input name="category" maxlength="100" placeholder="Например: Земельное право"></label>' : '<label>Вид услуги<input name="service" maxlength="120" placeholder="Например: Проверка участка"></label><label>Местоположение<input name="location" maxlength="120" placeholder="Москва или район"></label><label class="wide">Главный результат<div id="entry-result-editor"></div><textarea name="result" hidden></textarea></label>'}
         <label class="wide">Короткий анонс для карточки<textarea name="excerpt_text" maxlength="600" required></textarea></label>
         <label>SEO-заголовок<input name="seo_title" maxlength="160" placeholder="Можно оставить пустым"></label>
         <label>SEO-описание<textarea name="seo_description" maxlength="400" placeholder="Можно оставить пустым"></textarea></label>
@@ -707,16 +961,9 @@ const openEntryEditor = async (type, id = null) => {
         <label><input name="featured" type="checkbox">${isArticle ? 'Показывать в популярных' : 'Показывать в избранных'}</label>
       </div>
       <label>Полный текст
-        <div class="markdown-toolbar">
-          <button type="button" data-format="heading">Заголовок</button>
-          <button type="button" data-format="bold">Жирный</button>
-          <button type="button" data-format="list">Список</button>
-          <button type="button" data-format="link">Ссылка</button>
-          <button type="button" id="insert-image">Фото</button>
-          <button type="button" id="preview-markdown">Предпросмотр</button>
-        </div>
-        <textarea class="markdown-editor" name="body" id="markdown-body" required></textarea>
-        <div class="markdown-preview" id="markdown-preview" hidden></div>
+        <div id="entry-rich-editor"></div>
+        <button class="upload-button" type="button" id="insert-image">Добавить фотографию в текст</button>
+        <textarea name="body" hidden></textarea>
       </label>
       <input id="body-image-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
       <div class="button-row">
@@ -733,6 +980,32 @@ const openEntryEditor = async (type, id = null) => {
     else if (key === 'date') input.value = localDateTime(value);
     else input.value = value ?? '';
   });
+  const inlineEntryFields = [
+    ['subtitle', '#entry-subtitle-editor', 'Подзаголовок'],
+    ...(!isArticle ? [['result', '#entry-result-editor', 'Главный результат']] : []),
+  ];
+  inlineEntryFields.forEach(([name, selector, editorLabel]) => {
+    const editor = createRichTextEditor({
+      value: item[name] || '',
+      label: editorLabel,
+      onChange: (nextValue) => { form.elements[name].value = nextValue; },
+    });
+    $(selector).append(editor.root);
+    form.elements[name].value = editor.getValue();
+  });
+  let bodyValue = item.body || '';
+  if (bodyValue && !richMode(bodyValue)) {
+    const converted = await api('/api/markdown-preview', { method: 'POST', body: { markdown: bodyValue } });
+    bodyValue = `${RICH_BLOCK_PREFIX}${converted.html}`;
+  }
+  const entryEditor = createRichTextEditor({
+    value: bodyValue,
+    mode: 'block',
+    label: `Полный текст: ${entryName(type)}`,
+    onChange: (nextValue) => { form.elements.body.value = nextValue; },
+  });
+  $('#entry-rich-editor').append(entryEditor.root);
+  form.elements.body.value = entryEditor.getValue();
   $('#cancel-entry').addEventListener('click', () => dialog.close());
   $('#upload-cover').addEventListener('click', () => $('#cover-file').click());
   $('#cover-file').addEventListener('change', async (event) => {
@@ -751,57 +1024,22 @@ const openEntryEditor = async (type, id = null) => {
     if (!file) return;
     try {
       const media = await uploadImage(file);
-      insertAtCursor($('#markdown-body'), `\n![${file.name.replace(/\.[^.]+$/, '')}](/${media.url})\n`);
+      entryEditor.insertHtml(`<p><img src="/${escapeHtml(media.url)}" alt="${escapeHtml(file.name.replace(/\.[^.]+$/, ''))}"></p>`);
       notify('Изображение добавлено в текст.');
     } catch (error) { notify(error.message, true); }
   });
-  $$('[data-format]', form).forEach((button) => button.addEventListener('click', () => formatMarkdown(button.dataset.format)));
-  $('#preview-markdown').addEventListener('click', previewMarkdown);
   form.addEventListener('submit', (event) => saveEntry(event, item, type));
   dialog.showModal();
-};
-
-const insertAtCursor = (textarea, text, selectionOffset = 0) => {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  textarea.value = `${textarea.value.slice(0, start)}${text}${textarea.value.slice(end)}`;
-  textarea.focus();
-  textarea.selectionStart = textarea.selectionEnd = start + text.length + selectionOffset;
-};
-
-const formatMarkdown = (format) => {
-  const textarea = $('#markdown-body');
-  const selected = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd) || 'текст';
-  const replacements = {
-    heading: `\n## ${selected}\n`,
-    bold: `**${selected}**`,
-    list: `\n- ${selected}\n- следующий пункт\n`,
-    link: `[${selected}](https://)`,
-  };
-  insertAtCursor(textarea, replacements[format] || selected);
-};
-
-const previewMarkdown = async () => {
-  const textarea = $('#markdown-body');
-  const preview = $('#markdown-preview');
-  const button = $('#preview-markdown');
-  if (!preview.hidden) {
-    preview.hidden = true;
-    textarea.hidden = false;
-    button.textContent = 'Предпросмотр';
-    return;
-  }
-  const result = await api('/api/markdown-preview', { method: 'POST', body: { markdown: textarea.value } });
-  preview.innerHTML = result.html;
-  preview.hidden = false;
-  textarea.hidden = true;
-  button.textContent = 'Вернуться к тексту';
 };
 
 const saveEntry = async (event, original, type) => {
   event.preventDefault();
   const form = event.currentTarget;
   const data = Object.fromEntries(new FormData(form));
+  if (!String(data.body || '').trim()) {
+    notify('Добавьте полный текст материала.', true);
+    return;
+  }
   data.type = type;
   data.published = form.elements.published.checked;
   data.featured = form.elements.featured.checked;

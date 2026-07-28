@@ -15,6 +15,11 @@ import {
   verifyPassword,
 } from './lib/auth.mjs';
 import { Publisher } from './lib/publisher.mjs';
+import {
+  richTextHtml,
+  sanitizeRichTree,
+  sanitizeStoredRichText,
+} from './lib/rich-text.mjs';
 
 const cmsDir = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(cmsDir, '..');
@@ -243,8 +248,9 @@ app.put('/api/pages/:key', requireUser, async (request, response, next) => {
       response.status(400).json({ error: 'Некорректные данные страницы.' });
       return;
     }
-    rejectDamagedEncoding(request.body.data);
-    const saved = database.savePage(request.params.key, request.body.data, request.user.id);
+    const cleanData = sanitizeRichTree(request.body.data);
+    rejectDamagedEncoding(cleanData);
+    const saved = database.savePage(request.params.key, cleanData, request.user.id);
     const publication = await publisher.publish(request.user.id);
     response.json({ page: saved, publication });
   } catch (error) {
@@ -271,12 +277,12 @@ const validateEntry = (input) => {
     type,
     slug,
     title: title.slice(0, 160),
-    subtitle: String(input.subtitle || '').slice(0, 500),
+    subtitle: sanitizeStoredRichText(String(input.subtitle || '').slice(0, 5_000)),
     date: input.date ? new Date(input.date).toISOString() : new Date().toISOString(),
     category: String(input.category || '').slice(0, 100),
     service: String(input.service || '').slice(0, 120),
     location: String(input.location || '').slice(0, 120),
-    result: String(input.result || '').slice(0, 600),
+    result: sanitizeStoredRichText(String(input.result || '').slice(0, 6_000)),
     excerpt_text: String(input.excerpt_text || '').slice(0, 600),
     seo_title: String(input.seo_title || '').slice(0, 160),
     seo_description: String(input.seo_description || '').slice(0, 400),
@@ -284,7 +290,7 @@ const validateEntry = (input) => {
     image_alt: String(input.image_alt || '').slice(0, 250),
     featured: Boolean(input.featured),
     published: input.published !== false,
-    body: String(input.body || '').slice(0, 200_000),
+    body: sanitizeStoredRichText(String(input.body || '').slice(0, 200_000)),
   };
 };
 
@@ -466,6 +472,11 @@ app.post('/api/publish', requireUser, async (request, response, next) => {
 
 app.post('/api/markdown-preview', requireUser, (request, response) => {
   const source = String(request.body.markdown || '').slice(0, 200_000);
+  const richHtml = richTextHtml(source);
+  if (richHtml !== null) {
+    response.json({ html: richHtml });
+    return;
+  }
   const renderer = new marked.Renderer();
   renderer.html = () => '';
   response.json({
