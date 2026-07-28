@@ -9258,6 +9258,76 @@ body .form-consent.form-consent a:hover {
   justify-self: center;
 }
 
+body button.form-submit.form-submit {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  height: 56px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  justify-self: stretch;
+  gap: 20px;
+  margin: 24px 0 0;
+  border: 0;
+  border-radius: 999px;
+  background: #050706;
+  padding: 8px 10px 8px 20px;
+  color: #fff;
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: var(--type-ui-size);
+  font-style: normal;
+  font-weight: var(--type-ui-weight);
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+body button.form-submit.form-submit span {
+  min-width: 0;
+}
+
+body button.form-submit.form-submit i {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #050706;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+body button.form-submit.form-submit:hover,
+body button.form-submit.form-submit:active {
+  background: var(--content-lime, #a7e35c);
+  color: #050706;
+  box-shadow: inset 0 0 0 1px #050706;
+}
+
+body button.form-submit.form-submit:hover i,
+body button.form-submit.form-submit:active i {
+  background: #050706;
+  color: var(--content-lime, #a7e35c);
+}
+
+body button.form-submit.form-submit:focus-visible {
+  outline: 2px solid #050706;
+  outline-offset: 3px;
+}
+
 .content-button {
   min-height: 52px;
   display: inline-flex;

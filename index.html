@@ -68,7 +68,7 @@ layout: null
           <input id="hero-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="hp-quick-form__label" for="hero-phone">{{ site.data.site.forms.phone_label | escape }}</label>
           <input id="hero-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-          <button type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
+          <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>
@@ -178,7 +178,7 @@ layout: null
           <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
           <input id="cta-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-          <button class="hp-button hp-button--dark" type="submit">{{ site.data.site.forms.submit | escape }} <i>→</i></button>
+          <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>

@@ -69,7 +69,7 @@ layout: null
             <input id="expert-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="expert-phone">{{ site.data.site.forms.phone_label | escape }}</label>
             <input id="expert-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-            <button class="content-button" type="submit">{{ site.data.site.forms.submit | escape }} <i aria-hidden="true">→</i></button>
+            <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
             <small class="form-consent">{% include form-consent.html %}</small>
           </form>
         </div>

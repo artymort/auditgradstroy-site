@@ -45,7 +45,7 @@ layout: null
           <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <label for="contact-message">{{ contacts.form.message_label | escape }}</label>
           <textarea id="contact-message" name="message" rows="5" placeholder="{{ contacts.form.message_label | escape }}"></textarea>
-          <button class="content-button" type="submit">{{ contacts.form.submit | escape }} <i aria-hidden="true">→</i></button>
+          <button class="form-submit" type="submit"><span>{{ contacts.form.submit | escape }}</span><i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>

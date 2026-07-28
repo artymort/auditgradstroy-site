@@ -86,7 +86,7 @@ layout: null
           <input id="audit-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="sr-only" for="audit-phone">{{ site.data.site.forms.phone_label | escape }}</label>
           <input id="audit-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-          <button class="button navy dom-process__button" type="submit">{{ services.express.form_action | escape }}</button>
+          <button class="form-submit" type="submit"><span>{{ services.express.form_action | escape }}</span><i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
       </div>
@@ -167,7 +167,7 @@ layout: null
             <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
             <input id="cta-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-            <button class="button navy" type="submit">{{ site.data.site.forms.submit | escape }}</button>
+            <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
             <p class="consent form-consent">{% include form-consent.html %}</p>
           </form>
         </article>
