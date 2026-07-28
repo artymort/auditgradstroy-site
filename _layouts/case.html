@@ -21,20 +21,31 @@
   <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
 </head>
 <body>
-{% if page.preview %}<div class="preview-notice">Предпросмотр шаблона — эта статья не опубликована</div>{% endif %}
+{% if page.preview %}<div class="preview-notice">Предпросмотр шаблона — этот кейс не опубликован</div>{% endif %}
 {% include header.html %}
-  <main class="content-page article-page">
+  <main class="content-page article-page case-page">
     <header class="article-hero">
       <div class="container article-hero__grid">
         <div>
-          <a class="article-back" href="{{ 'blog.html' | relative_url }}">← Все материалы</a>
-          <div class="article-meta"><span>{{ page.category | default: "Материал" | escape }}</span><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%d.%m.%Y" }}</time></div>
+          <a class="article-back" href="{{ 'cases.html' | relative_url }}">← Все кейсы</a>
+          <div class="article-meta">
+            <span>{{ page.service | default: "Экспертиза" | escape }}</span>
+            {% if page.location %}<span>{{ page.location | escape }}</span>{% endif %}
+          </div>
           <h1>{{ page.title | escape }}</h1>
           {% if page.subtitle %}<p class="article-hero__subtitle">{{ page.subtitle | escape }}</p>{% endif %}
         </div>
         {% if page.image %}<figure><img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}"></figure>{% endif %}
       </div>
     </header>
+    {% if page.result %}
+    <section class="case-result">
+      <div class="container">
+        <span class="content-label">Результат проекта</span>
+        <p>{{ page.result | escape }}</p>
+      </div>
+    </section>
+    {% endif %}
     <article class="article-content"><div class="container"><div class="article-content__body">{{ content }}</div></div></article>
     <section class="article-contact" id="cta"><div class="container"><div><span class="content-label">Консультация</span><h2>Нужен разбор вашей ситуации?</h2></div><a class="content-button" href="{{ 'contacts.html' | relative_url }}">Связаться с экспертом <i aria-hidden="true">→</i></a></div></section>
   </main>

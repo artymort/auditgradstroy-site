@@ -1,10 +1,10 @@
 # Project Notes
 
-Last updated: 2026-07-19
+Last updated: 2026-07-28
 
 ## Project
 
-Static website for GradAudit, a Russian-language landing/site about checking land plots before purchase and urban-planning due diligence.
+Website and self-hosted CMS for GradstroyAudit, a Russian-language service about checking land plots before purchase and urban-planning due diligence.
 
 Main files:
 - `index.html` - Liquid/Jekyll template for the home page.
@@ -14,7 +14,9 @@ Main files:
 - `_data/home.json` - editable homepage content.
 - `_data/services.json` - editable services-page content.
 - `_includes/` - shared header, footer, and browser behavior.
-- `.pages.yml` - Pages CMS admin-panel configuration.
+- `cms/` - self-hosted admin panel, SQLite storage, users, uploads, and publishing.
+- `deploy/` - VPS, Nginx, systemd, and backup templates.
+- `.pages.yml` - legacy Pages CMS configuration retained during migration.
 - `_config.yml` - GitHub Pages/Jekyll build exclusions.
 - `content-home.pdf` - source/content reference for the home page.
 - `content-services-blog.pdf` - source/content reference for services/blog content.
@@ -23,7 +25,7 @@ Main files:
 
 ## Current State
 
-The public GitHub Pages site is deployed from `main`. The working tree now contains a verified but not-yet-published Pages CMS integration. Visitor-facing content is stored in `_data/*.json`, both pages render it through Liquid/Jekyll, shared markup lives in `_includes/`, and `.pages.yml` defines the admin interface. The visible local content exactly matches the current public site. These CMS changes still need an intentional commit and push before the admin panel can use them.
+The public site is still deployed on GitHub Pages while the VPS migration is prepared. A self-hosted CMS is implemented locally and runs independently of GitHub for day-to-day editing. SQLite is the canonical runtime store, uploaded images stay on the VPS, and every save exports the current content and rebuilds the static public site immediately. GitHub will remain source control for code only; the database, uploads, passwords, secrets, and backups are excluded.
 
 Historical snapshot from the first services-page iteration:
 
@@ -910,3 +912,96 @@ Verification:
 - all five site pages have no broken internal links or images;
 - typography uses the existing Manrope `400/500/600` role system;
 - the new mobile expert metrics use one consistent two-column alignment.
+
+## 2026-07-28 Cases Page
+
+Implemented a dedicated cases section without inventing client projects:
+- `cases.html` — cases landing page with a two-column project grid, featured-cases area, empty state, and consultation form;
+- `_data/cases.json` — editable SEO, hero, section, empty-state, and CTA copy;
+- `_cases/` — separate Jekyll collection for completed projects;
+- `_layouts/case.html` — SEO-ready detail page with cover image, service, location, highlighted result, rich-text body, and consultation CTA;
+- the global “Кейсы” navigation item now opens `cases.html`; the homepage risk-section anchor remains unchanged;
+- `.pages.yml` exposes page settings and case fields for title, subtitle, date, service, location, result, card excerpt, SEO, cover, featured status, publication status, and rich-text content;
+- case media is stored separately under `media/cases`;
+- no real case names or results were invented; the page shows a designed empty state until the first project is added.
+
+Verification:
+- CMS configuration and all content files pass validation;
+- the local build generates `cases.html` and updates navigation across all pages;
+- the generated page has one H1 and no unresolved Liquid tags;
+- the case grid reuses the approved two-column blog-card system and collapses to one column on mobile.
+
+## 2026-07-28 Self-hosted CMS
+
+Implemented a complete custom CMS for the future VPS:
+- `cms/server.mjs` serves the public site, the admin interface, and authenticated JSON APIs;
+- `cms/lib/database.mjs` stores pages, articles, cases, users, media records, activity, and publication state in SQLite;
+- `cms/lib/auth.mjs` provides scrypt password hashing and signed, expiring, HTTP-only sessions;
+- `cms/lib/publisher.mjs` exports SQLite content to the existing Liquid/Jekyll-compatible data structure and rebuilds the site after every save;
+- `cms/public/` contains the responsive Russian admin interface;
+- admins can manage users; editors can update all content without GitHub access;
+- uploaded JPG, PNG, and WEBP files are validated, stored under `media/uploads`, and excluded from Git;
+- articles and cases have dedicated editors, cover upload, Markdown formatting, SEO fields, draft/published state, and featured/popular flags;
+- all seven page-data files can be edited through friendly recursive forms, including nested cards and lists;
+- `scripts/build.mjs` now generates article and case detail pages locally as well as their two-column listing pages;
+- `cms/scripts/backup.mjs` creates consistent SQLite and upload backups with retention;
+- `deploy/` contains systemd, Nginx, and daily backup templates for Ubuntu.
+
+Local verification completed:
+- authentication succeeds and protected APIs return `401` without a session;
+- the CMS exposes all seven editable page documents;
+- saving a page rebuilds and republishes the site;
+- test articles and cases appeared both in their two-column listings and on separate SEO pages;
+- media upload, user creation, role changes, article/case deletion, Markdown rendering, and backup creation were exercised successfully;
+- the clean local database contains one development administrator and no test articles, cases, media, or test users.
+
+Local development:
+- run `npm start`;
+- open `http://127.0.0.1:3000/cms/`;
+- development-only fallback credentials are `admin@gradstroy.local` / `admin12345`;
+- production refuses to start without explicit secure values from `.env`.
+
+VPS migration still requires:
+- the real domain and CMS subdomain;
+- SSH access by key;
+- production `.env` values;
+- DNS records pointing the domain and CMS subdomain to the VPS;
+- Nginx and HTTPS activation.
+
+## 2026-07-28 CMS encoding recovery
+
+- Restored the complete Russian home-page document in `_data/home.json`.
+- Recreated the local SQLite database from the repaired UTF-8 source.
+- Added server-side validation that rejects page, article, and case saves when text is replaced by a suspicious concentration of question marks.
+- Verified the home-page API contains Cyrillic text and that a damaged payload receives HTTP `400` without changing the stored page.
+
+## 2026-07-28 Built-in visitor analytics
+
+- Added first-party page-view and visitor-session collection to the self-hosted CMS.
+- The dashboard shows unique visitors and page views for today, yesterday, 7 days, and 30 days.
+- Online visitors are sessions active during the previous five minutes; the dashboard refreshes every 30 seconds.
+- Added a 14-day traffic chart and the most popular pages for the previous 30 days.
+- Visitor identifiers are one-way hashed before storage; IP addresses are not stored.
+- Analytics data lives in the same SQLite database and is therefore covered by the existing backup process.
+- The public tracker is included in every generated page and becomes active when the public site is served by the CMS/VPS.
+- The image counter and media library now include the 11 images already bundled with the site; these system images cannot be accidentally deleted from the CMS.
+
+## 2026-07-28 Article and case page previews
+
+- Article and case detail layouts already generate separate SEO pages for every published material.
+- Added authenticated template-preview pages for both content types so their finished design can be reviewed before the first real title or text is available.
+- Preview pages use the real site header, footer, typography, images, article/case structure, contact CTA, and responsive styles.
+- Preview pages contain clearly generic placeholder copy, are not added to public navigation, and carry `noindex,nofollow`.
+- The article and case lists in the CMS now include a `Посмотреть шаблон страницы` action.
+- Every published article or case card in the CMS includes an `Открыть страницу` link to its generated public SEO page.
+
+## 2026-07-28 Typography and CMS editor cleanup
+
+- Allowed the same Google-hosted Manrope files through the self-hosted server security policy, so the public site no longer falls back to heavier Arial when opened from the CMS.
+- Loaded Manrope in the admin interface and disabled synthetic font weights.
+- Removed forced letter spacing from admin labels and reduced excessive bold weights in controls.
+- Split the home-page editor into eight clearly named numbered content sections plus a separate SEO section.
+- Added plain Russian labels for technical home-page fields and removed the unrelated blog-settings card from page editors.
+- Reduced title, subtitle, metadata, article, and case preview weights to the same `400/500/600` typography system used by the existing public site.
+- Fixed empty front matter leaking into article and case preview output.
+- Verified in the browser that the local CMS-served site and the GitHub Pages site both load Manrope and report matching navigation and heading weights.

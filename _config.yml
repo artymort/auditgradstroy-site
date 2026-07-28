@@ -1,7 +1,11 @@
-title: ГрадАудит
+title: Градстройаудит
 lang: ru
 url: https://artymort.github.io
 baseurl: /auditgradstroy-site
+collections:
+  cases:
+    output: true
+    permalink: /cases/:name/
 exclude:
   - node_modules
   - scripts

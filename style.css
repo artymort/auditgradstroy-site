@@ -16,6 +16,17 @@
       --shadow-hero: 0 24px 70px rgba(15, 36, 53, 0.18);
     }
 
+    .preview-notice {
+      position: relative;
+      z-index: 100;
+      padding: 10px 20px;
+      background: var(--bright-green);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
     .home-wow {
       background:
         linear-gradient(90deg, rgba(5, 7, 6, .035) 1px, transparent 1px),
@@ -9003,8 +9014,8 @@ select,
   gap: 18px;
   color: #697068;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .05em;
+  font-weight: 500;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -9032,6 +9043,23 @@ select,
 
 .blog-card .blog-card__excerpt {
   color: #5f665e;
+}
+
+.case-card__result {
+  border-left: 3px solid var(--content-lime);
+  padding-left: 16px;
+  color: var(--content-ink);
+  font-weight: 500 !important;
+}
+
+.case-card__result span {
+  display: block;
+  margin-bottom: 6px;
+  color: #697068;
+  font-size: var(--type-meta-size);
+  font-weight: var(--type-meta-weight);
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
 .content-link {
@@ -9612,7 +9640,7 @@ select,
 .article-hero h1 {
   max-width: 840px;
   font-size: clamp(44px, 5vw, 72px);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -9626,7 +9654,7 @@ select,
 .article-hero .article-hero__subtitle {
   color: #fff;
   font-size: clamp(19px, 2vw, 24px);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.45;
 }
 
@@ -9643,6 +9671,26 @@ select,
 
 .article-content {
   padding: 100px 0;
+}
+
+.case-result {
+  background: var(--content-lime);
+  padding: 44px 0;
+}
+
+.case-result .container {
+  display: grid;
+  grid-template-columns: minmax(180px, .35fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+
+.case-result p {
+  max-width: 900px;
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 500;
+  line-height: 1.24;
+  letter-spacing: -.035em;
 }
 
 .article-content__body {
@@ -9797,6 +9845,11 @@ select,
   .article-contact .container {
     align-items: start;
     flex-direction: column;
+  }
+
+  .case-result .container {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
 }
 
@@ -9990,6 +10043,14 @@ select,
 
   .article-contact {
     padding: 64px 0;
+  }
+
+  .case-result {
+    padding: 36px 0;
+  }
+
+  .case-result p {
+    font-size: 23px;
   }
 }
 
