@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Управление сайтом — Градстройаудит</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/cms/styles.css">
+</head>
+<body>
+  <section class="auth-screen" id="auth-screen">
+    <div class="auth-card">
+      <div class="brand-mark" aria-hidden="true"><span></span></div>
+      <p class="eyebrow">Градстройаудит</p>
+      <h1>Управление сайтом</h1>
+      <p class="auth-lead">Войдите, чтобы менять тексты, фотографии, статьи и кейсы.</p>
+      <form id="login-form">
+        <label>Электронная почта<input name="email" type="email" autocomplete="username" required></label>
+        <label>Пароль<input name="password" type="password" autocomplete="current-password" required minlength="8"></label>
+        <p class="form-error" id="login-error" role="alert"></p>
+        <button class="primary-button" type="submit">Войти</button>
+      </form>
+    </div>
+  </section>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark" aria-hidden="true"><span></span></div>
+        <div><strong>Градстройаудит</strong><small>Управление сайтом</small></div>
+      </div>
+      <nav class="sidebar-nav" id="navigation" aria-label="Разделы админки">
+        <button data-view="dashboard"><span>01</span>Обзор</button>
+        <p>Страницы сайта</p>
+        <button data-view="page-home"><span>02</span>Главная</button>
+        <button data-view="page-services"><span>03</span>Услуги</button>
+        <button data-view="page-expert"><span>04</span>Эксперт</button>
+        <button data-view="page-contacts"><span>05</span>Контакты</button>
+        <p>Публикации</p>
+        <button data-view="articles"><span>06</span>Статьи</button>
+        <button data-view="cases"><span>07</span>Кейсы</button>
+        <p>Настройки</p>
+        <button data-view="page-site"><span>08</span>Общие данные</button>
+        <button data-view="media"><span>09</span>Изображения</button>
+        <button data-view="users" data-admin-only><span>10</span>Пользователи</button>
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="user-avatar">А</div>
+        <div><strong id="user-name">Администратор</strong><small id="user-email"></small></div>
+        <button class="icon-button" id="logout-button" title="Выйти" aria-label="Выйти">↗</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button class="menu-button" id="menu-button" aria-label="Открыть меню">☰</button>
+        <div><p class="eyebrow" id="view-eyebrow">Админ-панель</p><h1 id="view-title">Обзор</h1></div>
+        <div class="topbar-actions">
+          <span class="publish-state" id="publish-state"><i></i>Сайт опубликован</span>
+          <a class="secondary-button" id="site-link" href="/" target="_blank" rel="noopener">Открыть сайт ↗</a>
+        </div>
+      </header>
+      <div class="view" id="view" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <dialog class="editor-dialog" id="editor-dialog">
+    <div class="dialog-head">
+      <div><p class="eyebrow" id="dialog-eyebrow">Материал</p><h2 id="dialog-title">Новый материал</h2></div>
+      <button class="icon-button" id="dialog-close" aria-label="Закрыть">×</button>
+    </div>
+    <div id="dialog-body"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/cms/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[Unit]
+Description=Gradstroyaudit site and CMS
+After=network.target
+
+[Service]
+Type=simple
+User=gradstroy
+Group=gradstroy
+WorkingDirectory=/opt/gradstroyaudit
+EnvironmentFile=/opt/gradstroyaudit/.env
+ExecStart=/usr/bin/node cms/server.mjs
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/gradstroyaudit/data /opt/gradstroyaudit/media /opt/gradstroyaudit/_site /opt/gradstroyaudit/_data /opt/gradstroyaudit/_posts /opt/gradstroyaudit/_cases /opt/gradstroyaudit/backups
+
+[Install]
+WantedBy=multi-user.target

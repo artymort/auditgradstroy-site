@@ -16,6 +16,17 @@
       --shadow-hero: 0 24px 70px rgba(15, 36, 53, 0.18);
     }
 
+    .preview-notice {
+      position: relative;
+      z-index: 100;
+      padding: 10px 20px;
+      background: var(--bright-green);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
     .home-wow {
       background:
         linear-gradient(90deg, rgba(5, 7, 6, .035) 1px, transparent 1px),
@@ -9003,8 +9014,8 @@ select,
   gap: 18px;
   color: #697068;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .05em;
+  font-weight: 500;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -9629,7 +9640,7 @@ select,
 .article-hero h1 {
   max-width: 840px;
   font-size: clamp(44px, 5vw, 72px);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -9643,7 +9654,7 @@ select,
 .article-hero .article-hero__subtitle {
   color: #fff;
   font-size: clamp(19px, 2vw, 24px);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.45;
 }
 

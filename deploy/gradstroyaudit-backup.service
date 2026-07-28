@@ -1,0 +1,12 @@
+[Unit]
+Description=Gradstroyaudit CMS backup
+
+[Service]
+Type=oneshot
+User=gradstroy
+Group=gradstroy
+WorkingDirectory=/opt/gradstroyaudit
+EnvironmentFile=/opt/gradstroyaudit/.env
+ExecStart=/usr/bin/node cms/scripts/backup.mjs
+NoNewPrivileges=true
+PrivateTmp=true

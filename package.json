@@ -2,11 +2,22 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/validate-config.mjs && node scripts/build.mjs",
-    "preview": "node scripts/build.mjs && node scripts/serve.mjs"
+    "preview": "node scripts/build.mjs && node scripts/serve.mjs",
+    "cms": "node cms/server.mjs",
+    "start": "node cms/server.mjs",
+    "backup": "node cms/scripts/backup.mjs"
+  },
+  "engines": {
+    "node": ">=22.5"
   },
   "devDependencies": {
     "liquidjs": "^10.27.2",
     "playwright": "^1.61.0",
     "yaml": "^2.9.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "marked": "^18.0.7",
+    "multer": "^2.2.0"
   }
 }

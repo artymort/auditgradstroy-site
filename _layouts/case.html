@@ -6,6 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if page.preview %}<meta name="robots" content="noindex,nofollow">{% endif %}
   <title>{{ page.seo_title | default: page.title | escape }} — Градстройаудит</title>
   <meta name="description" content="{{ page.seo_description | default: page.excerpt_text | escape }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
@@ -20,6 +21,7 @@
   <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
 </head>
 <body>
+{% if page.preview %}<div class="preview-notice">Предпросмотр шаблона — этот кейс не опубликован</div>{% endif %}
 {% include header.html %}
   <main class="content-page article-page case-page">
     <header class="article-hero">
