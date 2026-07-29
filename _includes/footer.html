@@ -1,7 +1,7 @@
   <footer class="footer hp-footer" id="contacts">
     <div class="container footer-grid">
       <div>
-        <a class="logo logo--inverted" href="{% if page_type == 'home' %}#top{% else %}index.html{% endif %}"><img class="logo__image" src="{{ site.data.site.brand.logo | relative_url }}" alt="{{ site.data.site.brand.name | escape }}"></a>
+        <a class="logo logo--inverted" href="{% if page_type == 'home' %}#top{% else %}{{ '/' | relative_url }}{% endif %}"><img class="logo__image" src="{{ site.data.site.brand.logo | relative_url }}" alt="{{ site.data.site.brand.name | escape }}"></a>
         <p>{{ site.data.site.footer.description | escape }}</p>
       </div>
       <nav aria-label="Навигация в футере">

@@ -12,7 +12,9 @@ layout: null
 {% include head-icons.html %}
   <title>{{ cases_page.seo.title | escape }}</title>
   <meta name="description" content="{{ cases_page.seo.description | escape }}">
-  <link rel="canonical" href="{{ 'cases.html' | absolute_url }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/cases.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/cases.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">

@@ -42,6 +42,9 @@ const smtpPassword = String(process.env.SMTP_PASSWORD || '');
 const smtpFrom = String(process.env.SMTP_FROM || smtpUser).trim();
 const leadDelivery = String(process.env.LEAD_DELIVERY || '').trim().toLowerCase();
 const leadDeliveryTimeout = Math.max(5_000, Number(process.env.LEAD_DELIVERY_TIMEOUT_MS || 15_000));
+const telegramBotToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+const telegramChatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
+const telegramDeliveryTimeout = Math.max(5_000, Number(process.env.TELEGRAM_TIMEOUT_MS || 10_000));
 const useLocalMail = ['local', 'sendmail'].includes(leadDelivery);
 const leadMailer = smtpPassword
   ? nodemailer.createTransport({
@@ -82,6 +85,12 @@ const database = new CmsDatabase({ root, filename: databaseFile });
 await database.init();
 if (!database.getSetting('lead_email_to')) {
   database.setSetting('lead_email_to', leadEmailTo);
+}
+if (!database.getSetting('telegram_chat_id') && telegramChatId) {
+  database.setSetting('telegram_chat_id', telegramChatId);
+}
+if (!database.getSetting('telegram_enabled')) {
+  database.setSetting('telegram_enabled', telegramBotToken && telegramChatId ? '1' : '0');
 }
 
 const initialEmail = process.env.CMS_ADMIN_EMAIL || (production ? '' : 'admin@gradstroy.local');
@@ -287,37 +296,109 @@ const escapeLeadHtml = (value) => String(value || '')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#39;');
 
-const deliverLeadNotification = async ({ storedLead, lead, text, html }) => {
+const withTimeout = async (promise, timeout, message) => {
   let timeoutId;
   try {
-    const recipient = database.getSetting('lead_email_to', leadEmailTo).trim();
-    await Promise.race([
-      leadMailer.sendMail({
-        from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
-        to: recipient,
-        subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
-        text,
-        html,
-      }),
+    return await Promise.race([
+      promise,
       new Promise((resolve, reject) => {
-        timeoutId = setTimeout(
-          () => reject(new Error(`Почтовая служба не ответила за ${Math.round(leadDeliveryTimeout / 1_000)} секунд.`)),
-          leadDeliveryTimeout,
-        );
+        timeoutId = setTimeout(() => reject(new Error(message)), timeout);
       }),
     ]);
-    database.markLeadDelivery(storedLead.id, {
-      status: 'queued',
-      sentAt: new Date().toISOString(),
-    });
-  } catch (deliveryError) {
-    database.markLeadDelivery(storedLead.id, {
-      status: 'failed',
-      error: deliveryError.message,
-    });
-    console.error(`Заявка №${storedLead.id} сохранена, но почтовое уведомление не поставлено в очередь:`, deliveryError.message);
   } finally {
     clearTimeout(timeoutId);
+  }
+};
+
+const telegramRequest = async (method, payload = {}) => {
+  if (!telegramBotToken) {
+    const error = new Error('Токен Telegram-бота не настроен на сервере.');
+    error.status = 400;
+    throw error;
+  }
+  const response = await withTimeout(
+    fetch(`https://api.telegram.org/bot${telegramBotToken}/${method}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }),
+    telegramDeliveryTimeout,
+    `Telegram не ответил за ${Math.round(telegramDeliveryTimeout / 1_000)} секунд.`,
+  );
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !result.ok) {
+    const error = new Error(result.description || `Telegram вернул ошибку ${response.status}.`);
+    error.status = response.status >= 400 && response.status < 500 ? 400 : 502;
+    throw error;
+  }
+  return result.result;
+};
+
+const telegramIsEnabled = () => (
+  database.getSetting('telegram_enabled', '0') === '1'
+  && Boolean(database.getSetting('telegram_chat_id', telegramChatId).trim())
+  && Boolean(telegramBotToken)
+);
+
+const sendTelegramMessage = (chatId, text) => telegramRequest('sendMessage', {
+  chat_id: chatId,
+  text,
+  parse_mode: 'HTML',
+  disable_web_page_preview: true,
+});
+
+const deliverLeadNotification = async ({ storedLead, lead, rows, text, html }) => {
+  const deliveries = [];
+  if (telegramIsEnabled()) {
+    const chatId = database.getSetting('telegram_chat_id', telegramChatId).trim();
+    const telegramText = [
+      `🔔 <b>Новая заявка №${storedLead.id}</b>`,
+      ...rows.map(([label, value]) => `<b>${escapeLeadHtml(label)}:</b> ${escapeLeadHtml(value)}`),
+    ].join('\n\n');
+    deliveries.push({
+      channel: 'Telegram',
+      send: () => sendTelegramMessage(chatId, telegramText),
+    });
+  }
+  if (leadMailer) {
+    const recipient = database.getSetting('lead_email_to', leadEmailTo).trim();
+    deliveries.push({
+      channel: 'Почта',
+      send: () => withTimeout(
+        leadMailer.sendMail({
+          from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
+          to: recipient,
+          subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
+          text,
+          html,
+        }),
+        leadDeliveryTimeout,
+        `Почтовая служба не ответила за ${Math.round(leadDeliveryTimeout / 1_000)} секунд.`,
+      ),
+    });
+  }
+  if (!deliveries.length) return;
+
+  const results = await Promise.all(deliveries.map(async ({ channel, send }) => {
+    try {
+      await send();
+      return { channel, ok: true };
+    } catch (error) {
+      return { channel, ok: false, error: error.message };
+    }
+  }));
+  const successful = results.filter((result) => result.ok);
+  const failed = results.filter((result) => !result.ok);
+  database.markLeadDelivery(storedLead.id, {
+    status: successful.length ? 'queued' : 'failed',
+    error: failed.map((result) => `${result.channel}: ${result.error}`).join(' · '),
+    sentAt: successful.length ? new Date().toISOString() : '',
+  });
+  if (failed.length) {
+    console.error(
+      `Заявка №${storedLead.id}: не все уведомления доставлены:`,
+      failed.map((result) => `${result.channel}: ${result.error}`).join(' · '),
+    );
   }
 };
 
@@ -366,14 +447,9 @@ app.post('/api/leads', async (request, response, next) => {
     )).join('');
 
     const storedLead = database.createLead(lead);
-    if (!leadMailer) {
-      response.status(202).json({ ok: true, id: storedLead.id, queued: true });
-      return;
-    }
-
     response.status(202).json({ ok: true, id: storedLead.id, queued: true });
     setImmediate(() => {
-      void deliverLeadNotification({ storedLead, lead, text, html });
+      void deliverLeadNotification({ storedLead, lead, rows, text, html });
     });
   } catch (error) {
     next(error);
@@ -426,6 +502,86 @@ app.put('/api/settings/lead-email', requireUser, (request, response) => {
     name: 'Почта для получения заявок',
   }));
   response.json({ email });
+});
+
+app.get('/api/settings/telegram', requireUser, (request, response) => {
+  response.json({
+    enabled: database.getSetting('telegram_enabled', '0') === '1',
+    chatId: database.getSetting('telegram_chat_id', telegramChatId),
+    botConfigured: Boolean(telegramBotToken),
+  });
+});
+
+app.put('/api/settings/telegram', requireUser, (request, response) => {
+  const enabled = Boolean(request.body?.enabled);
+  const chatId = String(request.body?.chatId || '').trim();
+  if (chatId && !/^-?\d{5,24}$/.test(chatId)) {
+    response.status(400).json({ error: 'ID Telegram-группы должен состоять только из цифр и может начинаться с минуса.' });
+    return;
+  }
+  if (enabled && !telegramBotToken) {
+    response.status(400).json({ error: 'Сначала добавьте токен Telegram-бота на сервер.' });
+    return;
+  }
+  if (enabled && !chatId) {
+    response.status(400).json({ error: 'Укажите ID Telegram-группы.' });
+    return;
+  }
+  database.setSetting('telegram_enabled', enabled ? '1' : '0');
+  database.setSetting('telegram_chat_id', chatId);
+  database.log(request.user.id, 'update_lead_telegram', JSON.stringify({
+    kind: 'setting',
+    name: 'Telegram для заявок',
+  }));
+  response.json({ enabled, chatId, botConfigured: Boolean(telegramBotToken) });
+});
+
+app.post('/api/settings/telegram/test', requireUser, async (request, response, next) => {
+  try {
+    const chatId = String(request.body?.chatId || database.getSetting('telegram_chat_id', telegramChatId)).trim();
+    if (!/^-?\d{5,24}$/.test(chatId)) {
+      response.status(400).json({ error: 'Укажите корректный ID Telegram-группы.' });
+      return;
+    }
+    await sendTelegramMessage(
+      chatId,
+      `✅ <b>Telegram подключён</b>\n\nТестовое сообщение из CMS сайта «Градстройаудит».`,
+    );
+    response.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/settings/telegram/discover', requireUser, async (request, response, next) => {
+  try {
+    const updates = await telegramRequest('getUpdates', {
+      limit: 100,
+      timeout: 0,
+      allowed_updates: ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'my_chat_member'],
+    });
+    const chats = [];
+    const seen = new Set();
+    for (const update of [...updates].reverse()) {
+      const chat = update.message?.chat
+        || update.edited_message?.chat
+        || update.channel_post?.chat
+        || update.edited_channel_post?.chat
+        || update.my_chat_member?.chat;
+      if (!chat || !['group', 'supergroup'].includes(chat.type) || seen.has(String(chat.id))) continue;
+      seen.add(String(chat.id));
+      chats.push({ id: String(chat.id), title: String(chat.title || 'Telegram-группа') });
+    }
+    if (!chats.length) {
+      response.status(404).json({
+        error: 'Группа пока не найдена. Добавьте бота в группу и повторите поиск. Если он уже добавлен, отправьте в группе команду /start.',
+      });
+      return;
+    }
+    response.json({ chats });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/api/pages', requireUser, (request, response) => {
@@ -710,6 +866,7 @@ app.get('/cms/preview/:type', requireUser, (request, response) => {
   response.sendFile(path.join(root, 'data', 'cms-previews', `${request.params.type}.html`));
 });
 
+app.get('/index.html', (request, response) => response.redirect(301, `${siteUrl}/`));
 app.use('/cms', express.static(path.join(cmsDir, 'public'), { index: 'index.html', maxAge: production ? '5m' : 0 }));
 app.use('/media/uploads', express.static(mediaDirectory, { maxAge: production ? '7d' : 0, immutable: production }));
 app.use(express.static(path.join(root, '_site'), { index: 'index.html', maxAge: production ? '5m' : 0 }));

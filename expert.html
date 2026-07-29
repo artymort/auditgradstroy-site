@@ -11,6 +11,9 @@ layout: null
 {% include head-icons.html %}
   <title>{{ expert.seo.title | escape }}</title>
   <meta name="description" content="{{ expert.seo.description | escape }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/expert.html">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/expert.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">

@@ -10,6 +10,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.resolve(root, process.env.OUTPUT_DIR || '_site');
 const baseurl = (process.env.BASEURL || '').replace(/\/$/, '');
 const siteUrl = (process.env.SITE_URL || 'https://artymort.github.io').replace(/\/$/, '');
+const canonicalSiteUrl = (
+  process.env.CANONICAL_URL
+  || process.env.SITE_URL
+  || 'https://xn--80aahfbye3bpckmgl.xn--p1ai'
+).replace(/\/$/, '');
 
 const clearDirectoryContents = async (directory) => {
   await mkdir(directory, { recursive: true });
@@ -86,6 +91,7 @@ const readCollection = async ({ directory, type }) => {
 const site = {
   baseurl,
   url: siteUrl,
+  canonical_url: canonicalSiteUrl,
   data: {
     site: await readJson('site.json'),
     home: await readJson('home.json'),
@@ -142,11 +148,20 @@ engine.registerFilter('date', (value, format) => {
 
 await clearDirectoryContents(output);
 
-for (const pageName of ['index.html', 'services.html', 'cases.html', 'blog.html', 'expert.html', 'contacts.html']) {
+const publicPages = ['index.html', 'services.html', 'cases.html', 'blog.html', 'expert.html', 'contacts.html'];
+
+for (const pageName of publicPages) {
   const template = stripFrontMatter(await readFile(path.join(root, pageName), 'utf8'));
   const html = await engine.parseAndRender(template, { site });
   await writeFile(path.join(output, pageName), html, 'utf8');
 }
+
+const verificationFiles = (await readdir(root))
+  .filter((filename) => /^yandex_[a-z0-9]+\.html$/i.test(filename));
+
+await Promise.all(verificationFiles.map((filename) => (
+  cp(path.join(root, filename), path.join(output, filename))
+)));
 
 for (const item of [...site.posts, ...site.cases]) {
   const layoutName = item.type === 'article' ? 'article.html' : 'case.html';
@@ -160,6 +175,54 @@ for (const item of [...site.posts, ...site.cases]) {
   await mkdir(path.dirname(target), { recursive: true });
   await writeFile(target, html, 'utf8');
 }
+
+const canonicalUrl = (pagePath = '') => {
+  const clean = String(pagePath).replace(/^\/+/, '');
+  return new URL(clean, `${canonicalSiteUrl}/`).toString();
+};
+
+const sitemapEntries = [
+  { url: canonicalUrl(), priority: '1.0', changefreq: 'weekly' },
+  ...publicPages
+    .filter((pageName) => pageName !== 'index.html')
+    .map((pageName) => ({
+      url: canonicalUrl(pageName),
+      priority: pageName === 'services.html' ? '0.9' : '0.8',
+      changefreq: pageName === 'blog.html' || pageName === 'cases.html' ? 'weekly' : 'monthly',
+    })),
+  ...site.posts.map((item) => ({
+    url: canonicalUrl(item.url),
+    lastmod: item.date.toISOString().slice(0, 10),
+    priority: '0.7',
+    changefreq: 'monthly',
+  })),
+  ...site.cases.map((item) => ({
+    url: canonicalUrl(item.url),
+    lastmod: item.date.toISOString().slice(0, 10),
+    priority: '0.7',
+    changefreq: 'monthly',
+  })),
+];
+
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapEntries.map((entry) => `  <url>
+    <loc>${escapeHtml(entry.url)}</loc>
+${entry.lastmod ? `    <lastmod>${entry.lastmod}</lastmod>\n` : ''}    <changefreq>${entry.changefreq}</changefreq>
+    <priority>${entry.priority}</priority>
+  </url>`).join('\n')}
+</urlset>
+`;
+
+await writeFile(path.join(output, 'sitemap.xml'), sitemapXml, 'utf8');
+await writeFile(path.join(output, 'robots.txt'), [
+  'User-agent: *',
+  'Allow: /',
+  'Disallow: /cms/',
+  'Disallow: /api/',
+  `Sitemap: ${canonicalUrl('sitemap.xml')}`,
+  '',
+].join('\n'), 'utf8');
 
 const previewDirectory = path.join(root, 'data', 'cms-previews');
 await rm(previewDirectory, { recursive: true, force: true });

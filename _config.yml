@@ -2,6 +2,7 @@ title: Градстройаудит
 lang: ru
 url: https://artymort.github.io
 baseurl: /auditgradstroy-site
+canonical_url: https://xn--80aahfbye3bpckmgl.xn--p1ai
 collections:
   cases:
     output: true

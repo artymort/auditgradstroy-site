@@ -1051,3 +1051,12 @@ VPS migration still requires:
 - Added a separate `Почта для получения заявок` setting to the CMS `Общие данные` screen. It is stored in SQLite, applies immediately to new leads, and does not change the public contact email.
 - Added permanent lead deletion to the CMS with an explicit confirmation prompt and activity-log entry.
 - Existing VPS installations using `LEAD_DELIVERY=sendmail` automatically use the corrected local SMTP transport; future setup writes `LEAD_DELIVERY=local`.
+
+## 2026-07-29 Telegram notifications for leads
+
+- Added server-side Telegram delivery for every lead saved by `/api/leads`.
+- Lead storage in SQLite remains the source of truth: a Telegram or mail failure cannot lose the request.
+- Telegram and email run independently. If one channel succeeds and the other fails, CMS shows the failed channel while keeping the lead delivered.
+- The bot token is read only from `TELEGRAM_BOT_TOKEN` in the VPS environment; it is never returned to CMS and is not stored in Git.
+- Added CMS controls under `Общие данные`: enable or disable Telegram, group ID, automatic group discovery, and a test message.
+- Added `deploy/setup-telegram.sh`, which securely prompts for the BotFather token, validates it with Telegram, writes it to `/opt/gradstroyaudit/.env`, and restarts the service.

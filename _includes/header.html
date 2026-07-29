@@ -1,6 +1,6 @@
   <header class="header hp-header">
     <div class="container header__inner">
-      <a class="logo" href="{% if page_type == 'home' %}#top{% else %}index.html{% endif %}" aria-label="На главную">
+      <a class="logo" href="{% if page_type == 'home' %}#top{% else %}{{ '/' | relative_url }}{% endif %}" aria-label="На главную">
         <img class="logo__image" src="{{ site.data.site.brand.logo | relative_url }}" alt="{{ site.data.site.brand.name | escape }}">
       </a>
       <nav class="nav" aria-label="Главное меню">

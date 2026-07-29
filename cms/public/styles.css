@@ -278,9 +278,17 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
   background: #fff;
   padding: 24px;
 }
+.notification-settings-list { display: grid; gap: 14px; margin-bottom: 22px; }
+.notification-settings-list .notification-settings { margin-bottom: 0; }
 .notification-settings h2 { margin: 0 0 8px; font-size: 21px; font-weight: 600; }
 .notification-settings p { max-width: 72ch; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
 .notification-settings form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 10px; }
+.notification-settings--telegram { align-items: start; }
+.notification-settings--telegram form { grid-template-columns: 1fr; align-items: stretch; }
+.notification-settings__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.checkbox-field { display: flex; align-items: center; gap: 10px; min-height: 42px; }
+.checkbox-field input { width: 18px; height: 18px; margin: 0; }
+.checkbox-field span { font-weight: 500; }
 
 .editor-layout { display: grid; grid-template-columns: minmax(0,1fr) 260px; align-items: start; gap: 20px; }
 .editor-main { display: grid; gap: 22px; }

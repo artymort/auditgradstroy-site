@@ -11,6 +11,9 @@ layout: null
 {% include head-icons.html %}
   <title>{{ contacts.seo.title | escape }}</title>
   <meta name="description" content="{{ contacts.seo.description | escape }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/contacts.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/contacts.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">

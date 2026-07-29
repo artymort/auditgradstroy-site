@@ -365,6 +365,7 @@ const renderDashboard = async () => {
     reopen_lead: 'Заявка возвращена в работу',
     delete_lead: 'Удалена заявка',
     update_lead_email: 'Изменена почта для заявок',
+    update_lead_telegram: 'Изменены настройки Telegram',
     login: 'Вход в админку',
   };
   const activityPageNames = {
@@ -500,8 +501,8 @@ const renderLeads = async () => {
   const leads = await api('/api/leads');
   const statusLabels = {
     new: 'Сохранена',
-    queued: 'Письмо в очереди',
-    failed: 'Письмо не отправлено',
+    queued: 'Уведомление передано',
+    failed: 'Уведомление не отправлено',
     handled: 'Обработана',
   };
   const details = (lead) => [
@@ -514,7 +515,7 @@ const renderLeads = async () => {
   )).join('');
 
   view.innerHTML = `
-    <p class="view-intro">Все обращения сначала сохраняются здесь, поэтому заявка не потеряется даже при временной задержке почты.</p>
+    <p class="view-intro">Все обращения сначала сохраняются здесь, а затем передаются в настроенные каналы — Telegram и почту.</p>
     <section class="leads-list">
       ${leads.length ? leads.map((lead) => `
         <article class="lead-card${lead.status === 'handled' ? ' is-handled' : ''}">
@@ -531,7 +532,7 @@ const renderLeads = async () => {
               <strong>${formatDate(lead.created_at, true)}</strong>
               ${lead.page_title ? `<span>${escapeHtml(lead.page_title)}</span>` : ''}
               ${lead.page_path ? `<a href="${escapeHtml(lead.page_path)}" target="_blank" rel="noopener">Открыть страницу ↗</a>` : ''}
-              ${lead.delivery_error ? `<small>Почтовое уведомление: ${escapeHtml(lead.delivery_error)}</small>` : ''}
+              ${lead.delivery_error ? `<small>Каналы уведомлений: ${escapeHtml(lead.delivery_error)}</small>` : ''}
             </div>
             <div class="lead-actions">
               <button class="secondary-button" data-handle-lead="${lead.id}">
@@ -1039,27 +1040,52 @@ const renderPageEditor = async (key) => {
   const meta = PAGE_META[key];
   if (!meta) throw new Error('Неизвестная страница.');
   setHeading(meta.title, 'Страницы сайта');
-  const [page, leadEmailSetting] = await Promise.all([
+  const [page, leadEmailSetting, telegramSetting] = await Promise.all([
     api(`/api/pages/${key}`),
     key === 'site' ? api('/api/settings/lead-email') : Promise.resolve(null),
+    key === 'site' ? api('/api/settings/telegram') : Promise.resolve(null),
   ]);
   state.pageDraft = structuredClone(page.data);
   state.pageKey = key;
   view.innerHTML = `
     <p class="view-intro">${escapeHtml(meta.description)} После нажатия «Сохранить» сайт обновится автоматически.</p>
     ${key === 'site' ? `
-      <section class="notification-settings">
-        <div>
-          <h2>Получение заявок</h2>
-          <p>Сюда будут приходить письма из всех форм сайта. Это отдельная настройка: публичная почта в контактах не изменится.</p>
-        </div>
-        <form id="lead-email-form">
-          <label>Почта для получения заявок
-            <input id="lead-email-input" type="email" value="${escapeHtml(leadEmailSetting.email)}" required maxlength="254" autocomplete="email">
-          </label>
-          <button class="primary-button" type="submit">Сохранить почту</button>
-        </form>
-      </section>
+      <div class="notification-settings-list">
+        <section class="notification-settings">
+          <div>
+            <h2>Почта для заявок</h2>
+            <p>Письма из всех форм будут отправляться на этот адрес. Публичная почта в контактах не изменится.</p>
+          </div>
+          <form id="lead-email-form">
+            <label>Адрес получателя
+              <input id="lead-email-input" type="email" value="${escapeHtml(leadEmailSetting.email)}" required maxlength="254" autocomplete="email">
+            </label>
+            <button class="primary-button" type="submit">Сохранить почту</button>
+          </form>
+        </section>
+        <section class="notification-settings notification-settings--telegram">
+          <div>
+            <h2>Telegram-группа</h2>
+            <p>${telegramSetting.botConfigured
+              ? 'Добавьте бота в нужную группу. Затем найдите группу автоматически или укажите её ID. Если группа не найдётся, отправьте в ней команду /start.'
+              : 'Бот ещё не подключён к серверу. Сначала добавьте его токен на VPS — токен не хранится в CMS и не попадает в GitHub.'}</p>
+          </div>
+          <form id="telegram-settings-form">
+            <label class="checkbox-field">
+              <input id="telegram-enabled-input" type="checkbox"${telegramSetting.enabled ? ' checked' : ''}>
+              <span>Отправлять новые заявки в Telegram</span>
+            </label>
+            <label>ID группы
+              <input id="telegram-chat-id-input" type="text" inputmode="numeric" value="${escapeHtml(telegramSetting.chatId)}" placeholder="-1001234567890" maxlength="24">
+            </label>
+            <div class="notification-settings__actions">
+              <button class="secondary-button" id="telegram-discover-button" type="button"${telegramSetting.botConfigured ? '' : ' disabled'}>Найти группу</button>
+              <button class="secondary-button" id="telegram-test-button" type="button"${telegramSetting.botConfigured ? '' : ' disabled'}>Проверить</button>
+              <button class="primary-button" type="submit">Сохранить Telegram</button>
+            </div>
+          </form>
+        </section>
+      </div>
     ` : ''}
     <div class="editor-layout">
       <div class="editor-main" id="page-fields"></div>
@@ -1091,6 +1117,62 @@ const renderPageEditor = async (key) => {
       } finally {
         button.disabled = false;
         button.textContent = 'Сохранить почту';
+      }
+    });
+    $('#telegram-settings-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = event.currentTarget.querySelector('button[type="submit"]');
+      button.disabled = true;
+      button.textContent = 'Сохраняем…';
+      try {
+        const saved = await api('/api/settings/telegram', {
+          method: 'PUT',
+          body: {
+            enabled: $('#telegram-enabled-input').checked,
+            chatId: $('#telegram-chat-id-input').value,
+          },
+        });
+        $('#telegram-enabled-input').checked = saved.enabled;
+        $('#telegram-chat-id-input').value = saved.chatId;
+        notify('Настройки Telegram сохранены.');
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Сохранить Telegram';
+      }
+    });
+    $('#telegram-discover-button').addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Ищем…';
+      try {
+        const result = await api('/api/settings/telegram/discover', { method: 'POST' });
+        const group = result.chats[0];
+        $('#telegram-chat-id-input').value = group.id;
+        notify(`Найдена группа «${group.title}». Теперь нажмите «Проверить».`);
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Найти группу';
+      }
+    });
+    $('#telegram-test-button').addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Отправляем…';
+      try {
+        await api('/api/settings/telegram/test', {
+          method: 'POST',
+          body: { chatId: $('#telegram-chat-id-input').value },
+        });
+        notify('Тестовое сообщение отправлено в Telegram.');
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Проверить';
       }
     });
   }

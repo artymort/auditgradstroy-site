@@ -12,9 +12,11 @@ layout: null
   <title>{{ home.seo.title | escape }}</title>
   <meta name="description" content="{{ home.seo.description | escape }}">
   <meta name="keywords" content="{{ home.seo.keywords | escape }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/">
   <meta property="og:title" content="{{ home.seo.og_title | escape }}">
   <meta property="og:description" content="{{ home.seo.og_description | escape }}">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="{{ site.data.site.brand.name | escape }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
