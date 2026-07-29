@@ -7642,6 +7642,33 @@
   color: #050706;
 }
 
+/* Full expertise: keep both actions readable and their arrow circles consistent. */
+.dom-services .dom-full-hero__summary .button.navy::after,
+.dom-services .dom-full-hero__summary .button.navy:hover::after,
+.dom-services .dom-full-hero__summary .button.navy:active::after,
+.dom-services .dom-full-hero__summary .button.navy:focus-visible::after {
+  background: var(--dom-lime);
+  color: #050706;
+}
+
+.dom-services .dom-full-hero__summary .button.navy.dom-full-hero__button-secondary {
+  background: #fff !important;
+  color: #050706;
+}
+
+.dom-services .dom-full-hero__summary .button.navy.dom-full-hero__button-secondary:hover,
+.dom-services .dom-full-hero__summary .button.navy.dom-full-hero__button-secondary:active,
+.dom-services .dom-full-hero__summary .button.navy.dom-full-hero__button-secondary:focus-visible {
+  background: #f3f5f0 !important;
+  color: #050706;
+}
+
+.dom-services .dom-full-hero__summary .dom-feature__actions .button {
+  width: min(260px, 100%);
+  min-height: 52px;
+  flex: 0 0 260px;
+}
+
 /* Final responsive layer shared by homepage and services */
 body { overflow-x: hidden; }
 
@@ -8909,9 +8936,9 @@ select,
 }
 
 .content-hero__copy h1 {
-  font-size: clamp(56px, 6vw, 82px);
-  font-weight: 600;
-  line-height: .96;
+  font-size: clamp(42px, 4.8vw, 70px);
+  font-weight: 500;
+  line-height: 1.02;
 }
 
 .content-hero__lead {
