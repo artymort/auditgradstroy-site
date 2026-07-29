@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import { mkdir, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { domainToUnicode, fileURLToPath } from 'node:url';
 import express from 'express';
 import multer from 'multer';
 import { marked } from 'marked';
@@ -29,6 +29,13 @@ const host = process.env.HOST || '127.0.0.1';
 const production = process.env.NODE_ENV === 'production';
 const secureCookie = process.env.CMS_SECURE_COOKIE === '1' || production;
 const siteUrl = (process.env.SITE_URL || `http://${host}:${port}`).replace(/\/$/, '');
+const siteDisplayHost = (() => {
+  try {
+    return domainToUnicode(new URL(siteUrl).hostname) || new URL(siteUrl).hostname;
+  } catch {
+    return '';
+  }
+})();
 const baseurl = (process.env.BASEURL || '').replace(/\/$/, '');
 const databaseFile = path.resolve(root, process.env.CMS_DB_PATH || 'data/cms.sqlite');
 const mediaDirectory = path.resolve(root, process.env.CMS_MEDIA_DIR || 'media/uploads');
@@ -353,7 +360,11 @@ const deliverLeadNotification = async ({ storedLead, lead, rows, text, html }) =
     const chatId = database.getSetting('telegram_chat_id', telegramChatId).trim();
     const telegramText = [
       `🔔 <b>Новая заявка №${storedLead.id}</b>`,
-      ...rows.map(([label, value]) => `<b>${escapeLeadHtml(label)}:</b> ${escapeLeadHtml(value)}`),
+      ...rows.map(([label, value]) => (
+        label === 'Страница'
+          ? `<b>Страница:</b> <a href="${escapeLeadHtml(value)}">${escapeLeadHtml(siteDisplayHost ? `Открыть страницу на ${siteDisplayHost}` : 'Открыть страницу сайта')}</a>`
+          : `<b>${escapeLeadHtml(label)}:</b> ${escapeLeadHtml(value)}`
+      )),
     ].join('\n\n');
     deliveries.push({
       channel: 'Telegram',
@@ -443,7 +454,9 @@ app.post('/api/leads', async (request, response, next) => {
 
     const text = rows.map(([label, value]) => `${label}: ${value}`).join('\n\n');
     const html = rows.map(([label, value]) => (
-      `<p style="margin:0 0 14px"><strong>${escapeLeadHtml(label)}:</strong><br>${escapeLeadHtml(value).replaceAll('\n', '<br>')}</p>`
+      label === 'Страница'
+        ? `<p style="margin:0 0 14px"><strong>Страница:</strong><br><a href="${escapeLeadHtml(value)}">${escapeLeadHtml(siteDisplayHost ? `Открыть страницу на ${siteDisplayHost}` : 'Открыть страницу сайта')}</a></p>`
+        : `<p style="margin:0 0 14px"><strong>${escapeLeadHtml(label)}:</strong><br>${escapeLeadHtml(value).replaceAll('\n', '<br>')}</p>`
     )).join('');
 
     const storedLead = database.createLead(lead);
