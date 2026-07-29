@@ -29,8 +29,10 @@ layout: null
     <section class="hp-hero" style="--hp-hero-image: url('{{ home.hero.image | relative_url }}')">
       <div class="container hp-hero__stage">
         <div class="hp-hero__copy">
-          <p class="hp-kicker"><span></span> {{ home.hero.location | escape }}</p>
-          <p class="hp-hero__promise">{{ home.hero.promise | escape }}</p>
+          <div class="hp-hero__intro">
+            <p class="hp-kicker"><span></span> {{ home.hero.location | escape }}</p>
+            <p class="hp-hero__promise">{{ home.hero.promise | escape }}</p>
+          </div>
           <h1>{{ home.hero.title | escape }}</h1>
           <p class="hp-hero__lead">{{ home.hero.lead | escape }}</p>
           <div class="hp-hero__actions">

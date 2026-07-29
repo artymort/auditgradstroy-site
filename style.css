@@ -8743,6 +8743,58 @@ select,
   letter-spacing: 0;
 }
 
+/* Homepage hero: clearer hierarchy for location, promise and form label */
+.hp-home .hp-hero__intro {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  margin: 0 0 26px;
+}
+
+.hp-home .hp-hero__copy .hp-kicker {
+  width: max-content;
+  max-width: 100%;
+  min-height: 38px;
+  margin: 0;
+  border: 1px solid rgba(5, 7, 6, .18);
+  padding: 9px 13px;
+  background: rgba(255, 255, 255, .46);
+  color: rgba(5, 7, 6, .76);
+  line-height: 1.4;
+}
+
+.hp-home .hp-hero__copy .hp-kicker span {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  background: var(--hp-lime);
+}
+
+.hp-home .hp-hero__promise {
+  max-width: 520px;
+  margin: 0 !important;
+  border-left: 3px solid var(--hp-lime);
+  padding: 2px 0 2px 16px;
+  color: rgba(5, 7, 6, .82) !important;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.48;
+}
+
+.hp-home .hp-quick-form > div > span {
+  width: max-content;
+  max-width: 100%;
+  min-height: 36px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(5, 7, 6, .2);
+  padding: 7px 11px;
+  background: rgba(255, 255, 255, .24);
+}
+
+.hp-home .hp-quick-form > div > span::before {
+  display: none;
+}
+
 @media (max-width: 600px) {
   :root {
     --type-card-size: 23px;
@@ -8750,6 +8802,15 @@ select,
 
   .hp-home .hp-hero__lead {
     font-size: 15px;
+  }
+
+  .hp-home .hp-hero__intro {
+    gap: 15px;
+    margin-bottom: 22px;
+  }
+
+  .hp-home .hp-hero__intro .hp-hero__promise {
+    font-size: 16px;
   }
 
   .hp-home .hp-kicker,
