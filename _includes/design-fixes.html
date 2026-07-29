@@ -1,0 +1,34 @@
+<style>
+  @media (min-width: 768px) {
+    .contacts-hero__copy h1 {
+      max-width: 720px;
+      font-size: clamp(42px, 3.9vw, 60px);
+      font-weight: 500;
+      line-height: 1.04;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hp-risk-note {
+      width: calc(100% - 80px);
+      min-height: 104px;
+      margin-inline: auto;
+      padding: 20px 28px 20px 82px;
+    }
+
+    .hp-risk-note::before {
+      left: 28px;
+      width: 42px;
+      height: 42px;
+      font-size: 22px;
+    }
+
+    .hp-home .hp-risk-note p {
+      max-width: none;
+      font-size: clamp(16px, 1.15vw, 18px);
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      white-space: nowrap;
+    }
+  }
+</style>
