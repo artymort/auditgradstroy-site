@@ -637,12 +637,42 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
   surface.setAttribute('aria-label', label);
   surface.innerHTML = richEditorHtml(value);
 
+  const HISTORY_LIMIT = 100;
+  const history = [surface.innerHTML];
+  let historyIndex = 0;
+  let applyingHistory = false;
+  let lastInputKind = '';
+  let lastInputAt = 0;
+  let undoControl;
+  let redoControl;
+
   const prefix = mode === 'block' ? RICH_BLOCK_PREFIX : RICH_INLINE_PREFIX;
   const currentValue = () => {
     const hasContent = surface.textContent.trim() || surface.querySelector('img');
     return hasContent ? `${prefix}${surface.innerHTML}` : '';
   };
   const sync = () => onChange?.(currentValue());
+  const updateHistoryControls = () => {
+    if (undoControl) undoControl.disabled = historyIndex <= 0;
+    if (redoControl) redoControl.disabled = historyIndex >= history.length - 1;
+  };
+  const rememberHistory = ({ replace = false, preserveInputGroup = false } = {}) => {
+    if (applyingHistory || history[historyIndex] === surface.innerHTML) return;
+    history.splice(historyIndex + 1);
+    if (replace && historyIndex > 0) {
+      history[historyIndex] = surface.innerHTML;
+    } else {
+      history.push(surface.innerHTML);
+    }
+    if (history.length > HISTORY_LIMIT) history.shift();
+    historyIndex = history.length - 1;
+    if (!preserveInputGroup) resetInputGroup();
+    updateHistoryControls();
+  };
+  const resetInputGroup = () => {
+    lastInputKind = '';
+    lastInputAt = 0;
+  };
   const saveSelection = () => {
     const selection = window.getSelection();
     if (!selection?.rangeCount) return;
@@ -672,6 +702,28 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
     selection.addRange(range);
     saveSelection();
   };
+  const placeCaretAtEnd = () => {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(surface);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    saveSelection();
+  };
+  const restoreHistory = (offset) => {
+    const nextIndex = historyIndex + offset;
+    if (nextIndex < 0 || nextIndex >= history.length) return;
+    applyingHistory = true;
+    historyIndex = nextIndex;
+    surface.innerHTML = history[historyIndex];
+    surface.focus();
+    placeCaretAtEnd();
+    applyingHistory = false;
+    resetInputGroup();
+    updateHistoryControls();
+    sync();
+  };
   const wrapSelection = (tagName, attributes = {}) => {
     const range = activeRange();
     if (!range) return;
@@ -681,6 +733,7 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
           : 'formatBlock';
       document.execCommand(command, false, command === 'formatBlock' ? tagName : null);
       saveSelection();
+      rememberHistory();
       sync();
       return;
     }
@@ -694,6 +747,7 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
       range.insertNode(element);
     }
     selectNodeContents(element);
+    rememberHistory();
     sync();
   };
   const insertHtmlAtSelection = (html) => {
@@ -711,6 +765,7 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
       selection.addRange(range);
       saveSelection();
     }
+    rememberHistory();
     sync();
   };
   const insertList = (ordered) => {
@@ -726,13 +781,17 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
     range.deleteContents();
     range.insertNode(list);
     selectNodeContents(list.lastElementChild || list);
+    rememberHistory();
     sync();
   };
   const run = (command, commandValue = null) => {
+    if (command === 'undo') return restoreHistory(-1);
+    if (command === 'redo') return restoreHistory(1);
     surface.focus();
     restoreSelection();
     document.execCommand(command, false, commandValue);
     saveSelection();
+    rememberHistory();
     sync();
   };
   const button = (text, title, action) => {
@@ -769,8 +828,8 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
     const href = prompt('Вставьте адрес ссылки:');
     if (href) wrapSelection('a', { href: href.trim() });
   });
-  button('↶', 'Отменить последнее изменение', () => run('undo'));
-  button('↷', 'Вернуть отменённое изменение', () => run('redo'));
+  undoControl = button('↶', 'Отменить последнее изменение', () => run('undo'));
+  redoControl = button('↷', 'Вернуть отменённое изменение', () => run('redo'));
   button('Очистить', 'Убрать оформление выделенного текста', () => {
     const range = activeRange();
     if (!range || range.collapsed) return;
@@ -778,10 +837,27 @@ const createRichTextEditor = ({ value = '', mode = 'inline', compact = false, on
     range.deleteContents();
     range.insertNode(text);
     selectNodeContents(text);
+    rememberHistory();
     sync();
   });
 
-  surface.addEventListener('input', sync);
+  updateHistoryControls();
+  surface.addEventListener('input', (event) => {
+    const inputKind = ['insertText', 'deleteContentBackward', 'deleteContentForward'].includes(event.inputType)
+      ? event.inputType
+      : '';
+    const now = Date.now();
+    const continuesTyping = inputKind && inputKind === lastInputKind && now - lastInputAt < 900;
+    rememberHistory({ replace: continuesTyping, preserveInputGroup: true });
+    lastInputKind = inputKind;
+    lastInputAt = inputKind ? now : 0;
+    sync();
+  });
+  surface.addEventListener('keydown', (event) => {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey || event.key.toLowerCase() !== 'z') return;
+    event.preventDefault();
+    restoreHistory(event.shiftKey ? 1 : -1);
+  });
   surface.addEventListener('keyup', saveSelection);
   surface.addEventListener('mouseup', saveSelection);
   surface.addEventListener('focus', saveSelection);

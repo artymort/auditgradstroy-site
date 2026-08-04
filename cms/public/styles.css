@@ -398,6 +398,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--lime-dark); box-
   border-color: var(--lime-dark);
   background: #fbfff7;
 }
+.rich-editor__toolbar button:disabled,
+.rich-editor__toolbar button:disabled:hover {
+  opacity: .38;
+  cursor: not-allowed;
+  border-color: #d4dad6;
+  background: #fff;
+}
 .rich-editor__surface {
   min-height: 132px;
   padding: 14px;
