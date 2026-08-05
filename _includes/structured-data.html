@@ -1,0 +1,38 @@
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "{{ site.canonical_url | default: site.url }}/#website",
+        "url": "{{ site.canonical_url | default: site.url }}/",
+        "name": "Градстройаудит",
+        "alternateName": "Градстрой аудит",
+        "inLanguage": "ru-RU",
+        "publisher": {
+          "@id": "{{ site.canonical_url | default: site.url }}/#organization"
+        }
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "{{ site.canonical_url | default: site.url }}/#organization",
+        "name": "Градстройаудит",
+        "alternateName": "Градстрой аудит",
+        "url": "{{ site.canonical_url | default: site.url }}/",
+        "logo": "{{ site.canonical_url | default: site.url }}/logo3.svg",
+        "telephone": "+79209409688",
+        "email": "veritasetlex@mail.ru",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Москва"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Московская область"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
