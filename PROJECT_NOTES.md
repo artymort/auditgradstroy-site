@@ -1060,3 +1060,9 @@ VPS migration still requires:
 - The bot token is read only from `TELEGRAM_BOT_TOKEN` in the VPS environment; it is never returned to CMS and is not stored in Git.
 - Added CMS controls under `Общие данные`: enable or disable Telegram, group ID, automatic group discovery, and a test message.
 - Added `deploy/setup-telegram.sh`, which securely prompts for the BotFather token, validates it with Telegram, writes it to `/opt/gradstroyaudit/.env`, and restarts the service.
+
+## 2026-08-17 Mobile navigation
+
+- Replaced the fragile inline mobile-menu handler with a dedicated deferred navigation script.
+- The menu now opens as an overlay directly below the sticky header, supports touch, outside clicks, Escape, link selection, responsive closing, and synchronized ARIA states.
+- Verified menu opening and closing at a 390 px touch viewport on all six public pages.

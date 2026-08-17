@@ -13,9 +13,9 @@
         <a class="phone" href="tel:{{ site.data.site.contacts.phone_link | escape }}">{{ site.data.site.contacts.phone_display | escape }}</a>
         <a class="button navy" href="#cta">{{ site.data.site.header.cta | escape }} <i aria-hidden="true">→</i></a>
       </div>
-      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-menu-button><span></span></button>
+      <button class="burger" type="button" aria-label="Открыть меню" aria-controls="mobile-navigation" aria-expanded="false" data-menu-button><span></span></button>
     </div>
-    <div class="mobile-menu" data-mobile-menu>
+    <div class="mobile-menu" id="mobile-navigation" aria-hidden="true" data-mobile-menu>
       {% for item in site.data.site.header.menu %}
       <a href="{{ item.url | relative_url }}">{{ item.label | escape }}</a>
       {% endfor %}

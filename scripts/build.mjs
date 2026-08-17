@@ -296,6 +296,7 @@ for (const preview of previews) {
 
 for (const asset of [
   'style.css',
+  'navigation.js',
   'forms.js',
   'analytics.js',
   'favicon.ico',
