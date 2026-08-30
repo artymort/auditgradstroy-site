@@ -1,0 +1,20 @@
+    <section class="dom-cta" id="cta">
+      <div class="container dom-cta__grid">
+        <article class="dom-cta__text">
+          <span>{{ services.cta.label | escape }}</span>
+          <h2>{{ services.cta.title | escape }}</h2>
+          <div class="dom-cta__facts">{% for benefit in services.cta.benefits %}<p>{{ benefit | escape }}</p>{% endfor %}</div>
+        </article>
+        <article class="dom-cta__form">
+          <h3>{{ services.cta.form_title | escape }}</h3>
+          <form data-static-form data-form-name="{{ service_form_name | default: 'Услуги — отправить запрос' | escape }}">
+            <label class="sr-only" for="{{ form_id_prefix }}-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="{{ form_id_prefix }}-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+            <label class="sr-only" for="{{ form_id_prefix }}-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="{{ form_id_prefix }}-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
+            <p class="consent form-consent">{% include form-consent.html %}</p>
+          </form>
+        </article>
+      </div>
+    </section>

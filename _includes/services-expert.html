@@ -1,0 +1,22 @@
+    <section class="dom-expert" id="expert">
+      <div class="container">
+        <div class="dom-expert__grid">
+          <article class="dom-expert__text">
+            <span>{{ services.expert.label | escape }}</span>
+            <h2>{{ services.expert.title | escape }}</h2>
+            <p>{{ services.expert.text | escape }}</p>
+            <a class="button navy" href="#cta">{{ services.expert.action | escape }}</a>
+          </article>
+          <article class="dom-expert__photo">
+            <img src="{{ services.expert.image | relative_url }}" alt="{{ services.expert.image_alt | escape }}">
+          </article>
+        </div>
+        <div class="dom-expert__proof">
+          <div class="dom-proof__grid">
+            {% for fact in services.expert.facts %}
+            <article><span>{{ fact.value | escape }}</span><h3>{{ fact.title | escape }}</h3><p>{{ fact.text | escape }}</p></article>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>

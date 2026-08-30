@@ -1,0 +1,59 @@
+---
+layout: null
+---
+{% assign page_type = "service" %}
+{% assign services = site.data.services %}
+{% assign page_data = site.data.project_support %}
+{% assign service = page_data.content %}
+{% assign service_form_name = "Услуга — сопровождение проекта" %}
+{% assign form_id_prefix = "support" %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+{% include head-icons.html %}
+  <title>{{ page_data.seo.title | escape }}</title>
+  <meta name="description" content="{{ page_data.seo.description | escape }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/project-support.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/project-support.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="dom-services dom-service-page">
+    <section class="dom-feature dom-feature--urban-support dom-service-page__primary">
+      <div class="container dom-urban-hero">
+        <article class="dom-urban-hero__media"><img src="{{ service.image | relative_url }}" alt="{{ service.image_alt | escape }}"></article>
+        <article class="dom-urban-hero__content">
+          <span>{{ service.location | escape }}</span>
+          <h1 class="dom-service-page-title">{{ service.title | escape }}</h1>
+          <p>{{ service.lead | escape }}</p>
+          <div><strong>{{ service.price | escape }}</strong><a class="button navy dom-process__button" href="#cta">{{ service.action | escape }}</a></div>
+        </article>
+      </div>
+
+      <div class="container dom-urban-intro">
+        <article><h2>{{ service.intro_title | escape }}</h2></article>
+        <article>{% for paragraph in service.intro_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</article>
+      </div>
+
+      <div class="container dom-urban-work">
+        <article class="dom-urban-help"><h3>{{ service.help_title | escape }}</h3><ul>{% for item in service.help_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
+        <article class="dom-urban-format"><h3>{{ service.format_title | escape }}</h3><ol>{% for step in service.format_steps %}<li><strong>{{ step.title | escape }}</strong> {{ step.text | escape }}</li>{% endfor %}</ol></article>
+      </div>
+    </section>
+
+{% include services-expert.html %}
+{% include services-cta.html %}
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

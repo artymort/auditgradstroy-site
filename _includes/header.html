@@ -6,7 +6,21 @@
       </a>
       <nav class="nav" aria-label="Главное меню">
         {% for item in site.data.site.header.menu %}
+        {% if item.children %}
+        <div class="nav-dropdown" data-nav-dropdown>
+          <button class="nav-dropdown__toggle" type="button" aria-expanded="false" data-nav-dropdown-button>
+            {{ item.label | escape }}<i aria-hidden="true"></i>
+          </button>
+          <div class="nav-dropdown__menu">
+            <a class="nav-dropdown__all" href="{{ item.url | relative_url }}">Все услуги</a>
+            {% for child in item.children %}
+            <a href="{{ child.url | relative_url }}">{{ child.label | escape }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
         <a href="{{ item.url | relative_url }}">{{ item.label | escape }}</a>
+        {% endif %}
         {% endfor %}
       </nav>
       <div class="header__actions">
@@ -17,7 +31,21 @@
     </div>
     <div class="mobile-menu" id="mobile-navigation" aria-hidden="true" data-mobile-menu>
       {% for item in site.data.site.header.menu %}
+      {% if item.children %}
+      <div class="mobile-submenu" data-mobile-submenu>
+        <button class="mobile-submenu__toggle" type="button" aria-expanded="false" data-mobile-submenu-button>
+          {{ item.label | escape }}<i aria-hidden="true"></i>
+        </button>
+        <div class="mobile-submenu__links">
+          <a href="{{ item.url | relative_url }}">Все услуги</a>
+          {% for child in item.children %}
+          <a href="{{ child.url | relative_url }}">{{ child.label | escape }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
       <a href="{{ item.url | relative_url }}">{{ item.label | escape }}</a>
+      {% endif %}
       {% endfor %}
       <a class="button navy" href="#cta">{{ site.data.site.header.cta | escape }} <i aria-hidden="true">→</i></a>
     </div>

@@ -3,6 +3,8 @@ layout: null
 ---
 {% assign page_type = "services" %}
 {% assign services = site.data.services %}
+{% assign service_form_name = "Все услуги — отправить запрос" %}
+{% assign form_id_prefix = "services" %}
 <!doctype html>
 <html lang="ru">
 <head>
@@ -43,7 +45,10 @@ layout: null
         <div class="dom-service-grid">
           {% for card in services.cards_section.cards %}
           <article class="dom-service-card dom-service-card--{{ card.style }}">
-            <div class="dom-service-card__top"><span>{{ card.title | escape }}</span><a class="dom-arrow" href="#{{ card.anchor }}" aria-label="{{ card.title | escape }}"></a></div>
+            <div class="dom-service-card__top">
+              <span>{{ card.title | escape }}</span>
+              <a class="dom-arrow" href="{{ card.url | relative_url }}" aria-label="Подробнее: {{ card.title | escape }}"></a>
+            </div>
             <p>{{ card.text | escape }}</p>
             <strong>{{ card.price | escape }}</strong>
             <figure class="dom-service-card__media"><img src="{{ card.image | relative_url }}" alt="{{ card.image_alt | escape }}"></figure>
@@ -60,122 +65,8 @@ layout: null
       </div>
     </section>
 
-    <section class="dom-feature" id="express-audit">
-      <div class="container dom-feature__grid dom-feature__grid--half">
-        <article class="dom-feature__intro dom-feature__intro--image">
-          <img src="{{ services.express.image | relative_url }}" alt="{{ services.express.image_alt | escape }}">
-          <div>
-            <span>{{ services.express.location | escape }}</span>
-            <div class="dom-feature__intro-copy">
-              <h2>{{ services.express.title | escape }}</h2>
-              <p>{{ services.express.lead | escape }}</p>
-              <strong>{{ services.express.price | escape }}</strong>
-              <div class="dom-feature__actions"><a class="button navy dom-process__button" href="#cta">{{ services.express.primary_action | escape }}</a><a class="button dom-feature__button-secondary" href="#cta">{{ services.express.secondary_action | escape }}</a></div>
-            </div>
-          </div>
-        </article>
-        <article class="dom-feature__text">
-          <h2>{{ services.express.about_title | escape }}</h2>
-          {% for paragraph in services.express.about_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}
-        </article>
-      </div>
-      <div class="container dom-tile-grid dom-tile-grid--four">
-        {% for item in services.express.advantages %}<article class="dom-mini-tile"><span>{{ item.number | escape }}</span><h3>{{ item.title | escape }}</h3><p>{{ item.text | escape }}</p></article>{% endfor %}
-      </div>
-      <div class="container dom-audit-form">
-        <div class="dom-audit-form__text"><h3>{{ services.express.form_title | escape }}</h3><p>{{ services.express.form_text | escape }}</p></div>
-        <form class="dom-audit-form__fields" data-static-form data-form-name="Услуги — экспресс-аудит">
-          <label class="sr-only" for="audit-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-          <input id="audit-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
-          <label class="sr-only" for="audit-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="audit-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-          <button class="form-submit" type="submit"><span>{{ services.express.form_action | escape }}</span><i aria-hidden="true">→</i></button>
-          <small class="form-consent">{% include form-consent.html %}</small>
-        </form>
-      </div>
-      <div class="container dom-info-grid">
-        {% for card in services.express.info_cards %}
-        <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
-          <h3>{{ card.title | escape }}</h3>
-          {% if card.list_type == 'ol' %}<ol>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ol>{% else %}<ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>{% endif %}
-        </article>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="dom-feature dom-feature--full-expertise" id="full-expertise">
-      <div class="container dom-full-hero">
-        <article class="dom-full-hero__summary">
-          <span>{{ services.full.location | escape }}</span>
-          <div><h2>{{ services.full.title | escape }}</h2><p>{{ services.full.lead | escape }}</p></div>
-          <div><strong>{{ services.full.price | escape }}</strong><div class="dom-feature__actions"><a class="button navy dom-process__button" href="#cta">{{ services.full.primary_action | escape }}</a><a class="button navy dom-full-hero__button-secondary" href="#cta">{{ services.full.secondary_action | escape }}</a></div></div>
-        </article>
-        <article class="dom-full-hero__analysis">
-          <div><h2>{{ services.full.analysis_title | escape }}</h2>{% for paragraph in services.full.analysis_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</div>
-          <figure class="dom-full-hero__media"><img src="{{ services.full.image | relative_url }}" alt="{{ services.full.image_alt | escape }}"></figure>
-        </article>
-      </div>
-      <div class="container dom-info-grid dom-info-grid--four dom-full-scope">
-        {% for card in services.full.scope_cards %}
-        <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
-          <h3>{{ card.title | escape }}</h3>
-          <ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>
-        </article>
-        {% endfor %}
-      </div>
-      <div class="container dom-info-grid dom-full-result">
-        <article class="dom-info-card dom-info-card--wide dom-info-card--dark"><h3>{{ services.full.result_title | escape }}</h3><p>{{ services.full.result_text | escape }}</p><ul>{% for item in services.full.result_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
-      </div>
-    </section>
-
-    <section class="dom-feature dom-feature--urban-support" id="urban-support">
-      <div class="container dom-urban-hero">
-        <article class="dom-urban-hero__media"><img src="{{ services.urban.image | relative_url }}" alt="{{ services.urban.image_alt | escape }}"></article>
-        <article class="dom-urban-hero__content">
-          <span>{{ services.urban.location | escape }}</span>
-          <h2>{{ services.urban.title | escape }}</h2>
-          <p>{{ services.urban.lead | escape }}</p>
-          <div><strong>{{ services.urban.price | escape }}</strong><a class="button navy dom-process__button" href="#cta">{{ services.urban.action | escape }}</a></div>
-        </article>
-      </div>
-
-      <div class="container dom-urban-intro">
-        <article><h2>{{ services.urban.intro_title | escape }}</h2></article>
-        <article>{% for paragraph in services.urban.intro_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</article>
-      </div>
-
-      <div class="container dom-urban-work">
-        <article class="dom-urban-help"><h3>{{ services.urban.help_title | escape }}</h3><ul>{% for item in services.urban.help_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
-        <article class="dom-urban-format"><h3>{{ services.urban.format_title | escape }}</h3><ol>{% for step in services.urban.format_steps %}<li><strong>{{ step.title | escape }}</strong> {{ step.text | escape }}</li>{% endfor %}</ol></article>
-      </div>
-    </section>
-
-    <section class="dom-expert" id="expert">
-      <div class="container">
-        <div class="dom-expert__grid">
-          <article class="dom-expert__text"><span>{{ services.expert.label | escape }}</span><h2>{{ services.expert.title | escape }}</h2><p>{{ services.expert.text | escape }}</p><a class="button navy" href="#cta">{{ services.expert.action | escape }}</a></article>
-          <article class="dom-expert__photo"><img src="{{ services.expert.image | relative_url }}" alt="{{ services.expert.image_alt | escape }}"></article>
-        </div>
-        <div class="dom-expert__proof"><div class="dom-proof__grid">{% for fact in services.expert.facts %}<article><span>{{ fact.value | escape }}</span><h3>{{ fact.title | escape }}</h3><p>{{ fact.text | escape }}</p></article>{% endfor %}</div></div>
-      </div>
-    </section>
-
-    <section class="dom-cta" id="cta">
-      <div class="container dom-cta__grid">
-        <article class="dom-cta__text"><span>{{ services.cta.label | escape }}</span><h2>{{ services.cta.title | escape }}</h2><div class="dom-cta__facts">{% for benefit in services.cta.benefits %}<p>{{ benefit | escape }}</p>{% endfor %}</div></article>
-        <article class="dom-cta__form">
-          <h3>{{ services.cta.form_title | escape }}</h3>
-          <form data-static-form data-form-name="Услуги — отправить запрос">
-            <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-            <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
-            <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-            <input id="cta-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
-            <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
-            <p class="consent form-consent">{% include form-consent.html %}</p>
-          </form>
-        </article>
-      </div>
-    </section>
+{% include services-expert.html %}
+{% include services-cta.html %}
   </main>
 
 {% include footer.html %}

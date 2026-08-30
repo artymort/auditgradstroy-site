@@ -5,7 +5,19 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { hashPassword } from './auth.mjs';
 
-const PAGE_KEYS = ['site', 'home', 'services', 'blog', 'cases', 'expert', 'contacts', 'legal'];
+const PAGE_KEYS = [
+  'site',
+  'home',
+  'services',
+  'express_audit',
+  'full_expertise',
+  'project_support',
+  'blog',
+  'cases',
+  'expert',
+  'contacts',
+  'legal',
+];
 const ANALYTICS_TIME_ZONE = process.env.CMS_ANALYTICS_TIME_ZONE || 'Europe/Moscow';
 
 const analyticsDay = (date = new Date()) => {
@@ -195,6 +207,7 @@ export class CmsDatabase {
     const sitePage = this.db.prepare('SELECT data_json FROM content_pages WHERE key = ?').get('site');
     if (sitePage) {
       const siteData = JSON.parse(sitePage.data_json);
+      const defaultSiteData = JSON.parse(await readFile(path.join(this.root, '_data', 'site.json'), 'utf8'));
       let changed = false;
       for (const obsoleteKey of ['privacy_label', 'privacy_url', 'agreement_label', 'agreement_url']) {
         if (Object.hasOwn(siteData.contacts || {}, obsoleteKey)) {
@@ -202,9 +215,45 @@ export class CmsDatabase {
           changed = true;
         }
       }
+      const serviceMenu = (siteData.header?.menu || []).find((item) => item.url === 'services.html' || item.label === 'Услуги');
+      const defaultServiceMenu = (defaultSiteData.header?.menu || []).find((item) => item.url === 'services.html');
+      if (serviceMenu && defaultServiceMenu?.children && JSON.stringify(serviceMenu.children) !== JSON.stringify(defaultServiceMenu.children)) {
+        serviceMenu.children = defaultServiceMenu.children;
+        changed = true;
+      }
+      const serviceUrls = ['express-audit.html', 'full-expertise.html', 'project-support.html'];
+      (siteData.footer?.services || []).forEach((item, index) => {
+        if (serviceUrls[index] && item.url !== serviceUrls[index]) {
+          item.url = serviceUrls[index];
+          changed = true;
+        }
+      });
       if (changed) {
         this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
           .run(JSON.stringify(siteData), this.now(), 'site');
+      }
+    }
+
+    for (const migration of [
+      { key: 'home', select: (data) => data.services?.cards },
+      { key: 'services', select: (data) => data.cards_section?.cards },
+    ]) {
+      const page = this.db.prepare('SELECT data_json FROM content_pages WHERE key = ?').get(migration.key);
+      if (!page) continue;
+      const data = JSON.parse(page.data_json);
+      const cards = migration.select(data) || [];
+      const urls = ['express-audit.html', 'full-expertise.html', 'project-support.html'];
+      let changed = false;
+      cards.forEach((card, index) => {
+        if (urls[index] && card.url !== urls[index]) {
+          card.url = urls[index];
+          delete card.anchor;
+          changed = true;
+        }
+      });
+      if (changed) {
+        this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
+          .run(JSON.stringify(data), this.now(), migration.key);
       }
     }
   }

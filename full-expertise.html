@@ -1,0 +1,64 @@
+---
+layout: null
+---
+{% assign page_type = "service" %}
+{% assign services = site.data.services %}
+{% assign page_data = site.data.full_expertise %}
+{% assign service = page_data.content %}
+{% assign service_form_name = "Услуга — полная градостроительная экспертиза" %}
+{% assign form_id_prefix = "expertise" %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+{% include head-icons.html %}
+  <title>{{ page_data.seo.title | escape }}</title>
+  <meta name="description" content="{{ page_data.seo.description | escape }}">
+  <link rel="canonical" href="{{ site.canonical_url | default: site.url }}/full-expertise.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.canonical_url | default: site.url }}/full-expertise.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}">
+</head>
+<body>
+{% include header.html %}
+
+  <main class="dom-services dom-service-page">
+    <section class="dom-feature dom-feature--full-expertise dom-service-page__primary">
+      <div class="container dom-full-hero">
+        <article class="dom-full-hero__summary">
+          <span>{{ service.location | escape }}</span>
+          <div><h1 class="dom-service-page-title">{{ service.title | escape }}</h1><p>{{ service.lead | escape }}</p></div>
+          <div><strong>{{ service.price | escape }}</strong><div class="dom-feature__actions"><a class="button navy dom-process__button" href="#cta">{{ service.primary_action | escape }}</a><a class="button navy dom-full-hero__button-secondary" href="#cta">{{ service.secondary_action | escape }}</a></div></div>
+        </article>
+        <article class="dom-full-hero__analysis">
+          <div><h2>{{ service.analysis_title | escape }}</h2>{% for paragraph in service.analysis_paragraphs %}<p>{{ paragraph | escape }}</p>{% endfor %}</div>
+          <figure class="dom-full-hero__media"><img src="{{ service.image | relative_url }}" alt="{{ service.image_alt | escape }}"></figure>
+        </article>
+      </div>
+
+      <div class="container dom-info-grid dom-info-grid--four dom-full-scope">
+        {% for card in service.scope_cards %}
+        <article class="dom-info-card{% unless card.style == 'light' %} dom-info-card--{{ card.style }}{% endunless %}">
+          <h3>{{ card.title | escape }}</h3>
+          <ul>{% for item in card.items %}<li>{{ item | escape }}</li>{% endfor %}</ul>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="container dom-info-grid dom-full-result">
+        <article class="dom-info-card dom-info-card--wide dom-info-card--dark"><h3>{{ service.result_title | escape }}</h3><p>{{ service.result_text | escape }}</p><ul>{% for item in service.result_items %}<li>{{ item | escape }}</li>{% endfor %}</ul></article>
+      </div>
+    </section>
+
+{% include services-expert.html %}
+{% include services-cta.html %}
+  </main>
+
+{% include footer.html %}
+{% include site-scripts.html %}
+</body>
+</html>

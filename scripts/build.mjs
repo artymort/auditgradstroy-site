@@ -96,6 +96,9 @@ const site = {
     site: await readJson('site.json'),
     home: await readJson('home.json'),
     services: await readJson('services.json'),
+    express_audit: await readJson('express_audit.json'),
+    full_expertise: await readJson('full_expertise.json'),
+    project_support: await readJson('project_support.json'),
     blog: await readJson('blog.json'),
     cases: await readJson('cases.json'),
     expert: await readJson('expert.json'),
@@ -148,7 +151,17 @@ engine.registerFilter('date', (value, format) => {
 
 await clearDirectoryContents(output);
 
-const publicPages = ['index.html', 'services.html', 'cases.html', 'blog.html', 'expert.html', 'contacts.html'];
+const publicPages = [
+  'index.html',
+  'services.html',
+  'express-audit.html',
+  'full-expertise.html',
+  'project-support.html',
+  'cases.html',
+  'blog.html',
+  'expert.html',
+  'contacts.html',
+];
 
 for (const pageName of publicPages) {
   const template = stripFrontMatter(await readFile(path.join(root, pageName), 'utf8'));
@@ -187,7 +200,7 @@ const sitemapEntries = [
     .filter((pageName) => pageName !== 'index.html')
     .map((pageName) => ({
       url: canonicalUrl(pageName),
-      priority: pageName === 'services.html' ? '0.9' : '0.8',
+      priority: ['services.html', 'express-audit.html', 'full-expertise.html', 'project-support.html'].includes(pageName) ? '0.9' : '0.8',
       changefreq: pageName === 'blog.html' || pageName === 'cases.html' ? 'weekly' : 'monthly',
     })),
   ...site.posts.map((item) => ({

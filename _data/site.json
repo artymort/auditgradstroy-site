@@ -8,7 +8,21 @@
     "menu": [
       {
         "label": "Услуги",
-        "url": "services.html"
+        "url": "services.html",
+        "children": [
+          {
+            "label": "Экспресс-аудит участка",
+            "url": "express-audit.html"
+          },
+          {
+            "label": "Полная градостроительная экспертиза",
+            "url": "full-expertise.html"
+          },
+          {
+            "label": "Сопровождение проектов",
+            "url": "project-support.html"
+          }
+        ]
       },
       {
         "label": "Кейсы",
@@ -52,15 +66,15 @@
     "services": [
       {
         "label": "Экспресс-аудит участка",
-        "url": "services.html#express-audit"
+        "url": "express-audit.html"
       },
       {
         "label": "Полная градостроительная экспертиза",
-        "url": "services.html#full-expertise"
+        "url": "full-expertise.html"
       },
       {
         "label": "Стратегическое сопровождение проектов",
-        "url": "services.html#urban-support"
+        "url": "project-support.html"
       }
     ],
     "copyright": "© 2026 Градстройаудит. Все права защищены.",

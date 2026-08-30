@@ -709,8 +709,8 @@ content:
                 label: Стиль
                 type: string
                 readonly: true
-              - name: anchor
-                label: Якорь
+              - name: url
+                label: Ссылка на страницу услуги
                 type: string
                 readonly: true
               - name: title
