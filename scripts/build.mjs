@@ -312,6 +312,7 @@ for (const asset of [
   'navigation.js',
   'forms.js',
   'analytics.js',
+  'metrika.js',
   'favicon.ico',
   'favicon.svg',
   'favicon-32x32.png',

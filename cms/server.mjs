@@ -114,22 +114,91 @@ const publisher = new Publisher({ root, database, siteUrl, baseurl });
 const app = express();
 if (process.env.CMS_TRUST_PROXY === '1') app.set('trust proxy', 1);
 app.disable('x-powered-by');
+
+const metrikaHttpsSources = [
+  'https://mc.yandex.ru',
+  'https://mc.yandex.az',
+  'https://mc.yandex.by',
+  'https://mc.yandex.co.il',
+  'https://mc.yandex.com',
+  'https://mc.yandex.com.am',
+  'https://mc.yandex.com.ge',
+  'https://mc.yandex.com.tr',
+  'https://mc.yandex.ee',
+  'https://mc.yandex.fr',
+  'https://mc.yandex.kg',
+  'https://mc.yandex.kz',
+  'https://mc.yandex.lt',
+  'https://mc.yandex.lv',
+  'https://mc.yandex.md',
+  'https://mc.yandex.tj',
+  'https://mc.yandex.tm',
+  'https://mc.yandex.uz',
+  'https://mc.webvisor.com',
+  'https://mc.webvisor.org',
+  'https://yastatic.net',
+];
+const metrikaWebsocketSources = metrikaHttpsSources
+  .filter((source) => !source.includes('yastatic.net'))
+  .map((source) => source.replace('https://', 'wss://'));
+const metrikaScriptSources = [
+  'https://mc.yandex.ru',
+  'https://yastatic.net',
+];
+const metrikaFrameSources = [
+  'https://mc.yandex.ru',
+  'https://mc.webvisor.com',
+  'https://mc.webvisor.org',
+];
+const metrikaFrameAncestors = [
+  'https://*.yandex.ru',
+  'https://*.yandex.by',
+  'https://*.yandex.com',
+  'https://*.yandex.com.tr',
+  'https://*.yandex.kz',
+  'https://*.ya.ru',
+  'https://metrica.yandex',
+  'https://metrika.yandex',
+  'https://metrika.yandex.uz',
+];
+const strictContentSecurityPolicy = [
+  "default-src 'self'",
+  "img-src 'self' data:",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "script-src 'self'",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
+const publicContentSecurityPolicy = [
+  "default-src 'self'",
+  `img-src 'self' data: ${metrikaHttpsSources.join(' ')}`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  `script-src 'self' ${metrikaScriptSources.join(' ')}`,
+  `connect-src 'self' ${metrikaHttpsSources.join(' ')} ${metrikaWebsocketSources.join(' ')}`,
+  `child-src 'self' blob: ${metrikaFrameSources.join(' ')}`,
+  `frame-src 'self' blob: ${metrikaFrameSources.join(' ')}`,
+  `frame-ancestors 'self' ${metrikaFrameAncestors.join(' ')}`,
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
+
 app.use((request, response, next) => {
+  const cmsResponse = request.hostname.startsWith('cms.')
+    || request.path === '/cms'
+    || request.path.startsWith('/cms/')
+    || request.path.startsWith('/api/');
   response.setHeader('X-Content-Type-Options', 'nosniff');
-  response.setHeader('X-Frame-Options', 'DENY');
+  if (cmsResponse) response.setHeader('X-Frame-Options', 'DENY');
   response.setHeader('Referrer-Policy', 'same-origin');
   response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  response.setHeader('Content-Security-Policy', [
-    "default-src 'self'",
-    "img-src 'self' data:",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com data:",
-    "script-src 'self'",
-    "connect-src 'self'",
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-  ].join('; '));
+  response.setHeader(
+    'Content-Security-Policy',
+    cmsResponse ? strictContentSecurityPolicy : publicContentSecurityPolicy,
+  );
   next();
 });
 app.use(express.json({ limit: '2mb' }));
