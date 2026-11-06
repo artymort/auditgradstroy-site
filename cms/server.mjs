@@ -178,7 +178,7 @@ const metrikaFrameAncestors = [
 const strictContentSecurityPolicy = [
   "default-src 'self'",
   "img-src 'self' data:",
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://yastatic.net ${smartCaptchaSources.join(' ')}`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "script-src 'self'",
   "connect-src 'self'",
@@ -189,7 +189,7 @@ const strictContentSecurityPolicy = [
 const publicContentSecurityPolicy = [
   "default-src 'self'",
   `img-src 'self' data: ${metrikaHttpsSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://yastatic.net ${smartCaptchaSources.join(' ')}`,
   "font-src 'self' https://fonts.gstatic.com data:",
   `script-src 'self' ${metrikaScriptSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
   `connect-src 'self' ${metrikaHttpsSources.join(' ')} ${metrikaWebsocketSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
