@@ -10591,10 +10591,75 @@ button[aria-busy="true"] {
   color: #7f2020;
 }
 
+.lead-captcha-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  padding: 24px;
+  color: #102231;
+  box-shadow: 0 24px 80px rgba(5, 7, 6, .28);
+  font-family: "Manrope", Arial, sans-serif;
+  overflow: auto;
+}
+
+.lead-captcha-dialog::backdrop {
+  background: rgba(5, 7, 6, .7);
+}
+
+.lead-captcha-dialog__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lead-captcha-dialog h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+
+.lead-captcha-dialog__head button {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #eef0ed;
+  padding: 0;
+  color: inherit;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lead-captcha-dialog p {
+  margin: 12px 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lead-captcha-dialog__widget {
+  min-height: 100px;
+}
+
 @media (max-width: 600px) {
   .form-notice {
     right: 16px;
     bottom: 16px;
+  }
+
+  .lead-captcha-dialog {
+    padding: 20px 16px;
+  }
+
+  .lead-captcha-dialog h2 {
+    font-size: 21px;
   }
 }
 

@@ -4,6 +4,109 @@
   const endpoint = '/api/leads';
   const forms = document.querySelectorAll('[data-static-form]');
   let noticeTimer = 0;
+  let captchaScriptPromise;
+  const captchaConfigPromise = fetch('/api/captcha/config', {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+  }).then(async (response) => {
+    if (!response.ok) throw new Error('Настройки проверки недоступны.');
+    return response.json();
+  }).catch(() => ({ unavailable: true }));
+
+  const loadSmartCaptcha = () => {
+    if (window.smartCaptcha) return Promise.resolve(window.smartCaptcha);
+    if (!captchaScriptPromise) {
+      captchaScriptPromise = new Promise((resolve, reject) => {
+        const callbackName = '__gradstroySmartCaptchaReady';
+        const script = document.createElement('script');
+        let finished = false;
+        const finish = (error) => {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(timeout);
+          delete window[callbackName];
+          if (error || !window.smartCaptcha) {
+            script.remove();
+            reject(error || new Error('Не удалось загрузить проверку.'));
+          } else {
+            resolve(window.smartCaptcha);
+          }
+        };
+        window[callbackName] = () => finish();
+        script.src = `https://smartcaptcha.cloud.yandex.ru/captcha.js?render=onload&onload=${callbackName}`;
+        script.async = true;
+        script.onerror = () => finish(new Error('Не удалось загрузить проверку.'));
+        const timeout = window.setTimeout(() => finish(new Error('Проверка не ответила.')), 12_000);
+        document.head.append(script);
+      }).catch((error) => {
+        captchaScriptPromise = null;
+        throw error;
+      });
+    }
+    return captchaScriptPromise;
+  };
+
+  const getCaptchaToken = (siteKey) => new Promise((resolve, reject) => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'lead-captcha-dialog';
+    dialog.setAttribute('aria-labelledby', 'lead-captcha-title');
+    dialog.innerHTML = `
+      <div class="lead-captcha-dialog__head">
+        <h2 id="lead-captcha-title">Подтвердите отправку заявки</h2>
+        <button type="button" aria-label="Закрыть проверку">×</button>
+      </div>
+      <p>Перед отправкой передвиньте ползунок вправо.</p>
+      <div class="lead-captcha-dialog__widget"></div>
+    `;
+    document.body.append(dialog);
+
+    let finished = false;
+    let widgetId;
+    const finish = (error, token) => {
+      if (finished) return;
+      finished = true;
+      if (dialog.open) dialog.close();
+      if (widgetId !== undefined && window.smartCaptcha) {
+        try {
+          window.smartCaptcha.destroy(widgetId);
+        } catch {
+          // The widget may already be gone after closing the challenge.
+        }
+      }
+      dialog.remove();
+      if (error) reject(error);
+      else resolve(token);
+    };
+    dialog.querySelector('button').addEventListener('click', () => {
+      const error = new Error('Проверка отменена.');
+      error.cancelled = true;
+      finish(error);
+    });
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      const error = new Error('Проверка отменена.');
+      error.cancelled = true;
+      finish(error);
+    });
+    dialog.showModal();
+
+    loadSmartCaptcha().then((captcha) => {
+      if (finished) return;
+      widgetId = captcha.render(dialog.querySelector('.lead-captcha-dialog__widget'), {
+        sitekey: siteKey,
+        hl: 'ru',
+        callback: (token) => {
+          if (token) finish(null, token);
+        },
+      });
+      captcha.subscribe(widgetId, 'network-error', () => {
+        finish(new Error('Проверка не загрузилась. Повторите попытку или позвоните нам.'));
+      });
+      captcha.subscribe(widgetId, 'javascript-error', () => {
+        finish(new Error('Проверка не загрузилась. Повторите попытку или позвоните нам.'));
+      });
+    }).catch((error) => finish(error));
+  });
 
   const notice = document.createElement('div');
   notice.className = 'form-notice';
@@ -56,6 +159,7 @@
 
   forms.forEach((form) => {
     let startedAt = Date.now();
+    let submitting = false;
     const trap = document.createElement('label');
     trap.className = 'form-trap';
     trap.setAttribute('aria-hidden', 'true');
@@ -70,6 +174,7 @@
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (submitting) return;
       const button = form.querySelector('button[type="submit"]');
       const buttonLabel = button?.querySelector('span');
       const originalLabel = buttonLabel?.textContent || '';
@@ -89,16 +194,24 @@
         return;
       }
 
+      submitting = true;
       if (button) {
         button.disabled = true;
         button.setAttribute('aria-busy', 'true');
-        if (buttonLabel) buttonLabel.textContent = 'Отправляем…';
+        if (buttonLabel) buttonLabel.textContent = 'Проверяем…';
       }
       showStatus(status, '', 'loading');
 
-      const controller = new AbortController();
-      const requestTimeout = window.setTimeout(() => controller.abort(), 15_000);
+      let requestTimeout = 0;
       try {
+        const captchaConfig = await captchaConfigPromise;
+        if (captchaConfig.unavailable || (captchaConfig.enabled && !captchaConfig.siteKey)) {
+          throw new Error('Проверка временно недоступна. Повторите попытку позже или позвоните нам.');
+        }
+        const captchaToken = captchaConfig.enabled
+          ? await getCaptchaToken(captchaConfig.siteKey)
+          : '';
+        if (buttonLabel) buttonLabel.textContent = 'Отправляем…';
         const lead = {
           name: fieldValue(form, 'name'),
           phone,
@@ -109,7 +222,10 @@
           pageTitle: document.title,
           website: fieldValue(form, 'website'),
           startedAt,
+          captchaToken,
         };
+        const controller = new AbortController();
+        requestTimeout = window.setTimeout(() => controller.abort(), 15_000);
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -130,6 +246,10 @@
         showStatus(status, 'Заявка успешно отправлена.', 'success');
         showNotice('Заявка успешно отправлена', message, 'success');
       } catch (error) {
+        if (error.cancelled) {
+          showStatus(status, '', 'idle');
+          return;
+        }
         const message = error.name === 'AbortError'
           ? 'Сервер не ответил. Повторите попытку или свяжитесь с нами по телефону.'
           : error.message || 'Попробуйте ещё раз или свяжитесь с нами по телефону.';
@@ -137,6 +257,7 @@
         showNotice('Заявка не отправлена', message, 'error');
       } finally {
         window.clearTimeout(requestTimeout);
+        submitting = false;
         if (button) {
           button.disabled = false;
           button.removeAttribute('aria-busy');

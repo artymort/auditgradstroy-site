@@ -16,6 +16,7 @@ import {
   verifyPassword,
 } from './lib/auth.mjs';
 import { Publisher } from './lib/publisher.mjs';
+import { verifySmartCaptchaToken } from './lib/smartcaptcha.mjs';
 import {
   richTextHtml,
   sanitizeRichTree,
@@ -52,6 +53,14 @@ const leadDeliveryTimeout = Math.max(5_000, Number(process.env.LEAD_DELIVERY_TIM
 const telegramBotToken = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
 const telegramChatId = String(process.env.TELEGRAM_CHAT_ID || '').trim();
 const telegramDeliveryTimeout = Math.max(5_000, Number(process.env.TELEGRAM_TIMEOUT_MS || 10_000));
+const smartCaptchaEnabled = process.env.SMARTCAPTCHA_ENABLED === '1';
+const smartCaptchaSiteKey = String(process.env.SMARTCAPTCHA_SITE_KEY || '').trim();
+const smartCaptchaSecretKey = String(process.env.SMARTCAPTCHA_SECRET_KEY || '').trim();
+if (smartCaptchaEnabled && (!smartCaptchaSiteKey || !smartCaptchaSecretKey)) {
+  throw new Error('Для SMARTCAPTCHA_ENABLED=1 нужны SMARTCAPTCHA_SITE_KEY и SMARTCAPTCHA_SECRET_KEY.');
+}
+const smartCaptchaHost = new URL(siteUrl).hostname;
+const smartCaptchaApexHost = smartCaptchaHost.replace(/^www\./, '');
 const useLocalMail = ['local', 'sendmail'].includes(leadDelivery);
 const leadMailer = smtpPassword
   ? nodemailer.createTransport({
@@ -145,6 +154,11 @@ const metrikaScriptSources = [
   'https://mc.yandex.ru',
   'https://yastatic.net',
 ];
+const smartCaptchaSources = [
+  'https://smartcaptcha.cloud.yandex.ru',
+  'https://smartcaptcha.yandexcloud.net',
+  'https://captcha-api.yandex.ru',
+];
 const metrikaFrameSources = [
   'https://mc.yandex.ru',
   'https://mc.webvisor.com',
@@ -164,7 +178,7 @@ const metrikaFrameAncestors = [
 const strictContentSecurityPolicy = [
   "default-src 'self'",
   "img-src 'self' data:",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://yastatic.net ${smartCaptchaSources.join(' ')}`,
   "font-src 'self' https://fonts.gstatic.com data:",
   "script-src 'self'",
   "connect-src 'self'",
@@ -174,13 +188,13 @@ const strictContentSecurityPolicy = [
 ].join('; ');
 const publicContentSecurityPolicy = [
   "default-src 'self'",
-  `img-src 'self' data: ${metrikaHttpsSources.join(' ')}`,
+  `img-src 'self' data: ${metrikaHttpsSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  `script-src 'self' ${metrikaScriptSources.join(' ')}`,
-  `connect-src 'self' ${metrikaHttpsSources.join(' ')} ${metrikaWebsocketSources.join(' ')}`,
-  `child-src 'self' blob: ${metrikaFrameSources.join(' ')}`,
-  `frame-src 'self' blob: ${metrikaFrameSources.join(' ')}`,
+  `script-src 'self' ${metrikaScriptSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
+  `connect-src 'self' ${metrikaHttpsSources.join(' ')} ${metrikaWebsocketSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
+  `child-src 'self' blob: ${metrikaFrameSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
+  `frame-src 'self' blob: ${metrikaFrameSources.join(' ')} ${smartCaptchaSources.join(' ')}`,
   `frame-ancestors 'self' ${metrikaFrameAncestors.join(' ')}`,
   "base-uri 'self'",
   "form-action 'self'",
@@ -482,6 +496,14 @@ const deliverLeadNotification = async ({ storedLead, lead, rows, text, html }) =
   }
 };
 
+app.get('/api/captcha/config', (_request, response) => {
+  response.setHeader('Cache-Control', 'no-store');
+  response.json({
+    enabled: smartCaptchaEnabled,
+    siteKey: smartCaptchaEnabled ? smartCaptchaSiteKey : '',
+  });
+});
+
 app.post('/api/leads', async (request, response, next) => {
   try {
     if (leadLimited(request.ip)) {
@@ -509,6 +531,22 @@ app.post('/api/leads', async (request, response, next) => {
     if (lead.phone.replace(/\D/g, '').length < 7) {
       response.status(400).json({ error: 'Укажите корректный номер телефона.' });
       return;
+    }
+    if (smartCaptchaEnabled) {
+      const verification = await verifySmartCaptchaToken({
+        token: request.body?.captchaToken,
+        secret: smartCaptchaSecretKey,
+        ip: request.ip,
+        expectedHost: [smartCaptchaApexHost, `www.${smartCaptchaApexHost}`],
+      });
+      if (!verification.ok) {
+        response.status(verification.unavailable ? 503 : 403).json({
+          error: verification.unavailable
+            ? 'Проверка временно недоступна. Повторите попытку позже или позвоните нам.'
+            : 'Проверка не пройдена. Повторите отправку заявки.',
+        });
+        return;
+      }
     }
     const rows = [
       ['Имя', lead.name],
