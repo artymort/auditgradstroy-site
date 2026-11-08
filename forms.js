@@ -3,6 +3,38 @@
 
   const endpoint = '/api/leads';
   const forms = document.querySelectorAll('[data-static-form]');
+  const attributionKey = 'gradstroyaudit:lead-attribution:v1';
+  const trackingKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'yclid', 'gclid'];
+  const readAttribution = () => {
+    let saved = {};
+    try {
+      saved = JSON.parse(sessionStorage.getItem(attributionKey) || '{}') || {};
+    } catch {
+      // Private browsing can disable session storage; current-page tags still work.
+    }
+    const params = new URLSearchParams(location.search);
+    const tagged = Object.fromEntries(trackingKeys
+      .map((key) => [key, (params.get(key) || '').trim().slice(0, 200)])
+      .filter(([, value]) => value));
+    if (Object.keys(tagged).length) {
+      saved = { ...tagged, landingPage: location.pathname };
+    } else if (!saved.landingPage) {
+      saved.landingPage = location.pathname;
+      try {
+        const referrer = new URL(document.referrer);
+        if (referrer.host !== location.host) saved.referrerHost = referrer.host;
+      } catch {
+        // Referrer is optional and may be withheld by the browser.
+      }
+    }
+    try {
+      sessionStorage.setItem(attributionKey, JSON.stringify(saved));
+    } catch {
+      // Submission remains available without browser storage.
+    }
+    return saved;
+  };
+  const attribution = readAttribution();
   let noticeTimer = 0;
   let captchaScriptPromise;
   const captchaConfigPromise = fetch('/api/captcha/config', {
@@ -220,6 +252,7 @@
           form: formTitle(form),
           page: `${location.pathname}${location.search}`,
           pageTitle: document.title,
+          attribution,
           website: fieldValue(form, 'website'),
           startedAt,
           captchaToken,

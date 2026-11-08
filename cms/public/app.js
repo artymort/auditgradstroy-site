@@ -521,14 +521,28 @@ const renderLeads = async () => {
     failed: 'Уведомление не отправлено',
     handled: 'Обработана',
   };
-  const details = (lead) => [
-    lead.name && ['Имя', lead.name],
-    lead.phone && ['Телефон', lead.phone],
-    lead.cadastral && ['Участок или адрес', lead.cadastral],
-    lead.message && ['Сообщение', lead.message],
-  ].filter(Boolean).map(([label, value]) => (
-    `<div><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`
-  )).join('');
+  const details = (lead) => {
+    let attribution = {};
+    try { attribution = JSON.parse(lead.attribution_json || '{}') || {}; } catch { /* Old records may not have attribution. */ }
+    return [
+      lead.name && ['Имя', lead.name],
+      lead.phone && ['Телефон', lead.phone],
+      lead.cadastral && ['Участок или адрес', lead.cadastral],
+      lead.message && ['Сообщение', lead.message],
+      ['Источник', attribution.label || 'Для старой заявки источник не записан'],
+      attribution.utm_source && ['UTM source', attribution.utm_source],
+      attribution.utm_medium && ['UTM medium', attribution.utm_medium],
+      attribution.utm_campaign && ['UTM campaign', attribution.utm_campaign],
+      attribution.utm_content && ['UTM content', attribution.utm_content],
+      attribution.utm_term && ['UTM term', attribution.utm_term],
+      attribution.yclid && ['Yandex click ID', attribution.yclid],
+      attribution.gclid && ['Google click ID', attribution.gclid],
+      attribution.referrerHost && ['Сайт перехода', attribution.referrerHost],
+      attribution.landingPage && ['Первая страница', attribution.landingPage],
+    ].filter(Boolean).map(([label, value]) => (
+      `<div><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`
+    )).join('');
+  };
 
   view.innerHTML = `
     <p class="view-intro">Все обращения сначала сохраняются здесь, а затем передаются в настроенные каналы — Telegram и почту.</p>

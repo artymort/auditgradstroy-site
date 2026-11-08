@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/validate-config.mjs && node --test cms/lib/smartcaptcha.test.mjs && node scripts/build.mjs",
+    "check": "node scripts/validate-config.mjs && node --test cms/lib/*.test.mjs && node scripts/build.mjs",
     "preview": "node scripts/build.mjs && node scripts/serve.mjs",
     "cms": "node cms/server.mjs",
     "start": "node cms/server.mjs",

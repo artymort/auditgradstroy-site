@@ -53,6 +53,7 @@ try {
     });
   });
 
+  await page.goto(`http://127.0.0.1:${port}/index.html?utm_source=yandex&utm_medium=cpc&utm_campaign=autumn&yclid=test-click`, { waitUntil: 'domcontentloaded' });
   await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
   await page.locator('#hero-form input[name="phone"]').fill('+7 999 123-45-67');
   await page.locator('#hero-form button[type="submit"]').click();
@@ -63,6 +64,10 @@ try {
   await page.waitForFunction(() => document.querySelector('#hero-form .form-status')?.dataset.state === 'success');
   assert.equal(submissions, 1);
   assert.equal(submittedLead.captchaToken, 'test-token');
+  assert.equal(submittedLead.attribution.utm_source, 'yandex');
+  assert.equal(submittedLead.attribution.utm_campaign, 'autumn');
+  assert.equal(submittedLead.attribution.yclid, 'test-click');
+  assert.equal(submittedLead.attribution.landingPage, '/index.html');
 
   await page.locator('#hero-form input[name="phone"]').fill('+7 999 123-45-67');
   await page.locator('#hero-form button[type="submit"]').click();
@@ -71,7 +76,7 @@ try {
   await dialog.waitFor({ state: 'detached' });
   assert.equal(submissions, 1, 'closing CAPTCHA must not submit another lead');
 
-  console.log('SmartCaptcha form flow passed: mobile dialog, verified submit, cancel.');
+  console.log('SmartCaptcha and attribution form flow passed: mobile dialog, tracked submit after navigation, cancel.');
 } finally {
   if (browser) await browser.close();
 }

@@ -7,6 +7,7 @@ import multer from 'multer';
 import { marked } from 'marked';
 import nodemailer from 'nodemailer';
 import { CmsDatabase, PAGE_KEYS } from './lib/database.mjs';
+import { normalizeAttribution, attributionLabel, attributionRows } from './lib/attribution.mjs';
 import {
   clearSessionCookie,
   createSessionToken,
@@ -526,7 +527,9 @@ app.post('/api/leads', async (request, response, next) => {
       form: cleanLeadLine(request.body?.form, 180),
       page: cleanLeadLine(request.body?.page, 500),
       pageTitle: cleanLeadLine(request.body?.pageTitle, 200),
+      attribution: normalizeAttribution(request.body?.attribution),
     };
+    lead.attribution.label = attributionLabel(lead.attribution);
 
     if (lead.phone.replace(/\D/g, '').length < 7) {
       response.status(400).json({ error: 'Укажите корректный номер телефона.' });
@@ -556,6 +559,7 @@ app.post('/api/leads', async (request, response, next) => {
       ['Форма', lead.form],
       ['Страница', `${siteUrl}${lead.page || '/'}`],
       ['Заголовок страницы', lead.pageTitle],
+      ...attributionRows(lead.attribution),
       ['Время', new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Yekaterinburg' })],
     ].filter(([, value]) => value);
 

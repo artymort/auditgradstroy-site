@@ -155,6 +155,7 @@ export class CmsDatabase {
         form_name TEXT NOT NULL DEFAULT '',
         page_path TEXT NOT NULL DEFAULT '',
         page_title TEXT NOT NULL DEFAULT '',
+        attribution_json TEXT NOT NULL DEFAULT '{}',
         status TEXT NOT NULL DEFAULT 'new'
           CHECK(status IN ('new', 'queued', 'failed', 'handled')),
         delivery_error TEXT NOT NULL DEFAULT '',
@@ -189,6 +190,10 @@ export class CmsDatabase {
         value TEXT NOT NULL
       );
     `);
+    // Existing installations already have the leads table; preserve their rows.
+    if (!this.db.prepare('PRAGMA table_info(leads)').all().some((column) => column.name === 'attribution_json')) {
+      this.db.exec("ALTER TABLE leads ADD COLUMN attribution_json TEXT NOT NULL DEFAULT '{}'");
+    }
     await this.seedPages();
     await this.seedEntries();
   }
@@ -538,9 +543,9 @@ export class CmsDatabase {
     const now = this.now();
     const result = this.db.prepare(`
       INSERT INTO leads (
-        name, phone, cadastral, message, form_name, page_path, page_title,
+        name, phone, cadastral, message, form_name, page_path, page_title, attribution_json,
         status, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'new', ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'new', ?)
     `).run(
       item.name || '',
       item.phone,
@@ -549,6 +554,7 @@ export class CmsDatabase {
       item.form || '',
       item.page || '',
       item.pageTitle || '',
+      JSON.stringify(item.attribution || {}),
       now,
     );
     return this.getLead(Number(result.lastInsertRowid));
