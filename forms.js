@@ -176,6 +176,10 @@
   );
 
   const fieldValue = (form, name) => String(findField(form, name)?.value || '').trim();
+  const isValidRussianPhone = (value) => (
+    value.length <= 24
+    && /^(?:8\d{10}|\+7\d{10})$/.test(value.replace(/[\s()-]/g, ''))
+  );
 
   const formTitle = (form) => {
     if (form.dataset.formName) return form.dataset.formName;
@@ -218,8 +222,8 @@
         showNotice('Заявка не отправлена', message, 'error');
         return;
       }
-      if (phone.replace(/\D/g, '').length < 7) {
-        const message = 'Укажите корректный номер телефона.';
+      if (!isValidRussianPhone(phone)) {
+        const message = 'Укажите 11 цифр: 8… или +7… (можно со скобками и дефисами).';
         showStatus(status, message, 'error');
         showNotice('Проверьте номер телефона', message, 'error');
         findField(form, 'phone')?.focus();

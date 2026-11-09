@@ -11,7 +11,7 @@
             <label class="sr-only" for="{{ form_id_prefix }}-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
             <input id="{{ form_id_prefix }}-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="{{ form_id_prefix }}-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-            <input id="{{ form_id_prefix }}-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
+            <input id="{{ form_id_prefix }}-phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
             <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
             <p class="consent form-consent">{% include form-consent.html %}</p>
           </form>

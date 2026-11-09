@@ -45,7 +45,7 @@ layout: null
           <label for="contact-name">{{ contacts.form.name_label | escape }}</label>
           <input id="contact-name" name="name" autocomplete="name" placeholder="{{ contacts.form.name_label | escape }}">
           <label for="contact-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="contact-phone" name="phone" type="tel" autocomplete="tel" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <input id="contact-phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
           <label for="contact-message">{{ contacts.form.message_label | escape }}</label>
           <textarea id="contact-message" name="message" rows="5" placeholder="{{ contacts.form.message_label | escape }}"></textarea>
           <button class="form-submit" type="submit"><span>{{ contacts.form.submit | escape }}</span><i aria-hidden="true">→</i></button>

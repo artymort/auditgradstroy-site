@@ -55,6 +55,13 @@ try {
 
   await page.goto(`http://127.0.0.1:${port}/index.html?utm_source=yandex&utm_medium=cpc&utm_campaign=autumn&yclid=test-click`, { waitUntil: 'domcontentloaded' });
   await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'domcontentloaded' });
+  for (const invalidPhone of ['7777777', '8922535353', '8 499 711 22 88 abc']) {
+    await page.locator('#hero-form input[name="phone"]').fill(invalidPhone);
+    await page.locator('#hero-form button[type="submit"]').click();
+    assert.equal(await page.locator('#hero-form .form-status').getAttribute('data-state'), 'error');
+    assert.equal(submissions, 0, 'invalid phone must not submit a lead');
+    assert.equal(await page.locator('.lead-captcha-dialog').count(), 0, 'invalid phone must not trigger CAPTCHA');
+  }
   await page.locator('#hero-form input[name="phone"]').fill('+7 999 123-45-67');
   await page.locator('#hero-form button[type="submit"]').click();
   const dialog = page.locator('.lead-captcha-dialog');
@@ -69,14 +76,22 @@ try {
   assert.equal(submittedLead.attribution.yclid, 'test-click');
   assert.equal(submittedLead.attribution.landingPage, '/index.html');
 
-  await page.locator('#hero-form input[name="phone"]').fill('+7 999 123-45-67');
+  await page.locator('#hero-form input[name="phone"]').fill('8 (3532) 90-90-90');
+  await page.locator('#hero-form button[type="submit"]').click();
+  await dialog.waitFor({ state: 'visible' });
+  await dialog.getByRole('button', { name: 'Пройти тестовый слайдер' }).click();
+  await page.waitForFunction(() => document.querySelector('#hero-form .form-status')?.dataset.state === 'success');
+  assert.equal(submissions, 2);
+  assert.equal(submittedLead.phone, '8 (3532) 90-90-90');
+
+  await page.locator('#hero-form input[name="phone"]').fill('89225353533');
   await page.locator('#hero-form button[type="submit"]').click();
   await dialog.waitFor({ state: 'visible' });
   await dialog.getByRole('button', { name: 'Закрыть проверку' }).click();
   await dialog.waitFor({ state: 'detached' });
-  assert.equal(submissions, 1, 'closing CAPTCHA must not submit another lead');
+  assert.equal(submissions, 2, 'closing CAPTCHA must not submit another lead');
 
-  console.log('SmartCaptcha and attribution form flow passed: mobile dialog, tracked submit after navigation, cancel.');
+  console.log('SmartCaptcha, attribution and phone validation passed: invalid numbers, mobile and landline submissions, cancel.');
 } finally {
   if (browser) await browser.close();
 }
