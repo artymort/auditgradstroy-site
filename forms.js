@@ -223,7 +223,7 @@
         return;
       }
       if (!isValidRussianPhone(phone)) {
-        const message = 'Укажите 11 цифр: 8… или +7… (можно со скобками и дефисами).';
+        const message = 'Введите корректный номер телефона.';
         showStatus(status, message, 'error');
         showNotice('Проверьте номер телефона', message, 'error');
         findField(form, 'phone')?.focus();

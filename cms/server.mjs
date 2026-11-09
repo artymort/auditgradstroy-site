@@ -533,7 +533,7 @@ app.post('/api/leads', async (request, response, next) => {
     lead.attribution.label = attributionLabel(lead.attribution);
 
     if (!isValidRussianPhone(lead.phone)) {
-      response.status(400).json({ error: 'Укажите 11 цифр: 8… или +7… (можно со скобками и дефисами).' });
+      response.status(400).json({ error: 'Введите корректный номер телефона.' });
       return;
     }
     if (smartCaptchaEnabled) {
