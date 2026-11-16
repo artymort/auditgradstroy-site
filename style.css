@@ -9652,6 +9652,7 @@ body button.form-submit.form-submit:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
   padding: 60px 64px;
 }
 
@@ -10202,7 +10203,8 @@ body button.form-submit.form-submit:focus-visible {
   }
 
   .expert-hero__stage {
-    grid-template-columns: minmax(0, 1fr) 310px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "copy" "photo" "facts";
   }
 
   .expert-hero__copy {
@@ -10210,7 +10212,7 @@ body button.form-submit.form-submit:focus-visible {
   }
 
   .expert-hero__photo {
-    min-height: 700px;
+    min-height: 520px;
   }
 
   .expert-facts > div {
@@ -10354,10 +10356,10 @@ body button.form-submit.form-submit:focus-visible {
   }
 
   .expert-hero__copy h1 {
-    font-size: clamp(34px, 10.5vw, 44px);
+    font-size: clamp(28px, 8vw, 36px);
     line-height: 1.05;
     overflow-wrap: normal;
-    hyphens: none;
+    hyphens: auto;
   }
 
   .expert-hero__text p:first-child {

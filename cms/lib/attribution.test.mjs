@@ -60,3 +60,31 @@ test('new leads retain attribution for the CMS', async () => {
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+test('old expert labels are corrected without replacing other CMS edits', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'gradstroy-expert-label-'));
+  let database;
+  try {
+    database = new CmsDatabase({ root: process.cwd(), filename: path.join(dir, 'cms.sqlite') });
+    await database.init();
+    const site = database.getPage('site').data;
+    const expertMenu = site.header.menu.find((item) => item.url === 'expert.html');
+    expertMenu.label = 'О эксперте';
+    site.header.phone = 'custom phone';
+    const services = database.getPage('services').data;
+    services.expert.label = 'О эксперте';
+    services.expert.title = 'Custom title';
+    database.db.prepare('UPDATE content_pages SET data_json = ? WHERE key = ?').run(JSON.stringify(site), 'site');
+    database.db.prepare('UPDATE content_pages SET data_json = ? WHERE key = ?').run(JSON.stringify(services), 'services');
+
+    await database.seedPages();
+
+    assert.equal(database.getPage('site').data.header.menu.find((item) => item.url === 'expert.html').label, 'Об эксперте');
+    assert.equal(database.getPage('site').data.header.phone, 'custom phone');
+    assert.equal(database.getPage('services').data.expert.label, 'Об эксперте');
+    assert.equal(database.getPage('services').data.expert.title, 'Custom title');
+  } finally {
+    database?.db?.close();
+    await rm(dir, { recursive: true, force: true });
+  }
+});

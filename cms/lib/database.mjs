@@ -226,6 +226,12 @@ export class CmsDatabase {
         serviceMenu.children = defaultServiceMenu.children;
         changed = true;
       }
+      (siteData.header?.menu || []).forEach((item) => {
+        if (item.label === 'О эксперте') {
+          item.label = 'Об эксперте';
+          changed = true;
+        }
+      });
       const serviceUrls = ['express-audit.html', 'full-expertise.html', 'project-support.html'];
       (siteData.footer?.services || []).forEach((item, index) => {
         if (serviceUrls[index] && item.url !== serviceUrls[index]) {
@@ -256,6 +262,10 @@ export class CmsDatabase {
           changed = true;
         }
       });
+      if (migration.key === 'services' && data.expert?.label === 'О эксперте') {
+        data.expert.label = 'Об эксперте';
+        changed = true;
+      }
       if (changed) {
         this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
           .run(JSON.stringify(data), this.now(), migration.key);
