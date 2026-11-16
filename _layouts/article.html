@@ -30,7 +30,7 @@
         <div>
           <a class="article-back" href="{{ 'blog.html' | relative_url }}">← Все материалы</a>
           <div class="article-meta"><span>{{ page.category | default: "Материал" | escape }}</span><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%d.%m.%Y" }}</time></div>
-          <h1>{{ page.title | escape }}</h1>
+          <h1>{{ page.title | escape | replace: ' и ', ' и&nbsp;' }}</h1>
           {% if page.subtitle %}<p class="article-hero__subtitle">{{ page.subtitle | escape }}</p>{% endif %}
         </div>
         {% if page.image %}<figure><img src="{{ page.image | relative_url }}" alt="{{ page.image_alt | default: page.title | escape }}"></figure>{% endif %}

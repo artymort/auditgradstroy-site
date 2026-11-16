@@ -10013,6 +10013,7 @@ body button.form-submit.form-submit:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
   padding: 64px;
 }
 
@@ -10142,6 +10143,10 @@ body button.form-submit.form-submit:focus-visible {
 }
 
 @media (max-width: 1024px) {
+  .article-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .content-hero__grid,
   .contacts-hero__grid {
     grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
@@ -10267,12 +10272,19 @@ body button.form-submit.form-submit:focus-visible {
   }
 
   .content-hero__copy h1,
-  .contacts-hero__copy h1,
-  .article-hero h1 {
+  .contacts-hero__copy h1 {
     font-size: clamp(34px, 10.5vw, 44px);
     line-height: 1.05;
     overflow-wrap: normal;
     hyphens: none;
+  }
+
+  .article-hero h1 {
+    font-size: clamp(26px, 7.5vw, 34px);
+    line-height: 1.1;
+    overflow-wrap: normal;
+    hyphens: auto;
+    text-wrap: balance;
   }
 
   .content-hero__lead,
@@ -10716,5 +10728,30 @@ button[aria-busy="true"] {
   .dom-services .dom-urban-hero__content .dom-service-page-title {
     font-size: clamp(26px, 7.2vw, 30px);
     line-height: 1.08;
+  }
+}
+
+/* Keep long Russian headings within their cards at narrow widths. */
+@media (max-width: 1024px) {
+  .content-page--expert .content-section__head,
+  .content-page--expert .advantages-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .expert-hero__copy h1 {
+    font-size: clamp(34px, 4vw, 42px);
+  }
+}
+
+@media (max-width: 600px) {
+  .expert-hero__copy h1,
+  .dom-services .dom-expert__text h2 {
+    font-size: clamp(26px, 7.5vw, 34px);
+    hyphens: auto;
+  }
+
+  .dom-services .dom-urban-hero__content .dom-service-page-title {
+    font-size: clamp(25px, 7vw, 30px);
+    hyphens: auto;
   }
 }
