@@ -221,6 +221,12 @@ export class CmsDatabase {
           changed = true;
         }
       }
+      const oldTopic = 'ВРИ, категория, смена или раздел участка';
+      const oldTopicIndex = siteData.forms.topic_options?.indexOf(oldTopic) ?? -1;
+      if (oldTopicIndex !== -1) {
+        siteData.forms.topic_options[oldTopicIndex] = 'Смена ВРИ, категория или раздел участка';
+        changed = true;
+      }
       if (siteData.forms.submit === 'Получить первичную оценку') {
         siteData.forms.submit = defaultSiteData.forms.submit;
         changed = true;
