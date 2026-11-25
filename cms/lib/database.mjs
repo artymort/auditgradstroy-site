@@ -214,6 +214,21 @@ export class CmsDatabase {
       const siteData = JSON.parse(sitePage.data_json);
       const defaultSiteData = JSON.parse(await readFile(path.join(this.root, '_data', 'site.json'), 'utf8'));
       let changed = false;
+      siteData.forms ||= {};
+      for (const key of ['topic_label', 'topic_placeholder', 'topic_options']) {
+        if (!Object.hasOwn(siteData.forms, key)) {
+          siteData.forms[key] = defaultSiteData.forms[key];
+          changed = true;
+        }
+      }
+      if (siteData.forms.submit === 'Получить первичную оценку') {
+        siteData.forms.submit = defaultSiteData.forms.submit;
+        changed = true;
+      }
+      if (siteData.header?.cta === 'Бесплатная экспресс-оценка') {
+        siteData.header.cta = defaultSiteData.header.cta;
+        changed = true;
+      }
       for (const obsoleteKey of ['privacy_label', 'privacy_url', 'agreement_label', 'agreement_url']) {
         if (Object.hasOwn(siteData.contacts || {}, obsoleteKey)) {
           delete siteData.contacts[obsoleteKey];
@@ -242,6 +257,42 @@ export class CmsDatabase {
       if (changed) {
         this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
           .run(JSON.stringify(siteData), this.now(), 'site');
+      }
+    }
+
+    const homePage = this.db.prepare('SELECT data_json FROM content_pages WHERE key = ?').get('home');
+    if (homePage) {
+      const homeData = JSON.parse(homePage.data_json);
+      const defaultHomeData = JSON.parse(await readFile(path.join(this.root, '_data', 'home.json'), 'utf8'));
+      let changed = false;
+      const updateLegacy = (section, key, legacyValues) => {
+        if (!homeData[section]) return;
+        const current = homeData[section][key];
+        if (current === undefined || legacyValues.includes(current)) {
+          homeData[section][key] = defaultHomeData[section][key];
+          changed = true;
+        }
+      };
+      updateLegacy('hero', 'primary_action', ['Бесплатная экспресс-оценка']);
+      updateLegacy('hero', 'secondary_action', ['Получить консультацию']);
+      updateLegacy('hero', 'form_label', ['Бесплатная экспресс-оценка']);
+      updateLegacy('hero', 'form_title', ['Отправьте кадастровый номер участка и получите первичную оценку.']);
+      updateLegacy('hero', 'form_note', [
+        'Это не выписка и не расчёт стоимости. Эксперт позвонит и уточнит вашу задачу.',
+        'Мы проверяем участки перед покупкой: ограничения, возможность строительства и юридические риски. Оставьте телефон — эксперт позвонит и обсудит вашу задачу.',
+      ]);
+      updateLegacy('cta', 'title', ['Отправьте кадастровый номер участка и получите первичную оценку бесплатно.']);
+      updateLegacy('cta', 'form_title', ['Отправить запрос']);
+      updateLegacy('cta', 'form_note', [
+        'Это не выписка и не расчёт стоимости. Уточним задачу и подскажем формат проверки.',
+      ]);
+      if (['Результат - в течение рабочего дня', 'Результат — в течение рабочего дня'].includes(homeData.cta?.benefits?.[0])) {
+        homeData.cta.benefits[0] = defaultHomeData.cta.benefits[0];
+        changed = true;
+      }
+      if (changed) {
+        this.db.prepare('UPDATE content_pages SET data_json = ?, updated_at = ? WHERE key = ?')
+          .run(JSON.stringify(homeData), this.now(), 'home');
       }
     }
 

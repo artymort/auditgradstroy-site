@@ -147,6 +147,21 @@ content:
         label: Формы заявок
         type: object
         fields:
+          - name: topic_label
+            label: Вопрос перед выбором темы
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: topic_placeholder
+            label: Подсказка в выборе темы
+            type: string
+            required: true
+            options: { maxlength: 80 }
+          - name: topic_options
+            label: Темы обращения
+            type: string
+            list: { min: 1, max: 12 }
+            options: { maxlength: 160 }
           - name: cadastral_label
             label: Поле кадастрового номера
             type: string

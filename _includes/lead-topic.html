@@ -1,11 +1,7 @@
 <label class="lead-topic__label">
-  <span>Что хотите обсудить?</span>
+  <span>{{ site.data.site.forms.topic_label | escape }}</span>
   <select class="lead-topic__select" name="topic" required>
-    <option value="" selected disabled>Выберите тему</option>
-    <option>Покупка участка - бизнес или инвестиции</option>
-    <option>Покупка участка - ИЖС</option>
-    <option>ВРИ, категория, смена или раздел участка</option>
-    <option>Ограничения, ЗОУИТ или строительство</option>
-    <option>Не знаю, нужна консультация</option>
+    <option value="" selected disabled>{{ site.data.site.forms.topic_placeholder | escape }}</option>
+    {% for topic in site.data.site.forms.topic_options %}<option>{{ topic | escape }}</option>{% endfor %}
   </select>
 </label>
