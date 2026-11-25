@@ -23,7 +23,7 @@ layout: null
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}?v=20261125-form">
+  <link rel="stylesheet" href="{{ 'style.css' | relative_url }}?v=20261125-fields">
 </head>
 <body>
 {% include header.html %}
@@ -40,7 +40,7 @@ layout: null
           <p class="hp-hero__lead">{{ home.hero.lead | escape }}</p>
           <div class="hp-hero__actions">
             <a class="hp-button hp-button--lime" href="#cta">{{ home.hero.primary_action | escape }} <i aria-hidden="true">→</i></a>
-            <a class="hp-text-link" href="#cta">{{ home.hero.secondary_action | escape }} <span aria-hidden="true">→</span></a>
+            <a class="hp-text-link" href="#services">{{ home.hero.secondary_action | escape }} <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
@@ -183,10 +183,14 @@ layout: null
           <h3>{{ home.cta.form_title | escape }}</h3>
           <p class="lead-form-note">{{ home.cta.form_note | escape }}</p>
           {% include lead-topic.html %}
-          <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
-          <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
-          <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
-          <input id="cta-phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          <div class="hp-cta__field">
+            <label for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
+            <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
+          </div>
+          <div class="hp-cta__field">
+            <label for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
+            <input id="cta-phone" name="phone" type="tel" autocomplete="tel" maxlength="24" required placeholder="{{ site.data.site.forms.phone_label | escape }}">
+          </div>
           <button class="form-submit" type="submit"><span>{{ site.data.site.forms.submit | escape }}</span><i aria-hidden="true">→</i></button>
           <small class="form-consent">{% include form-consent.html %}</small>
         </form>
