@@ -15,15 +15,15 @@ test('attribution is allowlisted, bounded and classified conservatively', () => 
   assert.deepEqual(data, {
     utm_source: 'yandex', utm_medium: 'cpc', utm_campaign: 'land', landingPage: '/services.html',
   });
-  assert.equal(attributionLabel(data), 'Платная реклама — yandex');
+  assert.equal(attributionLabel(data), 'Платная реклама - yandex');
   assert.deepEqual(attributionRows(data).slice(0, 4), [
-    ['Источник', 'Платная реклама — yandex'],
+    ['Источник', 'Платная реклама - yandex'],
     ['UTM source', 'yandex'],
     ['UTM medium', 'cpc'],
     ['UTM campaign', 'land'],
   ]);
-  assert.equal(attributionLabel(normalizeAttribution({ yclid: '123' })), 'Реклама — Яндекс');
-  assert.equal(attributionLabel(normalizeAttribution({ referrerHost: 'google.com' })), 'Поиск — вероятно органический');
+  assert.equal(attributionLabel(normalizeAttribution({ yclid: '123' })), 'Реклама - Яндекс');
+  assert.equal(attributionLabel(normalizeAttribution({ referrerHost: 'google.com' })), 'Поиск - вероятно органический');
   assert.equal(attributionLabel({}), 'Прямой переход или источник не определён');
 });
 

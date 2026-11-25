@@ -5,7 +5,7 @@ layout: null
 {% assign services = site.data.services %}
 {% assign page_data = site.data.express_audit %}
 {% assign service = page_data.content %}
-{% assign service_form_name = "Услуга — экспресс-аудит участка" %}
+{% assign service_form_name = "Услуга - экспресс-аудит участка" %}
 {% assign form_id_prefix = "express" %}
 <!doctype html>
 <html lang="ru">
@@ -53,7 +53,7 @@ layout: null
 
       <div class="container dom-audit-form">
         <div class="dom-audit-form__text"><h3>{{ service.form_title | escape }}</h3><p>{{ service.form_text | escape }}</p></div>
-        <form class="dom-audit-form__fields" data-static-form data-form-name="Услуга — экспресс-аудит, быстрая форма">
+        <form class="dom-audit-form__fields" data-static-form data-form-name="Услуга - экспресс-аудит, быстрая форма">
           <label class="sr-only" for="express-quick-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
           <input id="express-quick-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="sr-only" for="express-quick-phone">{{ site.data.site.forms.phone_label | escape }}</label>

@@ -67,10 +67,10 @@ const LABELS = {
   metrics: 'Показатели первого экрана',
   form_label: 'Подпись формы',
   link: 'Текст ссылки',
-  first: 'Карточка 1 — Строительство',
-  second: 'Карточка 2 — Ограничения',
-  third: 'Карточка 3 — Разрешённое использование',
-  fourth: 'Карточка 4 — Территория',
+  first: 'Карточка 1 - Строительство',
+  second: 'Карточка 2 - Ограничения',
+  third: 'Карточка 3 - Разрешённое использование',
+  fourth: 'Карточка 4 - Территория',
   note: 'Предупреждение под карточками',
   action: 'Текст кнопки',
   steps: 'Этапы работы',
@@ -442,7 +442,7 @@ const renderDashboard = async () => {
     return '';
   };
   view.innerHTML = `
-    <p class="view-intro">Выберите нужное действие — изменения появятся на сайте сразу после сохранения.</p>
+    <p class="view-intro">Выберите нужное действие - изменения появятся на сайте сразу после сохранения.</p>
     <section class="dashboard-grid">
       <div class="panel">
         <h2>Быстрые действия</h2>
@@ -472,7 +472,7 @@ const renderDashboard = async () => {
       <article class="metric-card"><strong>${data.newLeads}</strong><span>Новых заявок</span></article>
     </section>
     <div class="section-divider"><span>Статистика посещений</span></div>
-    <p class="view-intro">Посещаемость обновляется автоматически. «Онлайн» — посетители, активные на сайте за последние пять минут.</p>
+    <p class="view-intro">Посещаемость обновляется автоматически. «Онлайн» - посетители, активные на сайте за последние пять минут.</p>
     <section class="visitor-metric-grid">
       <article class="visitor-metric visitor-metric--accent"><span>Сегодня</span><strong>${number(analytics.today.visitors)}</strong><small>посетителей · ${number(analytics.today.views)} просмотров</small></article>
       <article class="visitor-metric"><span>Вчера</span><strong>${number(analytics.yesterday.visitors)}</strong><small>посетителей · ${number(analytics.yesterday.views)} просмотров</small></article>
@@ -546,7 +546,7 @@ const renderLeads = async () => {
   };
 
   view.innerHTML = `
-    <p class="view-intro">Все обращения сначала сохраняются здесь, а затем передаются в настроенные каналы — Telegram и почту.</p>
+    <p class="view-intro">Все обращения сначала сохраняются здесь, а затем передаются в настроенные каналы - Telegram и почту.</p>
     <section class="leads-list">
       ${leads.length ? leads.map((lead) => `
         <article class="lead-card${lead.status === 'handled' ? ' is-handled' : ''}">
@@ -1175,7 +1175,7 @@ const renderPageEditor = async (key) => {
             <h2>Telegram-группа</h2>
             <p>${telegramSetting.botConfigured
               ? 'Добавьте бота в нужную группу. Затем найдите группу автоматически или укажите её ID. Если группа не найдётся, отправьте в ней команду /start.'
-              : 'Бот ещё не подключён к серверу. Сначала добавьте его токен на VPS — токен не хранится в CMS и не попадает в GitHub.'}</p>
+              : 'Бот ещё не подключён к серверу. Сначала добавьте его токен на VPS - токен не хранится в CMS и не попадает в GitHub.'}</p>
           </div>
           <form id="telegram-settings-form">
             <label class="checkbox-field">
@@ -1570,7 +1570,7 @@ const openUserEditor = (user = null) => {
         <label>Имя<input name="name" required></label>
         <label>Электронная почта<input name="email" type="email" required></label>
         <label>Роль<select name="role"><option value="editor">Редактор</option><option value="admin">Администратор</option></select></label>
-        <label>${user ? 'Новый пароль — только если хотите заменить' : 'Пароль'}<input name="password" type="password" ${user ? '' : 'required'} minlength="8" autocomplete="new-password"></label>
+        <label>${user ? 'Новый пароль - только если хотите заменить' : 'Пароль'}<input name="password" type="password" ${user ? '' : 'required'} minlength="8" autocomplete="new-password"></label>
       </div>
       ${user ? '<div class="switch-row"><label><input name="active" type="checkbox">Доступ включён</label></div>' : ''}
       <div class="button-row"><button class="primary-button" type="submit">Сохранить</button><button class="secondary-button" type="button" id="cancel-user">Отмена</button></div>

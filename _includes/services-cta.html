@@ -7,7 +7,7 @@
         </article>
         <article class="dom-cta__form">
           <h3>{{ services.cta.form_title | escape }}</h3>
-          <form data-static-form data-form-name="{{ service_form_name | default: 'Услуги — отправить запрос' | escape }}">
+          <form data-static-form data-form-name="{{ service_form_name | default: 'Услуги - отправить запрос' | escape }}">
             <label class="sr-only" for="{{ form_id_prefix }}-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
             <input id="{{ form_id_prefix }}-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
             <label class="sr-only" for="{{ form_id_prefix }}-phone">{{ site.data.site.forms.phone_label | escape }}</label>

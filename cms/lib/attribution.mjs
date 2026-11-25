@@ -22,14 +22,14 @@ export const normalizeAttribution = (input) => {
 export const attributionLabel = (data) => {
   const source = (data.utm_source || '').toLowerCase();
   const medium = (data.utm_medium || '').toLowerCase();
-  if (data.yclid) return 'Реклама — Яндекс';
-  if (data.gclid) return 'Реклама — Google';
+  if (data.yclid) return 'Реклама - Яндекс';
+  if (data.gclid) return 'Реклама - Google';
   if (['cpc', 'ppc', 'paid', 'paidsearch', 'display', 'cpm'].includes(medium)) {
-    return source ? `Платная реклама — ${data.utm_source}` : 'Платная реклама (UTM)';
+    return source ? `Платная реклама - ${data.utm_source}` : 'Платная реклама (UTM)';
   }
   if (data.utm_source || data.utm_medium || data.utm_campaign) return 'Переход с UTM-метками';
   if (/^(www\.)?(yandex\.|google\.|ya\.ru|bing\.)/iu.test(data.referrerHost || '')) {
-    return 'Поиск — вероятно органический';
+    return 'Поиск - вероятно органический';
   }
   if (data.referrerHost) return `Переход с ${data.referrerHost}`;
   return 'Прямой переход или источник не определён';

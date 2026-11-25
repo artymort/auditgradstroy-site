@@ -462,9 +462,9 @@ const deliverLeadNotification = async ({ storedLead, lead, rows, text, html }) =
       channel: 'Почта',
       send: () => withTimeout(
         leadMailer.sendMail({
-          from: { name: 'Градстройаудит — заявки с сайта', address: smtpFrom },
+          from: { name: 'Градстройаудит - заявки с сайта', address: smtpFrom },
           to: recipient,
-          subject: `Новая заявка с сайта — ${lead.form || 'форма обратной связи'}`,
+          subject: `Новая заявка с сайта - ${lead.form || 'форма обратной связи'}`,
           text,
           html,
         }),
