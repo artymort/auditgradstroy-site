@@ -252,6 +252,7 @@
           name: fieldValue(form, 'name'),
           phone,
           cadastral: fieldValue(form, 'cadastral'),
+          topic: fieldValue(form, 'topic'),
           message: fieldValue(form, 'message'),
           form: formTitle(form),
           page: `${location.pathname}${location.search}`,

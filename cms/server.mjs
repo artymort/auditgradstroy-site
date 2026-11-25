@@ -524,6 +524,7 @@ app.post('/api/leads', async (request, response, next) => {
       name: cleanLeadLine(request.body?.name, 120),
       phone: cleanLeadLine(request.body?.phone, 60),
       cadastral: cleanLeadLine(request.body?.cadastral, 160),
+      topic: cleanLeadLine(request.body?.topic, 160),
       message: cleanLeadText(request.body?.message, 4_000),
       form: cleanLeadLine(request.body?.form, 180),
       page: cleanLeadLine(request.body?.page, 500),
@@ -556,6 +557,7 @@ app.post('/api/leads', async (request, response, next) => {
       ['Имя', lead.name],
       ['Телефон', lead.phone],
       ['Кадастровый номер или адрес', lead.cadastral],
+      ['Тема обращения', lead.topic],
       ['Сообщение', lead.message],
       ['Форма', lead.form],
       ['Страница', `${siteUrl}${lead.page || '/'}`],
@@ -571,7 +573,10 @@ app.post('/api/leads', async (request, response, next) => {
         : `<p style="margin:0 0 14px"><strong>${escapeLeadHtml(label)}:</strong><br>${escapeLeadHtml(value).replaceAll('\n', '<br>')}</p>`
     )).join('');
 
-    const storedLead = database.createLead(lead);
+    const storedLead = database.createLead({
+      ...lead,
+      message: [lead.topic ? `Тема обращения: ${lead.topic}` : '', lead.message].filter(Boolean).join('\n\n'),
+    });
     response.status(202).json({ ok: true, id: storedLead.id, queued: true });
     setImmediate(() => {
       void deliverLeadNotification({ storedLead, lead, rows, text, html });

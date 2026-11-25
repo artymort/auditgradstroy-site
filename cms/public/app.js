@@ -53,6 +53,7 @@ const LABELS = {
   number: 'Номер',
   cta: 'Финальный призыв',
   form_title: 'Заголовок формы',
+  form_note: 'Пояснение к форме',
   primary_action: 'Главная кнопка',
   secondary_action: 'Дополнительная кнопка',
   promise: 'Короткое обещание',

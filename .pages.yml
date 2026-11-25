@@ -333,6 +333,11 @@ content:
             type: text
             required: true
             options: { maxlength: 170 }
+          - name: form_note
+            label: Пояснение к быстрой форме
+            type: text
+            required: true
+            options: { maxlength: 180 }
 
       - name: manifesto
         label: Блок «Почему это риск»
@@ -630,6 +635,11 @@ content:
             type: string
             required: true
             options: { maxlength: 60 }
+          - name: form_note
+            label: Пояснение к форме
+            type: text
+            required: true
+            options: { maxlength: 180 }
 
   - name: services
     label: Страница услуг

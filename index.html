@@ -68,7 +68,9 @@ layout: null
           <div>
             <span>{{ home.hero.form_label | escape }}</span>
             <strong>{{ home.hero.form_title | escape }}</strong>
+            <p class="lead-form-note">{{ home.hero.form_note | escape }}</p>
           </div>
+          {% include lead-topic.html %}
           <label class="hp-quick-form__label" for="hero-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
           <input id="hero-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="hp-quick-form__label" for="hero-phone">{{ site.data.site.forms.phone_label | escape }}</label>
@@ -177,8 +179,10 @@ layout: null
             {% for benefit in home.cta.benefits %}<span>{{ benefit | escape }}</span>{% endfor %}
           </div>
         </div>
-        <form class="hp-cta__form" data-static-form data-form-name="Главная — бесплатная оценка">
+        <form class="hp-cta__form" data-static-form data-form-name="Главная — звонок эксперта">
           <h3>{{ home.cta.form_title | escape }}</h3>
+          <p class="lead-form-note">{{ home.cta.form_note | escape }}</p>
+          {% include lead-topic.html %}
           <label class="sr-only" for="cta-cadastral">{{ site.data.site.forms.cadastral_label | escape }}</label>
           <input id="cta-cadastral" name="cadastral" autocomplete="street-address" placeholder="{{ site.data.site.forms.cadastral_label | escape }}">
           <label class="sr-only" for="cta-phone">{{ site.data.site.forms.phone_label | escape }}</label>
